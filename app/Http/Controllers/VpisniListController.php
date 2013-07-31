@@ -394,7 +394,7 @@ class VpisniListController extends Controller {
                 $emso = $list["emso"];
                 $datum = $list["datumrojstva"];
 
-                Vpisan_predmet::where('vpisna_stevilka', $list["vstevilka"])->delete();
+                //Vpisan_predmet::where('vpisna_stevilka', $list["vstevilka"])->delete();
                 $std = Student::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
                 $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
                 $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);

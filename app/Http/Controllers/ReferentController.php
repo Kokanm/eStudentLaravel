@@ -51,7 +51,8 @@ class ReferentController extends Controller {
                     $user = new User;
                     $user->name = $kandidat->ime_kandidata;
                     $user->email = $kandidat->email_kandidata;
-                    $user->password = bcrypt($kandidat->ime_kandidata);
+//                    $user->password = bcrypt($kandidat->ime_kandidata);
+                    $user->password = bcrypt("geslo1");
                     $user->type = 0;
                     $user->save();
                     $uvozeno .= $kandidat->ime_kandidata . ' ' . $kandidat->priimek_kandidata . '<br/>';
