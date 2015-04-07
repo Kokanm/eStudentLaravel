@@ -19,8 +19,11 @@ class CreateVpisTable extends Migration {
 			$table->decimal('sifra_oblike_studija', 1, 0)->index('FK_Relationship_23');
 			$table->decimal('sifra_studijskega_programa', 7, 0)->nullable()->index('FK_Relationship_19');
 			$table->decimal('sifra_nacina_studija', 1, 0)->index('FK_Relationship_17');
+            $table->decimal('sifra_vrste_studija', 5, 0)->index('FK_Vrste_Studija');
 			$table->decimal('sifra_vrste_vpisa', 2, 0)->index('FK_Relationship_16');
 			$table->decimal('sifra_letnika', 1, 0)->index('FK_Relationship_18');
+            $table->string('zavod', 30)->nullable();
+            $table->string('kraj_izvajanja', 30)->nullable();
 			$table->boolean('zeton');
 			$table->boolean('zeton_porabljen');
 			$table->boolean('vpis_potrjen');

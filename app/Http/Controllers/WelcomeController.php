@@ -30,8 +30,12 @@ class WelcomeController extends Controller {
 	 */
 	public function index()
 	{
-        return "Hello TPO group19 to laravel";
-		//return view('welcome');
+		return view('signin');
 	}
+
+    public function contact()
+    {
+        return 'Contact me';
+    }
 
 }

@@ -1,16 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Bojan
- * Date: 06/04/2015
- * Time: 15:47
- */
+<?php namespace App;
 
-namespace App;
 use Illuminate\Database\Eloquent\Model;
 
+class Student extends Model {
 
-class student extends Model {
     protected $table = 'student';
     protected $primaryKey = 'vpisna_stevilka';
     public $timestamps = false;
@@ -18,4 +11,4 @@ class student extends Model {
     protected $guarded = ['*'];
     protected $hidden = [''];
 
-} 
+}

@@ -1,19 +1,14 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Bojan
- * Date: 06/04/2015
- * Time: 16:30
- */
+<?php namespace App;
 
-namespace App;
 use Illuminate\Database\Eloquent\Model;
 
-class vpis extends Model {
+class Vpis extends Model {
+
     protected $table = 'vpis';
-    protected $primaryKey = array('vpisna_stevilka','sifra_studijskega_leta');
+    protected $primaryKey = array('vpisna_stevilka','sifra_studijskega_programa');
     public $timestamps = false;
     protected $fillable = [''];
     protected $guarded = ['*'];
+    protected $hidden = [''];
 
 }

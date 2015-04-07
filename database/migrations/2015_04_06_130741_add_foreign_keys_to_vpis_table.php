@@ -21,7 +21,8 @@ class AddForeignKeysToVpisTable extends Migration {
 			$table->foreign('sifra_studijskega_programa', 'FK_Relationship_19')->references('sifra_studijskega_programa')->on('studijski_program')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 			$table->foreign('sifra_oblike_studija', 'FK_Relationship_23')->references('sifra_oblike_studija')->on('oblika_studija')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 			$table->foreign('sifra_studijskega_leta', 'FK_Relationship_27')->references('sifra_studijskega_leta')->on('studijsko_leto')->onUpdate('RESTRICT')->onDelete('RESTRICT');
-		});
+		    $table->foreign('sifra_vrste_studija', 'FK_Vrste_Studija')->references('sifra_vrste_studija')->on('vrsta_studija')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+        });
 	}
 
 
@@ -41,6 +42,7 @@ class AddForeignKeysToVpisTable extends Migration {
 			$table->dropForeign('FK_Relationship_19');
 			$table->dropForeign('FK_Relationship_23');
 			$table->dropForeign('FK_Relationship_27');
+            $table->dropForeign('FK_Vrste_Studija');
 		});
 	}
 

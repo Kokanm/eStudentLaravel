@@ -23,12 +23,14 @@ class CreateStudentTable extends Migration {
 			$table->decimal('sifra_obcine_stalno', 3, 0)->index('FK_obcina_stalno');
 			$table->decimal('sifra_drzave_stalno', 3, 0)->index('FK_drzava_stalno');
 			$table->string('naslov_zacasno', 30)->nullable();
+            $table->string('naslov_vrocanja', 30)->nullable();
 			$table->decimal('postna_stevilka_zacasno', 4, 0)->nullable()->index('FK_posta_zacasno');
 			$table->decimal('sifra_obcine_zacasno', 3, 0)->nullable()->index('FK_obcina_zacasno');
 			$table->decimal('sifra_drzave_zacasno', 3, 0)->nullable()->index('FK_drzava_zacasno');
 			$table->decimal('davcna_stevilka', 8, 0)->nullable();
 			$table->decimal('emso', 13, 0)->nullable();
 			$table->date('datum_rojstva');
+            $table->string('obcina_rojstva', 30)->nullable();
 			$table->string('kraj_rojstva', 30);
 			$table->decimal('sifra_drzave_rojstva', 3, 0)->index('FK_drzava_rojstva');
 			$table->decimal('sifra_drzave_drzavljanstva', 3, 0)->index('FK_drzavljanstvo');

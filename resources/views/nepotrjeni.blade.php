@@ -7,17 +7,15 @@
                 <th>Ime</th>
                 <th>Priimek</th>
                 <th>Vpisna stevilka</th>
-                <th>E-mail</th>
-                <th>Tiskaj</th>
+                <th>Potrdi vpisa</th>
             </tr>
-            @foreach($students as $row)
+            @foreach($studenti[0] as $row)
                 <tr>
                     <td>{{ $row->ime_studenta }}</td>
                     <td>{{ $row->priimek_studenta }}</td>
                     <td>{{ $row->vpisna_stevilka }}</td>
-                    <td>{{ $row->email_studenta }}</td>
-                    {!! Form::open(array('action' => array('IzpisVpisnegaListaController@pregled', $row->vpisna_stevilka))) !!}
-                        <td>{!! Form::submit('Tiskaj', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                    {!! Form::open(array('action' => array('IzpisVpisnegaListaController@vpisnilist', $row->vpisna_stevilka))) !!}
+                        <td>{!! Form::submit('Potrdi', ['class' => 'btn btn-success btn-xs']) !!}</td>
                     {!! Form::close() !!}
                 </tr>
             @endforeach

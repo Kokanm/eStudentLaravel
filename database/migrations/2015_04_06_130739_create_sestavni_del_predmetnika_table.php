@@ -14,7 +14,7 @@ class CreateSestavniDelPredmetnikaTable extends Migration {
 	{
 		Schema::create('sestavni_del_predmetnika', function(Blueprint $table)
 		{
-			$table->decimal('sifra_sestavnega_dela', 1, 0)->primary();
+			$table->decimal('sifra_sestavnega_dela', 2, 0)->primary();
 			$table->string('opis_sestavnega_dela', 50);
 		});
 	}

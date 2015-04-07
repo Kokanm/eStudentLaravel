@@ -1,16 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Bojan
- * Date: 06/04/2015
- * Time: 16:08
- */
+<?php namespace App;
 
-namespace App;
 use Illuminate\Database\Eloquent\Model;
 
+class Posta extends Model {
 
-class posta extends Model {
     protected $table = 'posta';
     protected $primaryKey = 'postna_stevilka';
     public $timestamps = false;

@@ -17,8 +17,8 @@ class CreatePredmetStudijskegaProgramaTable extends Migration {
 			$table->decimal('sifra_predmeta', 5, 0);
 			$table->decimal('sifra_studijskega_programa', 7, 0)->index('FK_Relationship_11');
 			$table->decimal('sifra_letnika', 1, 0)->index('FK_Relationship_13');
-			$table->decimal('sifra_sestavnega_dela', 1, 0)->nullable()->index('FK_Relationship_12');
-			$table->primary(['sifra_predmeta','sifra_studijskega_programa','sifra_letnika'],'PK_predmet_studijskega_programa');
+			$table->decimal('sifra_sestavnega_dela', 2, 0)->nullable()->index('FK_Relationship_12');
+			$table->primary(array('sifra_predmeta','sifra_studijskega_programa','sifra_letnika'),'PK_predmet_studijskega_programa');
 		});
 	}
 

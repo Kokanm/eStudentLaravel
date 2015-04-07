@@ -15,6 +15,7 @@ class CreatePredmetTable extends Migration {
 		Schema::create('predmet', function(Blueprint $table)
 		{
 			$table->decimal('sifra_predmeta', 5, 0)->primary();
+            $table->decimal('stevilo_KT', 2, 0);
 			$table->string('naziv_predmeta', 50);
 		});
 	}

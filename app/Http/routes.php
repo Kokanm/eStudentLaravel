@@ -11,11 +11,24 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::get('/', function(){
+    return View::make('home');
+});
 
-Route::get('home', 'HomeController@index');
+Route::get('find', function(){
+    return View::make('findstudent');
+});
 
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+Route::post('find', 'StudentController@search');
+
+Route::get('vpis', 'VpisniListController@select');
+
+Route::post('vpis', 'VpisniListController@vpisi');
+
+Route::get('potrdi', 'PotrditevVpisaController@nepotrjeni');
+
+Route::post('pregled/{vpisna}', 'IzpisVpisnegaListaController@pregled');
+
+Route::post('potrdi/{vpisna}', 'PotrditevVpisaController@potrdi');
+
+Route::post('izpis/{vpisna}', 'IzpisVpisnegaListaController@vpisnilist');

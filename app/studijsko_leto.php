@@ -1,16 +1,9 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Bojan
- * Date: 06/04/2015
- * Time: 16:42
- */
+<?php namespace App;
 
-namespace App;
 use Illuminate\Database\Eloquent\Model;
 
+class Studijsko_leto extends Model {
 
-class studijsko_leto  extends Model {
     protected $table = 'studijsko_let';
     protected $primaryKey = 'sifra_studijskega_leta';
     public $timestamps = false;
