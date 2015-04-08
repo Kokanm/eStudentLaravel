@@ -101,6 +101,8 @@ class IzbirniPredmetiController extends Controller {
             }
         }
 
+        return view('home');
     }
+
 
 }
