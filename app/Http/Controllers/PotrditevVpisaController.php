@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 
 use App\Student;
 use App\Vpis;
+use App\Letnik;
+use App\Nacin_studija;
+use App\Studijski_program;
 use Illuminate\Http\Request;
 
 class PotrditevVpisaController extends Controller {
@@ -26,8 +29,20 @@ class PotrditevVpisaController extends Controller {
         }
     }
 
-	public function potrdi($vpisna){
-        echo $vpisna;
+	public function potrdi($vs){
+        $student = Student::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+
+        $vse['vpisnastevilka'] = $vs;
+        $vse['priimekime'] = $student[0]->priimek_studenta . ', ' . $student[0]->ime_studenta;
+        $vse['datum'] = $student[0]->datum_rojstva;
+        $vse['kraj'] = $student[0]->kraj_rojstva;
+        $vse['letnik'] = Letnik::where('sifra_letnika', $vpis[0]->sifra_letnika)->pluck('stevilka_letnika');
+        $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');
+        $vse['program'] = Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
+        Vpis::where('vpisna_stevilka', $vs)->update(['vpis_potrjen'=>1]);
+
+        return view('potrdiloovpisu', ['vse'=>$vse]);
     }
 
     public function natisni(){

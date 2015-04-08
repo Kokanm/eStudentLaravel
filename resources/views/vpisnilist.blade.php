@@ -134,6 +134,7 @@
             </div>
             <br />
 
+            <!--
             <div class="row">
                 <div class="col-md-7">
                     <div class="form-group-sm">
@@ -143,8 +144,15 @@
                 </div>
             </div>
             <br />
+            -->
 
             <div class="row">
+                <div class="col-md-3 col-xs-4">
+                    <div class="form-group-sm">
+                        {!! Form::label('zavod','Zavod') !!}
+                        {!! Form::text('zavod', null, ['class' => 'form-control']) !!}
+                    </div>
+                </div>
                 <div class="col-md-3 col-xs-4">
                     <div class="form-group-sm">
                         {!! Form::label('krajizvajanja','Kraj izvajanja') !!}
@@ -191,7 +199,7 @@
                 <div class="col-md-7">
                     <div class="form-group-sm">
                         {!! Form::label('vrstastudija','Vrsta študija') !!}
-                        {!! Form::text('vrstastudija', null, ['class' => 'form-control']) !!}
+                        {!! Form::select('vrstastudija',$vrste_studija, null, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -223,8 +231,8 @@
                 <div class="col-md-10">
                     <div class="form-inline">
                         <div class="form-group-sm">
-                            {!! Form::label('letoprvegavpisa','Študijsko leto prvega vpisa v ta študijski program') !!}
-                            {!! Form::text('letoprvegavpisa', null, ['class' => 'form-control']) !!}
+                            <p>Študijsko leto prvega vpisa v ta študijski program</p>
+                            {!! date('Y')."/".(date('Y')+1) !!}
                         </div>
                     </div>
                 </div>
@@ -270,17 +278,21 @@
             </div>
         </div>
         <br />
+        -->
 
         <div class="row">
-            <div class="col-md-2 col-xs-3">
+            <div class="col-md-11 col-xs-3">
                 <div class="form-group-sm">
-                    {!! Form::label('datumoddaje','Datum oddaje') !!}
-                    {!! Form::text('datumoddaje', null, ['class' => 'form-control']) !!}
+                    Datum oddaje
+                    {!! date('d.m.Y') !!}
                 </div>
+            </div>
+            <div class="col-md-1">
+                {!! Form::submit('Naprej') !!}
             </div>
         </div>
         <br />
-        -->
+
 
         <!--
         <h4>PRILOGA 2: PREDHODNO DOSEŽENA IZOBRAZBA</h4>
@@ -394,7 +406,7 @@
         </div>
         <br />
         -->
-        {!! Form::submit('Naprej') !!}
+
     {!! Form::close() !!}
 </div>
 @endsection

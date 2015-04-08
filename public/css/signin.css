@@ -1,4 +1,35 @@
 body {
-    min-height: 2000px;
     padding-top: 70px;
 }
+
+.potrdilo{
+    float: left;
+}
+
+.motrdilo{
+    float: left;
+    margin-top: 110px;
+    border-left: 1px solid #000000;
+    padding-left: 10px;
+    font-size: medium;
+}
+
+.motrdilo p{
+    border-bottom: 1px solid black;
+}
+
+.potrdilo p{
+    font-size: medium;
+    border-bottom: 1px solid black;
+}
+
+.montainer {
+    margin-top: 1100px;
+    padding-top: 80px;
+    display: none;
+}
+
+@media print {
+    .montainer {display: block;}
+}
+

@@ -32,3 +32,5 @@ Route::post('pregled/{vpisna}', 'IzpisVpisnegaListaController@pregled');
 Route::post('potrdi/{vpisna}', 'PotrditevVpisaController@potrdi');
 
 Route::post('izpis/{vpisna}', 'IzpisVpisnegaListaController@vpisnilist');
+
+Route::post('vpisi/{vpisna}', 'IzbirniPredmetiController@izberi');

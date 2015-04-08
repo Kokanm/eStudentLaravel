@@ -29,7 +29,7 @@ class CreateVpisTable extends Migration {
 			$table->boolean('vpis_potrjen');
 			$table->string('modul1', 30)->nullable();
 			$table->string('modul2', 30)->nullable();
-			$table->primary(['vpisna_stevilka','sifra_studijskega_leta']);
+			$table->primary(array('vpisna_stevilka','sifra_studijskega_leta'));
 		});
 	}
 

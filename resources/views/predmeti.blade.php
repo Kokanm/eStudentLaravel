@@ -21,21 +21,103 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($predmeti as $pre)
+                    @for($i=0; $i<count($predmeti); $i++)
                         <tr>
-                            <td>Markoski</td>
-                            <td>{{ $pre }}</td>
-                            <td>6</td>
+                            <td>{{ $predmeti[$i][0]. ', '. $predmeti[$i][1] }}</td>
+                            <td>{{ $predmeti[$i][2] }}</td>
+                            <td>{{ $predmeti[$i][3] }}</td>
                         </tr>
-                    @endforeach
+                    @endfor
                         <tr>
                             <td></td>
                             <td></td>
-                            <td>60</td>
+                            <td>{{ $sum }}</td>
                         </tr>
                 </tbody>
             </table>
             <br />
+            <br />
+            @if(!empty($prosti))
+            {!! Form::open(array('action' => array('IzbirniPredmetiController@izberi', $vpisna))) !!}
+                @if(empty($moduli))
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti2', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti2', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('strokovni', 'Strokovno izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('strokovni', $strokovni , count($strokovni)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-offset-4 col-md-2">
+                            {!! Form::submit('Oddaj') !!}
+                        </div>
+                    </div>
+                @else
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('modul', 'Modul 1: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('modul', $moduli , count($moduli)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('modul2', 'Modul 2: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('modul2', $moduli , count($moduli)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti2', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti2', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-offset-4 col-md-2">
+                            {!! Form::submit('Oddaj') !!}
+                        </div>
+                    </div>
+                @endif
+            {!! Form::close() !!}
+
+            @else
+                <div class="col-md-offset-10 col-md-2">
+                    {!! Form::submit('Oddaj') !!}
+                </div>
+            @endif
+            <br />
+            <hr />
 
 </div>
 @endsection

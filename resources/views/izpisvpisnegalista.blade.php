@@ -117,10 +117,6 @@
     <br />
     <br />
     <br />
-    <br />
-    <br />
-    <br />
-    <br />
 
     <h3>PODATKI O VPISU</h3>
     <hr />
@@ -190,14 +186,53 @@
     <br />
     <hr />
 
-    @if(array_key_exists('potrdi', $vse))
-       {!! Form::open(array('action' => array('PotrditevVpisaController@potrdi', $vse['vpisnastevilka']))) !!}
-            {!! Form::submit('Potrdi', ['class' => 'btn btn-primary']) !!}
-       {!! Form::close() !!}
-    @else
-       {!! Form::button('Tiskaj', ['class' => 'btn btn-info buttonClass', 'onClick' => 'window.print()']) !!}
-    @endif
+    <h4>PRILOGA 1: PREDMETNIK</h4>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="form-group-sm">
+                <b>Študijski program</b>
+                <p>{!! $studijski_program !!}</p>
+            </div>
+        </div>
+    </div>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Učitelj</th>
+                <th>Učna enota</th>
+                <th>Število KT</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for($i=0; $i<count($predmeti); $i++)
+                <tr>
+                    <td>{{ $predmeti[$i][0]. ', '. $predmeti[$i][1] }}</td>
+                    <td>{{ $predmeti[$i][2] }}</td>
+                    <td>{{ $predmeti[$i][3] }}</td>
+                </tr>
+            @endfor
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>{{ $sum }}</td>
+                </tr>
+        </tbody>
+    </table>
+    <br />
 
+    <div class="col-md-offset-10 col-md-2">
+        @if(array_key_exists('potrdi', $vse))
+           {!! Form::open(array('action' => array('PotrditevVpisaController@potrdi', $vse['vpisnastevilka']))) !!}
+                {!! Form::submit('Potrdi', ['class' => 'btn btn-primary']) !!}
+           {!! Form::close() !!}
+        @else
+           {!! Form::button('Tiskaj', ['class' => 'btn btn-info buttonClass', 'onClick' => 'window.print()']) !!}
+        @endif
+    </div>
+
+    <br />
+    <hr />
 
 </div>
 @endsection
