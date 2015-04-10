@@ -15,7 +15,7 @@ class CreateStudentTable extends Migration {
 		Schema::create('student', function(Blueprint $table)
 		{
 			$table->decimal('vpisna_stevilka', 8, 0)->primary();
-			$table->string('uporabnisko_ime_kandidata', 30)->nullable()->index('FK_Relationship_29');
+            $table->string('email_kandidata', 60)->nullable()->index('FK_Relationship_29');
 			$table->string('ime_studenta', 30);
 			$table->string('priimek_studenta', 30);
 			$table->string('naslov_stalno', 30);

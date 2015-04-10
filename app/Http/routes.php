@@ -11,9 +11,17 @@
 |
 */
 
-Route::get('/', function(){
-    return View::make('home');
-});
+Route::get('/', 'WelcomeController@index');
+
+Route::get('home', 'HomeController@index');
+
+Route::controllers([
+    'auth' => 'Auth\AuthController',
+    'password' => 'Auth\PasswordController',
+]);
+
+Route::get('referent/uvoz_podatkov', 'ReferentController@izberi');
+Route::post('referent/uvoz_podatkov', 'ReferentController@uvozi');
 
 Route::get('find', function(){
     return View::make('findstudent');

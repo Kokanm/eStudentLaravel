@@ -22,7 +22,7 @@ class AddForeignKeysToStudentTable extends Migration {
 			$table->foreign('sifra_obcine_stalno', 'FK_obcina_stalno')->references('sifra_obcine')->on('obcina')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 			$table->foreign('sifra_obcine_zacasno', 'FK_obcina_zacasno')->references('sifra_obcine')->on('obcina')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 			$table->foreign('postna_stevilka_stalno', 'FK_posta_stalno')->references('postna_stevilka')->on('posta')->onUpdate('RESTRICT')->onDelete('RESTRICT');
-			$table->foreign('uporabnisko_ime_kandidata', 'FK_Relationship_29')->references('uporabnisko_ime_kandidata')->on('kandidat')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+			$table->foreign('email_kandidata', 'FK_Relationship_29')->references('email_kandidata')->on('kandidat')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 		});
 	}
 
