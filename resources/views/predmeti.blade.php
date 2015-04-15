@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('prosti', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('prosti', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('prosti2', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti2', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('prosti2', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('strokovni', 'Strokovno izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('strokovni', $strokovni , count($strokovni)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('strokovni', $strokovni , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                         <div class="col-md-offset-4 col-md-2">
@@ -74,7 +74,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('modul', 'Modul 1: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('modul', $moduli , count($moduli)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('modul', $moduli , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('modul2', 'Modul 2: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('modul2', $moduli , count($moduli)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('modul2', $moduli , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('prosti', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('prosti', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 {!! Form::label('prosti2', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti2', $prosti , count($prosti)-1, ['class' => 'form-control']) !!}
+                                {!! Form::select('prosti2', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                         <div class="col-md-offset-4 col-md-2">
@@ -113,7 +113,7 @@
 
             @else
                 <div class="col-md-offset-10 col-md-2">
-                    {!! Form::submit('Oddaj') !!}
+                    {!! Form::submit('Oddaj', ['class'=>'btn btn-default']) !!}
                 </div>
             @endif
             <br />

@@ -10,6 +10,8 @@ use Request;
 use \App\Kandidat;
 use \App\User;
 
+
+
 class ReferentController extends Controller {
 
     public function izberi()
@@ -19,10 +21,12 @@ class ReferentController extends Controller {
         return view('referent.uvoz_podatkov', compact('uvozeno'));
     }
 
+    //public function uvozi($request, Exception $e)
     public function uvozi()
     {
-        $uvozeno = 'Kandidati so bili uspešlo uvoženi!<br/><br/>';
-        $datoteka = Request::get('datoteka');
+        $uvozeno = 'Kandidati, ki so bili uspešlo uvoženi:<br/>';
+        //$datoteka = Request::get('datoteka');
+        $datoteka = Request::file('datoteka');
 
         /*$myfile = fopen($datoteka, "r") or die("Unable to open file!");
         $prebrano = fread($myfile,filesize($datoteka));
@@ -39,13 +43,20 @@ class ReferentController extends Controller {
         fclose($myfile);
         $uvozeno = $studentArray[0][0];*/
 
+        /*if ($e) {
+            $uvozeno = 'Prišlo je do napake!<br/><br/>';
+            return view('referent.uvoz_podatkov', compact('uvozeno'));
+        }*/
         $myfile = fopen($datoteka, "r") or die("Unable to open file!");
-        for ($i = 0; $i < (filesize($datoteka)/127); $i++) {
+        //for ($i = 0; $i < (filesize($datoteka)/128); $i++) {
+        for ($i = 0; $i < (filesize($datoteka)/129); $i++) {
             $kandidat = new Kandidat;
             $kandidat->ime_kandidata = trim(fread($myfile, 30));
             $kandidat->priimek_kandidata = trim(fread($myfile, 30));
             $kandidat->sifra_studijskega_programa = trim(fread($myfile, 7));
             $kandidat->email_kandidata = trim(fread($myfile, 60));
+            fread($myfile, 2);  //nova vrstica cr lf
+            //fread($myfile, 1);  //če je za novo vrstico samo en znak, potem preberi en znak in popravi tudi for zanko
             $kandidat->save();
 
             $user = new User;
@@ -55,8 +66,10 @@ class ReferentController extends Controller {
             $user->password = bcrypt($kandidat->ime_kandidata);
             $user->type = 0;
             $user->save();
+            $uvozeno .= $kandidat->ime_kandidata . ' ' . $kandidat->priimek_kandidata . '<br/>';
         }
         fclose($myfile);
+        $uvozeno .= '<br/>';
 
         return view('referent.uvoz_podatkov', compact('uvozeno'));
     }

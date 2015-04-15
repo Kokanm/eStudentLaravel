@@ -24,14 +24,20 @@
 					@endif
 
 
-					{!! Form::open(['url' => 'referent/uvoz_podatkov']) !!}
+					{!! Form::open(array('url' => 'referent/uvoz_podatkov', 'files' => true)) !!}
 						<div class="form-group">
-							{!! Form::label('datoteka', 'Lokacija datoteke:') !!}
-							{!! Form::text('datoteka', null, ['class' => 'form-control']) !!}
+							{!! Form::label('datoteka', 'Izberite datoteko za uvoz:') !!}
+							{!! Form::file('datoteka', null, ['class' => 'form-control']) !!}
+							<!--{!! Form::text('datoteka', null, ['class' => 'form-control']) !!}-->
 						</div>
 
+						<br/>
 						<div class="form-group">
-							{!! Form::submit('Uvozi', ['class' => 'btn btn-primary form-control']) !!}
+							<div class="col-md-2 col-md-offset-0">
+							
+								{!! Form::submit('Uvozi', ['class' => 'btn btn-primary form-control']) !!}
+							
+							</div>
 						</div>
 					{!! Form::close() !!}
 				</div>

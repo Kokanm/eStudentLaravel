@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Student;
+use App\User;
 use App\Vpis;
 use App\Letnik;
 use App\Nacin_studija;
@@ -41,6 +42,7 @@ class PotrditevVpisaController extends Controller {
         $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');
         $vse['program'] = Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
         Vpis::where('vpisna_stevilka', $vs)->update(['vpis_potrjen'=>1]);
+        User::where('email', $student[0]->email)->update(['type'=>1]);
 
         return view('potrdiloovpisu', ['vse'=>$vse]);
     }
