@@ -116,7 +116,7 @@ class IzpisVpisnegaListaController extends Controller {
         $vse['datum'] = $student[0]->datum_rojstva;
         $vse['kraj'] = $student[0]->kraj_rojstva;
         $vse['drzava'] = Drzava::where('sifra_drzave', $student[0]->sifra_drzave_rojstva)->pluck('naziv_drzave') . ', ' . $vse['kraj'];
-        $vse['drzavljanstvo'] = Drzava::where('sifra_drzave', $student[0]->sifra_drzave_drzavljanstvo)->pluck('naziv_drzave');
+        $vse['drzavljanstvo'] = Drzava::where('sifra_drzave', $student[0]->sifra_drzave_drzavljanstva)->pluck('naziv_drzave');
         if($student[0]->spol == 'M')
             $vse['spol'] = "Moški";
         else

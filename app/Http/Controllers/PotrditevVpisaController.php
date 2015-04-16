@@ -9,6 +9,7 @@ use App\Vpis;
 use App\Letnik;
 use App\Nacin_studija;
 use App\Studijski_program;
+use App\Vpisan_predmet;
 use Illuminate\Http\Request;
 
 class PotrditevVpisaController extends Controller {

@@ -112,9 +112,11 @@
             {!! Form::close() !!}
 
             @else
+                {!! Form::open(array('url'=>'/')) !!}
                 <div class="col-md-offset-10 col-md-2">
                     {!! Form::submit('Oddaj', ['class'=>'btn btn-default']) !!}
                 </div>
+                {!! Form::close() !!}
             @endif
             <br />
             <hr />

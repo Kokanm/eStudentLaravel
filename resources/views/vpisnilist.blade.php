@@ -427,6 +427,7 @@
         </div>
         <br />
         -->
+        {!! Form::close() !!}
     @elseif($tip==1)
     <h2>VPISNI LIST {!! date('Y')."/".(date('Y')+1) !!}</h2>
     <h3>za študente</h3>
@@ -454,25 +455,25 @@
             <div class="col-md-2 col-xs-4">
                 <div class="form-group-sm">
                     {!! Form::label('datumrojstva','Datum rojstva') !!}
-                    {!! Form::text('datumrojstva', $stud->datum_rojstva, ['class' => 'form-control']) !!}
+                    {!! Form::text('datumrojstva', date("d.m.Y", strtotime($stud->datum_rojstva)), ['class' => 'form-control']) !!}
                 </div>
             </div>
             <div class="col-md-3 col-xs-6">
                 <div class="form-group-sm">
                     {!! Form::label('drzavarojstva','Država rojstva') !!}
-                    {!! Form::select('drzavarojstva', $drzave, $, ['class' => 'form-control']) !!}
+                    {!! Form::select('drzavarojstva', $drzave, $drz, ['class' => 'form-control']) !!}
                 </div>
             </div>
             <div class="col-md-2 col-xs-4">
                 <div class="form-group-sm">
                     {!! Form::label('krajrojstva','Občina rojstva') !!}
-                    {!! Form::select('krajrojstva', $obcine, null, ['class' => 'form-control']) !!}
+                    {!! Form::select('krajrojstva', $obcine, $obc, ['class' => 'form-control']) !!}
                 </div>
             </div>
             <div class="col-md-3 col-xs-6">
                 <div class="form-group-sm">
                     {!! Form::label('drzavljanstvo','Državljanstvo') !!}
-                    {!! Form::select('drzavljanstvo', $drzave, null, ['class' => 'form-control']) !!}
+                    {!! Form::select('drzavljanstvo', $drzave, $drz2, ['class' => 'form-control']) !!}
                 </div>
             </div>
         </div>
@@ -532,9 +533,9 @@
                     <td class="col-md-2 col-xs-3">{!! Form::label('stalno','Stalno bivališče', ['style' => 'font-weight:bold']) !!}</td>
                     <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje') !!}</td>
                     <td class="col-md-3 col-xs-4">{!! Form::text('naslovstalno', $stud->naslov_stalno, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::text('posta', $stud, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, 0, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::text('posta', $stud->postna_stevilka_stalno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, $drzs, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, $obcs, ['class' => 'form-control']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-md-2 col-xs-3">{!! Form::label('zacasno','Začasno bivališče', ['style' => 'font-weight:bold']) !!}</td>
@@ -560,7 +561,7 @@
                 <div class="col-md-7">
                     <div class="form-group">
                        {!! Form::label('studiskiprogram','Študijski program', ['style' => 'font-weight: bold']) !!}
-                       {!! Form::select('studiskiprogram', $studijski_programi, null, ['class' => 'form-control']) !!}
+                       {!! Form::select('studiskiprogram', $studijski_programi, $stdpro, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -570,13 +571,13 @@
                 <div class="col-md-3 col-xs-4">
                     <div class="form-group-sm">
                         {!! Form::label('zavod','Zavod') !!}
-                        {!! Form::text('zavod', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('zavod', $zavod, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-3 col-xs-4">
                     <div class="form-group-sm">
                         {!! Form::label('krajizvajanja','Kraj izvajanja') !!}
-                        {!! Form::text('krajizvajanja', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('krajizvajanja', $kraj, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -586,7 +587,7 @@
                 <div class="col-md-7">
                     <div class="form-group-sm">
                         {!! Form::label('vrstastudija','Vrsta študija') !!}
-                        {!! Form::select('vrstastudija',$vrste_studija, null, ['class' => 'form-control']) !!}
+                        {!! Form::select('vrstastudija',$vrste_studija, $stdvrs, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -596,7 +597,7 @@
                 <div class="col-md-3 col-xs-5">
                     <div class="form-group-sm">
                         {!! Form::label('vrstavpisa','Vrsta vpisa') !!}
-                        {!! Form::select('vrstavpisa', $vrste_vpisa ,null, ['class' => 'form-control']) !!}
+                        {!! Form::select('vrstavpisa', $vrste_vpisa , $vpvrs, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-2 col-xs-3">
@@ -608,13 +609,13 @@
                 <div class="col-md-2 col-xs-4">
                     <div class="form-group-sm">
                         {!! Form::label('nacin','Način študija') !!}
-                        {!! Form::select('nacin',$nacin ,null, ['class' => 'form-control']) !!}
+                        {!! Form::select('nacin',$nacin ,$stdnac, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-2 col-xs-4">
                     <div class="form-group-sm">
                         {!! Form::label('oblika','Oblika študija') !!}
-                        {!! Form::select('oblika',$oblik , null, ['class' => 'form-control']) !!}
+                        {!! Form::select('oblika',$oblik , $stdobl, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -625,7 +626,7 @@
                     <div class="form-inline">
                         <div class="form-group-sm">
                             <p>Študijsko leto prvega vpisa v ta študijski program</p>
-                            {!! date('Y')."/".(date('Y')+1) !!}
+                            {!! $leto !!}
                         </div>
                     </div>
                 </div>
@@ -645,9 +646,9 @@
             </div>
         </div>
         <br />
-
+    {!! Form::close() !!}
     @endif
 
-    {!! Form::close() !!}
+
 </div>
 @endsection
