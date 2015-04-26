@@ -40,6 +40,7 @@
             @if(!empty($prosti))
             {!! Form::open(array('action' => array('IzbirniPredmetiController@izberi', $vpisna))) !!}
                 @if(empty($moduli))
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-inline">
@@ -104,6 +105,24 @@
                                 {!! Form::select('prosti2', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti3', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti3', $prosti , 0, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-inline">
+                                {!! Form::label('prosti4', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
+                                {!! Form::select('prosti4', $prosti , 0, ['class' => 'form-control']) !!}
+                            </div>
+                        </div>
                         <div class="col-md-offset-4 col-md-2">
                             {!! Form::submit('Oddaj') !!}
                         </div>
@@ -112,11 +131,9 @@
             {!! Form::close() !!}
 
             @else
-                {!! Form::open(array('url'=>'/')) !!}
-                <div class="col-md-offset-10 col-md-2">
-                    {!! Form::submit('Oddaj', ['class'=>'btn btn-default']) !!}
-                </div>
-                {!! Form::close() !!}
+            <div class="col-md-offset-10 col-md-2">
+                <a href="{{ url('/') }}">{!! Form::button('Oddaj', ['class'=>'btn btn-default']) !!}</a>
+            </div>
             @endif
             <br />
             <hr />

@@ -42,8 +42,10 @@ class HomeController extends Controller {
             return view('referent.prva', compact('email'));
         }
 
-        //return view('home', compact('email'));
-        //return view('home');
+        if(\Auth::user()->type==4)
+        {
+            return view('skrbnik.prva', compact('email'));
+        }
     }
 
 }

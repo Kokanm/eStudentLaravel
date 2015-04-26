@@ -277,9 +277,9 @@ class VpisniListController extends Controller {
                 if(array_key_exists('krajizvajanja', $list)){
                     $vp->kraj_izvajanja = $list['krajizvajanja'];
                 }
-                $letnik = Letnik::lists('sifra_letnika');
+
                 if ($list['letnikdodatno'][0] != 'd') {
-                    $vp->sifra_letnika = $letnik($list['letnikdodatno']);
+                    $vp->sifra_letnika = $list['letnikdodatno'];
                 }else
                     $vp->sifra_letnika = 7;
 

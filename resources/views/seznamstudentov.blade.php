@@ -16,7 +16,7 @@
                     <td>{{ $row->priimek_studenta }}</td>
                     <td>{{ $row->vpisna_stevilka }}</td>
                     <td>{{ $row->email_studenta }}</td>
-                    {!! Form::open(array('action' => array('IzpisVpisnegaListaController@pregled', $row->vpisna_stevilka))) !!}
+                    {!! Form::open(array('action' => array('TiskajController@izpis', $row->vpisna_stevilka))) !!}
                         <td>{!! Form::submit('Tiskaj', ['class' => 'btn btn-success btn-xs']) !!}</td>
                     {!! Form::close() !!}
                 </tr>

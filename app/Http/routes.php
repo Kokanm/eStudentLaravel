@@ -20,25 +20,32 @@ Route::controllers([
     'password' => 'Auth\PasswordController',
 ]);
 
-Route::get('referent/uvoz_podatkov', 'ReferentController@izberi');
-Route::post('referent/uvoz_podatkov', 'ReferentController@uvozi');
+Route::get('referent/uvoz_podatkov', ['middleware' => 'referent', 'uses' => 'ReferentController@izberi']);
+Route::post('referent/uvoz_podatkov', ['middleware' => 'referent', 'uses' => 'ReferentController@uvozi']);
 
 Route::get('find', function(){
     return View::make('findstudent');
 });
 
-Route::post('find', 'StudentController@search');
+Route::get('dodajprofesor', ['middleware' => 'skrbnik', 'uses' => 'DodajanjeIzvajalcaController@lista']);
+Route::post('dodajprofesor', ['middleware' => 'skrbnik', 'uses' => 'DodajanjeIzvajalcaController@dodaj']);
 
-Route::get('vpis', 'VpisniListController@select');
+Route::post('find', ['middleware' => 'referent', 'uses' => 'StudentController@search']);
 
-Route::post('vpis', 'VpisniListController@vpisi');
+Route::get('vpis', ['middleware' => 'student', 'uses' => 'VpisniListController@select']);
 
-Route::get('potrdi', 'PotrditevVpisaController@nepotrjeni');
+Route::post('vpis', ['middleware' => 'student', 'uses' => 'VpisniListController@vpisi']);
 
-Route::post('pregled/{vpisna}', 'IzpisVpisnegaListaController@pregled');
+Route::get('potrdi', ['middleware' => 'referent', 'uses' => 'PotrditevVpisaController@nepotrjeni']);
 
-Route::post('potrdi/{vpisna}', 'PotrditevVpisaController@potrdi');
+Route::post('pregled/{vpisna}', ['middleware' => 'referent', 'uses' => 'IzpisVpisnegaListaController@pregled']);
 
-Route::post('izpis/{vpisna}', 'IzpisVpisnegaListaController@vpisnilist');
+Route::post('potrdi/{vpisna}', ['middleware' => 'referent', 'uses' => 'PotrditevVpisaController@potrdi']);
 
-Route::post('vpisi/{vpisna}', 'IzbirniPredmetiController@izberi');
+Route::post('natisni/{vpisna}', ['middleware' => 'referent', 'uses' => 'PotrditevVpisaController@natisni']);
+
+Route::post('izpis/{vpisna}', ['middleware' => 'referent', 'uses' => 'IzpisVpisnegaListaController@vpisnilist']);
+
+Route::post('vpisi/{vpisna}', ['middleware' => 'student', 'uses' => 'IzbirniPredmetiController@izberi']);
+
+Route::post('tisk/{vpisna}', ['middleware' => 'referent', 'uses' => 'TiskajController@izpis']);

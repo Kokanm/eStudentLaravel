@@ -48,7 +48,24 @@ class VpisniListRequest extends Request {
     public function messages()
     {
         return [
-
+            'vstevilka' => '',
+            'imepriimek' => '',
+            'datumrojstva' => '',
+            'drzavarojstva' => '',
+            'krajrojstva' => '',
+            'drzavljanstvo' => '',
+            'spol' => '',
+            'emso' => '',
+            'davcna' => '',
+            'email' => '',
+            'naslovstalno' => '',
+            'posta' => '',
+            'studiskiprogram' => '',
+            'vrstastudija' => '',
+            'vrstavpisa' => '',
+            'letnikdodatno' => '',
+            'nacin' => '',
+            'oblika' => ''
         ];
     }
 

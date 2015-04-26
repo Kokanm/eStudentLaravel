@@ -18,19 +18,26 @@ class IzbirniPredmetiController extends Controller {
         $vpisna['sifra_studijskega_programa'] = substr($vp, 10,7);
         $vpisna['sifra_letnika'] = substr($vp, 17,1);
 
-        $prosto_izbirni = Predmet_studijskega_programa::where('sifra_sestavnega_dela', '7')->lists('sifra_predmeta');
+        $prosto_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
+        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', '7')->lists('sifra_predmeta');
         $prosti = [];
         for ($i=0; $i < count($prosto_izbirni); $i++){
             $prosti[$i] = Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->pluck('naziv_predmeta'). " - ".Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->
                 pluck('stevilo_KT')." KT";
         }
+        if(!empty($prosti))
+            array_unshift($prosti, "");
 
-        $strokovno_izbirni = Predmet_studijskega_programa::where('sifra_sestavnega_dela', '6')->lists('sifra_predmeta');
+
+        $strokovno_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
+        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', '6')->lists('sifra_predmeta');
         $strokovni = [];
         for ($i=0; $i < count($strokovno_izbirni); $i++){
             $strokovni[$i] = Predmet::where('sifra_predmeta', $strokovno_izbirni[$i])->pluck('naziv_predmeta'). " - ".Predmet::where('sifra_predmeta', $strokovno_izbirni[$i])->
                 pluck('stevilo_KT')." KT";
         }
+        if(!empty($strokovni))
+            array_unshift($strokovni, "");
 
         if(array_key_exists('prosti', $list)){
             $pre = new Vpisan_predmet();
@@ -54,10 +61,32 @@ class IzbirniPredmetiController extends Controller {
             $pre->save();
         }
 
+        if(array_key_exists('prosti3', $list)){
+            $pre = new Vpisan_predmet();
+            $pre->vpisna_stevilka = $vpisna['vpisna'];
+            $pre->sifra_predmeta = $prosto_izbirni[$list['prosti3']];
+            $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
+            $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
+            $pre->sifra_letnika = $vpisna['sifra_letnika'];
+            $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
+            $pre->save();
+        }
+
+        if(array_key_exists('prosti4', $list)){
+            $pre = new Vpisan_predmet();
+            $pre->vpisna_stevilka = $vpisna['vpisna'];
+            $pre->sifra_predmeta = $prosto_izbirni[$list['prosti3']];
+            $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
+            $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
+            $pre->sifra_letnika = $vpisna['sifra_letnika'];
+            $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
+            $pre->save();
+        }
+
         if(array_key_exists('strokovni', $list)){
             $pre = new Vpisan_predmet();
             $pre->vpisna_stevilka = $vpisna['vpisna'];
-            $pre->sifra_predmeta = $prosto_izbirni[$list['strokovni']];
+            $pre->sifra_predmeta = $strokovno_izbirni[$list['strokovni']];
             $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
             $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
             $pre->sifra_letnika = $vpisna['sifra_letnika'];
