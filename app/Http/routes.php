@@ -27,8 +27,9 @@ Route::get('find', function(){
     return View::make('findstudent');
 });
 
-Route::get('dodajprofesor', ['middleware' => 'skrbnik', 'uses' => 'DodajanjeIzvajalcaController@lista']);
-Route::post('dodajprofesor', ['middleware' => 'skrbnik', 'uses' => 'DodajanjeIzvajalcaController@dodaj']);
+Route::get('najdiprofesor', ['middleware' => 'skrbnik', 'uses' => 'NajdiIzvajalcaController@lista']);
+Route::post('najdiprofesor', ['middleware' => 'skrbnik', 'uses' => 'NajdiIzvajalcaController@najdi']);
+Route::post('najdiprofesor/{stevilo}', ['middleware' => 'skrbnik', 'uses' => 'NajdiIzvajalcaController@dodaj']);
 
 Route::post('find', ['middleware' => 'referent', 'uses' => 'StudentController@search']);
 

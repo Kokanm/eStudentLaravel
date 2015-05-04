@@ -2,7 +2,7 @@
 
 @section('menu')
 <ul class="nav navbar-nav">
-	<li><a href="{{ url('dodajprofesor') }}">Dodaj izvajalca</a></li>
+	<li><a href="{{ url('najdiprofesor') }}">Dodaj izvajalca</a></li>
 	<li><a href="{{ url('find') }}">Iskanje študenta</a></li>
 	
 </ul>

@@ -30,7 +30,7 @@ class CreateStudentTable extends Migration {
 			$table->decimal('davcna_stevilka', 8, 0)->nullable();
 			$table->decimal('emso', 13, 0)->nullable();
 			$table->date('datum_rojstva');
-			$table->string('obcina_rojstva', 30)->nullable()->index('FK_kraj_rojstva');
+			$table->decimal('sifra_obcine_rojstva', 3, 0)->nullable()->index('FK_kraj_rojstva');
 			$table->decimal('sifra_drzave_rojstva', 3, 0)->index('FK_drzava_rojstva');
 			$table->decimal('sifra_drzave_drzavljanstva', 3, 0)->index('FK_drzavljanstvo');
 			$table->string('spol', 1);
