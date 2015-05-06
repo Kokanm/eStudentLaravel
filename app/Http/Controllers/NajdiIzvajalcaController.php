@@ -92,6 +92,7 @@ class NajdiIzvajalcaController extends Controller {
             $profesor[$i+1] = $prof[$i]->ime_profesorja." ".$prof[$i]->priimek_profesorja;
         }
         $profesor[""]="/";
+        asort($profesor);
 
         return view('dodajizvajalca', ['leto' => $leto, 'letnik' => $letnik, 'program' => $studijski_programi,
             'predmeti'=>$predmeti, 'izvPredmeti'=>$izvPredmeti, 'profesor'=>$profesor, 'pomos' => $pomos, 'stleto'=>$stleto,
@@ -107,6 +108,7 @@ class NajdiIzvajalcaController extends Controller {
             $profesor[$i+1] = $prof[$i]->ime_profesorja." ".$prof[$i]->priimek_profesorja;
         }
         $profesor[""]="/";
+        asort($profesor);
 
         for($i=0; $i<count(explode(" ",$izvedbe))-1; $i++) {
             $prof1 = Input::get('prof1' . $i);

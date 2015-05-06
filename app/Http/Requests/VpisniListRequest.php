@@ -35,7 +35,7 @@ class VpisniListRequest extends Request {
             'davcna' => 'size:8|regex:/(^[0-9]*$)/',
             'email' => 'required|email',
             'naslovstalno' => 'required',
-            'postastalno' => 'required|size:4|regex:/(^[0-9]*$)/',
+            'postastalno' => 'required',
             'studiskiprogram' => 'required',
             'vrstastudija' => 'required',
             'vrstavpisa' => 'required',
