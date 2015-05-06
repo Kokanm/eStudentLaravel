@@ -37,12 +37,13 @@ class PotrditevVpisaController extends Controller {
 
         $vse['vpisnastevilka'] = $vs;
         $vse['priimekime'] = $student[0]->priimek_studenta . ', ' . $student[0]->ime_studenta;
-        $vse['datum'] = $student[0]->datum_rojstva;
+        $vse['datum'] = date("d.m.Y", strtotime($student[0]->datum_rojstva));
         $vse['kraj'] = $student[0]->kraj_rojstva;
         $vse['letnik'] = Letnik::where('sifra_letnika', $vpis[0]->sifra_letnika)->pluck('stevilka_letnika');
         $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');
         $vse['program'] = Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
         Vpis::where('vpisna_stevilka', $vs)->update(['vpis_potrjen'=>1]);
+        Vpis::where('vpisna_stevilka', $vs)->update(['zeton_porabljen'=>0]);
         User::where('email', $student[0]->email_studenta)->update(['type'=>1]);
         $st = 5;
         return view('potrdiloovpisu', ['vse'=>$vse, 'st'=>$st]);
@@ -54,7 +55,7 @@ class PotrditevVpisaController extends Controller {
 
         $vse['vpisnastevilka'] = $vs;
         $vse['priimekime'] = $student[0]->priimek_studenta . ', ' . $student[0]->ime_studenta;
-        $vse['datum'] = $student[0]->datum_rojstva;
+        $vse['datum'] = date("d.m.Y", strtotime($student[0]->datum_rojstva));
         $vse['kraj'] = $student[0]->kraj_rojstva;
         $vse['letnik'] = Letnik::where('sifra_letnika', $vpis[0]->sifra_letnika)->pluck('stevilka_letnika');
         $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');

@@ -53,18 +53,18 @@ class VpisniListController extends Controller {
 
                 $std = new Student;
                 $std->vpisna_stevilka = $list["vstevilka"];
-                $std->ime_studenta = explode(" ", $list["imepriimek"])[0];
-                $std->priimek_studenta = explode(" ", $list["imepriimek"])[1];
+                $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
+                $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
                 $std->datum_rojstva = date("Y-m-d", strtotime($datum));
-                $std->obcina_rojstva = $obcine[$list["krajrojstva"] - 1];
+                $std->sifra_obcine_rojstva = Obcina::where('naziv_obcine', $obcine[$list['krajrojstva'] - 1])->pluck('sifra_obcine');
                 $std->sifra_drzave_rojstva = Drzava::where('naziv_drzave', $drzave[$list['drzavarojstva'] - 1])->pluck('sifra_drzave');
                 $std->sifra_drzave_drzavljanstva = Drzava::where('naziv_drzave', $drzave[$list['drzavljanstvo'] - 1])->pluck('sifra_drzave');
-                $std->spol = $list["spol"][0];
+                $std->spol = strtoupper($list["spol"])[0];
 
                 if (substr($datum, 0, 2) == substr($emso, 0, 2) && substr($datum, 3, 2) == substr($emso, 2, 2)
                     && substr($datum, 7, 3) == substr($emso, 4, 3) && substr($emso, 7, 2) > 49 && substr($emso, 7, 2) < 60
                 ) {
-                    if ($list["spol"][0] == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500) {
+                    if ($std->spol == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500) {
                         $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
                             $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
                             $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
@@ -76,7 +76,7 @@ class VpisniListController extends Controller {
                             return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
                         }
 
-                    } elseif ($list["spol"][0] == "Ž" && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000) {
+                    } elseif (($std->spol == "Z" || $std->spol == "Ž") && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000) {
                         $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
                             $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
                             $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
@@ -96,12 +96,28 @@ class VpisniListController extends Controller {
                 $std->davcna_stevilka = $list["davcna"];
                 $std->email_studenta = $list["email"];
                 $std->prenosni_telefon = $list["gsm"];
-                $std->postna_stevilka_stalno = $list['posta'];
+
+                $std->postna_stevilka_stalno = $list['postastalno'];
                 $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno'] - 1])->pluck('sifra_obcine');
                 $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno'] - 1])->pluck('sifra_drzave');
                 $std->naslov_stalno = $list["naslovstalno"];
-                if (Posta::where('postna_stevilka', $list['posta'])->pluck('naziv_poste') != $list['obcinastalno'])
-                    Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+                if (Posta::where('postna_stevilka', $list['postastalno'])->pluck('naziv_poste') != $obcine[$list['obcinastalno']-1])
+                    return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+
+                if(!empty($list['obcinazacasno'])){
+                    $std->postna_stevilka_zacasno = $list['postazacasno'];
+                    $std->sifra_obcine_zacasno = Obcina::where('naziv_obcine', $obcine[$list['obcinazacasno'] - 1])->pluck('sifra_obcine');
+                    $std->sifra_drzave_zacasno = Drzava::where('naziv_drzave', $drzave[$list['drzavazacasno'] - 1])->pluck('sifra_drzave');
+                    $std->naslov_zacasno = $list["naslovzacasno"];
+                    if (Posta::where('postna_stevilka', $list['postazacasno'])->pluck('naziv_poste') != $obcine[$list['obcinazacasno']-1])
+                        return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+                }
+
+                if($list['vrocanje'] == 'vstalno'){
+                    $std->naslov_vrocanja = $list["naslovstalno"];
+                }elseif($list['vrocanje'] == 'vzacasno'){
+                    $std->naslov_vrocanja = $list["naslovzacasno"];
+                }
 
                 $std->save();
 
@@ -110,15 +126,28 @@ class VpisniListController extends Controller {
                 $vp->sifra_vrste_studija = explode(" ", $vrste_studija[$list['vrstastudija'] - 1])[0];
                 $vp->sifra_vrste_vpisa = Vrsta_vpisa::where('opis_vrste_vpisa', $vrste_vpisa[$list['vrstavpisa'] - 1])->pluck('sifra_vrste_vpisa');
 
-                if ($list['letnikdodatno'][0] != 'd') {
-                    $vp->sifra_letnika = $list['letnikdodatno'];
-                }else
-                    $vp->sifra_letnika = 7;
+                if($vp->sifra_vrste_studija == 16204 && !($vp->sifra_studijskega_programa == 1000425 || $vp->sifra_studijskega_programa == 1000475
+                        || $vp->sifra_studijskega_programa == 1001001 || $vp->sifra_studijskega_programa == 1000469))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija UNI");
+                elseif($vp->sifra_vrste_studija == 16203 && !($vp->sifra_studijskega_programa == 1000470 || $vp->sifra_studijskega_programa == 1000477))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija VS");
+                elseif($vp->sifra_vrste_studija == 17003 && !($vp->sifra_studijskega_programa == 1000471 || $vp->sifra_studijskega_programa == 1000934))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija MAG");
+
+                $vp->sifra_letnika = $list['letnikdodatno'];
+
+                if($vp->sifra_vrste_vpisa == 1 && $vp->sifra_letnika != 1)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+                elseif($vp->sifra_vrste_vpisa == 2 &&  $vp->sifra_letnika == 1)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+                elseif($vp->sifra_vrste_vpisa == 3 &&  $vp->sifra_letnika == 1)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+
 
                 $vp->sifra_nacina_studija = Nacin_studija::where('opis_nacina_studija', $nacin[$list['nacin'] - 1])->pluck('sifra_nacina_studija');
                 $vp->sifra_oblike_studija = Oblika_studija::where('opis_oblike_studija', $oblik[$list['oblika'] - 1])->pluck('sifra_oblike_studija');
                 $vp->sifra_studijskega_leta = Studijsko_leto::where('stevilka_studijskega_leta', date('Y') . "/" . (date('Y') + 1))->pluck('sifra_studijskega_leta');
-                $vp->vpisna_stevilka = $std->vpisna_stevilka;
+                $vp->vpisna_stevilka = $list["vstevilka"];
 
                 if (array_key_exists('zavod', $list)) {
                     $vp->zavod = $list['zavod'];
@@ -127,6 +156,7 @@ class VpisniListController extends Controller {
                 if (array_key_exists('krajizvajanja', $list)) {
                     $vp->kraj_izvajanja = $list['krajizvajanja'];
                 }
+                Kandidat::where('email_kandidata', $std->email_studenta)->update(['zeton_porabljen'=>1]);
                 $vp->zeton_porabljen = 1;
                 $vp->save();
 
@@ -140,7 +170,7 @@ class VpisniListController extends Controller {
                     pluck('sifra_profesorja'))->pluck('ime_profesorja'), Predmet::where('sifra_predmeta', $obvezni[$i])->
                     pluck('naziv_predmeta'), Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT')];
                     $vpisi = new Vpisan_predmet();
-                    $vpisi->vpisna_stevilka = $vp->vpisna_stevilka;
+                    $vpisi->vpisna_stevilka = $list["vstevilka"];
                     $vpisi->sifra_studijskega_leta = $vp->sifra_studijskega_leta;
                     $vpisi->sifra_predmeta = $obvezni[$i];
                     $vpisi->sifra_studijskega_programa = $vp->sifra_studijskega_programa;
@@ -171,18 +201,12 @@ class VpisniListController extends Controller {
                 if (!empty($strokovni))
                     array_unshift($strokovni, "");
 
-
-                $moduli = [];
-                if ($vp->sifra_letnika == 3) {
-                    $moduli = Sestavni_del_predmetnika::where('sifra_sestavnega_dela', '!=', '6')->where('sifra_sestavnega_dela', '!=', '7')->lists('opis_sestavnega_dela');
-                    array_unshift($moduli, "");
-                }
-
                 $pomos = $vp->vpisna_stevilka . $vp->sifra_studijskega_leta . $vp->sifra_studijskega_programa . $vp->sifra_letnika;
 
 
                 return view('predmeti', ['studijski_program' => $studijski_programi[$list['studiskiprogram'] - 1], 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $pomos, 'tip' => 0]);
+                    'prosti' => $prosti, 'strokovni' => $strokovni, 'vpisna' => $pomos, 'tip' => 0]);
+
             }elseif($user->type == 1){
                 $programi = Studijski_program::get();
                 $studijski_programi = [];
@@ -207,18 +231,18 @@ class VpisniListController extends Controller {
                 $datum = $list["datumrojstva"];
 
                 $std = Student::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
-                $std->ime_studenta = explode(" ", $list["imepriimek"])[0];
-                $std->priimek_studenta = explode(" ", $list["imepriimek"])[1];
+                $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
+                $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
                 $std->datum_rojstva = date("Y-m-d", strtotime($datum));
-                $std->obcina_rojstva = $obcine[$list["krajrojstva"]-1];
+                $std->sifra_obcine_rojstva = Obcina::where('naziv_obcine', $obcine[$list['krajrojstva'] - 1])->pluck('sifra_obcine');
                 $std->sifra_drzave_rojstva = Drzava::where('naziv_drzave', $drzave[$list['drzavarojstva']-1])->pluck('sifra_drzave');
                 $std->sifra_drzave_drzavljanstva = Drzava::where('naziv_drzave', $drzave[$list['drzavljanstvo']-1])->pluck('sifra_drzave');
-                $std->spol = $list["spol"][0];
+                $std->spol = strtoupper($list["spol"])[0];
 
                 if(substr($datum, 0, 2) == substr($emso, 0, 2) && substr($datum, 3, 2) == substr($emso, 2, 2)
                     && substr($datum, 7, 3) == substr($emso, 4, 3) && substr($emso, 7, 2) > 49 && substr($emso, 7, 2) < 60)
                 {
-                    if($list["spol"][0] == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500)
+                    if($std->spol == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500)
                     {
                         $kontrolna = $emso[0]*7 + $emso[1]*6 + $emso[2]*5 + $emso[3]*4 +
                             $emso[4]*3 + $emso[5]*2 + $emso[6]*7 + $emso[7]*6 + $emso[8]*5 +
@@ -231,7 +255,7 @@ class VpisniListController extends Controller {
                             return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
                         }
 
-                    }elseif($list["spol"][0] == "Ž" && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000){
+                    }elseif(($std->spol == "Z" || $std->spol == "Ž") && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000){
                         $kontrolna = $emso[0]*7 + $emso[1]*6 + $emso[2]*5 + $emso[3]*4 +
                             $emso[4]*3 + $emso[5]*2 + $emso[6]*7 + $emso[7]*6 + $emso[8]*5 +
                             $emso[9]*4 + $emso[10]*3 + $emso[11]*2;
@@ -251,19 +275,42 @@ class VpisniListController extends Controller {
                 $std->davcna_stevilka = $list["davcna"];
                 $std->email_studenta = $list["email"];
                 $std->prenosni_telefon = $list["gsm"];
-                $std->postna_stevilka_stalno = $list['posta'];
-                $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno']-1])->pluck('sifra_obcine');
-                $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno']-1])->pluck('sifra_drzave');
-                $std->naslov_stalno = $list["naslovstalno"];
-                if(Posta::where('postna_stevilka', $list['posta'])->pluck('naziv_poste') != $list['obcinastalno'])
-                    Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
 
+                $std->postna_stevilka_stalno = $list['postastalno'];
+                $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno'] - 1])->pluck('sifra_obcine');
+                $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno'] - 1])->pluck('sifra_drzave');
+                $std->naslov_stalno = $list["naslovstalno"];
+                if (Posta::where('postna_stevilka', $list['postastalno'])->pluck('naziv_poste') != $obcine[$list['obcinastalno']-1])
+                    return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+
+                if(!empty($list['obcinazacasno'])){
+                    $std->postna_stevilka_zacasno = $list['postazacasno'];
+                    $std->sifra_obcine_zacasno = Obcina::where('naziv_obcine', $obcine[$list['obcinazacasno'] - 1])->pluck('sifra_obcine');
+                    $std->sifra_drzave_zacasno = Drzava::where('naziv_drzave', $drzave[$list['drzavazacasno'] - 1])->pluck('sifra_drzave');
+                    $std->naslov_zacasno = $list["naslovzacasno"];
+                    if (Posta::where('postna_stevilka', $list['postazacasno'])->pluck('naziv_poste') != $obcine[$list['obcinazacasno']-1])
+                        return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+                }
+
+                if($list['vrocanje'] == 'vstalno'){
+                    $std->naslov_vrocanja = $list["naslovstalno"];
+                }elseif($list['vrocanje'] == 'vzacasno'){
+                    $std->naslov_vrocanja = $list["naslovzacasno"];
+                }
                 $std->save();
 
                 $vp = Vpis::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
                 $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram']-1])[0];
                 $vp->sifra_vrste_studija = explode(" ", $vrste_studija[$list['vrstastudija']-1])[0];
                 $vp->sifra_vrste_vpisa = Vrsta_vpisa::where('opis_vrste_vpisa', $vrste_vpisa[$list['vrstavpisa']-1])->pluck('sifra_vrste_vpisa');
+
+                if($vp->sifra_vrste_studija == 16204 && !($vp->sifra_studijskega_programa == 1000425 || $vp->sifra_studijskega_programa == 1000475
+                        || $vp->sifra_studijskega_programa == 1001001 || $vp->sifra_studijskega_programa == 1000469))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija UNI");
+                elseif($vp->sifra_vrste_studija == 16203 && !($vp->sifra_studijskega_programa == 1000470 || $vp->sifra_studijskega_programa == 1000477))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija VS");
+                elseif($vp->sifra_vrste_studija == 17003 && !($vp->sifra_studijskega_programa == 1000471 || $vp->sifra_studijskega_programa == 1000934))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija MAG");
 
 
                 $vp->sifra_nacina_studija = Nacin_studija::where('opis_nacina_studija', $nacin[$list['nacin']-1])->pluck('sifra_nacina_studija');
@@ -278,11 +325,27 @@ class VpisniListController extends Controller {
                     $vp->kraj_izvajanja = $list['krajizvajanja'];
                 }
 
+                $let = Vpis::where('vpisna_stevilka', $list['vstevilka'])->pluck('sifra_letnika');
+
                 if ($list['letnikdodatno'][0] != 'd') {
-                    $vp->sifra_letnika = $list['letnikdodatno'];
+                    if($list['letnikdodatno'] == 1)
+                        $vp->sifra_letnika = $let;
+                    else
+                        $vp->sifra_letnika = $let+1;
                 }else
                     $vp->sifra_letnika = 7;
 
+                if($vp->sifra_vrste_vpisa == 1 && $vp->sifra_letnika != $let+1)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+                elseif($vp->sifra_vrste_vpisa == 2 &&  $vp->sifra_letnika != $let)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+                elseif($vp->sifra_vrste_vpisa == 3 &&  $vp->sifra_letnika != $let)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+
+                if($vp->sifra_vrste_vpisa == 2 &&  $vp->sifra_letnika == $let)
+                    Vpisan_predmet::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_letnika', $vp->sifra_letnika)->delete();
+
+                $vp->zeton_porabljen = 1;
                 $vp->save();
 
                 $obvezni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
@@ -295,7 +358,7 @@ class VpisniListController extends Controller {
                     pluck('sifra_profesorja'))->pluck('ime_profesorja'), Predmet::where('sifra_predmeta', $obvezni[$i])->
                     pluck('naziv_predmeta'), Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT')];
                     $vpisi = new Vpisan_predmet();
-                    $vpisi->vpisna_stevilka = $vp->vpisna_stevilka;
+                    $vpisi->vpisna_stevilka = $list["vstevilka"];
                     $vpisi->sifra_studijskega_leta = $vp->sifra_studijskega_leta;
                     $vpisi->sifra_predmeta = $obvezni[$i];
                     $vpisi->sifra_studijskega_programa = $vp->sifra_studijskega_programa;
@@ -350,6 +413,8 @@ class VpisniListController extends Controller {
         if ($user = Auth::user()) {
             if ($user->type == 0) {
                 $kandidat = Kandidat::where('email_kandidata', $user->email)->get();
+                if($kandidat[0]->zeton_porabljen == 1)
+                    return redirect('home')->with('message', 'Porabljen žeton!');
                 $zac = "63" . substr(date('Y'), 2, 2);
                 $st = count(Student::where('vpisna_stevilka', 'LIKE', $zac . '%')->get());
                 if (floor($st / 10) == 0)
@@ -376,6 +441,7 @@ class VpisniListController extends Controller {
                 $letnik = Letnik::lists('stevilka_letnika');
                 array_unshift($letnik, "");
                 $vrste_vpisa = Vrsta_vpisa::lists('opis_vrste_vpisa');
+                array_pop($vrste_vpisa);
                 array_unshift($vrste_vpisa, "");
 
                 $oblik = Oblika_studija::lists('opis_oblike_studija');
@@ -396,7 +462,10 @@ class VpisniListController extends Controller {
             } elseif ($user->type == 1){
                 $student = Student::where('email_studenta', $user->email)->get();
                 $vpis = Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->get()[0];
+                if($vpis->zeton_porabljen == 1)
+                    return redirect('home')->with('message', 'Porabljen žeton!');
                 Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->update(['vpis_potrjen'=>0]);
+
 
                 $programi = Studijski_program::get();
                 $studijski_programi = [];
@@ -405,6 +474,7 @@ class VpisniListController extends Controller {
                 }
                 array_unshift($studijski_programi, "");
 
+
                 $drzave = Drzava::lists('naziv_drzave');
                 array_unshift($drzave, "");
                 $obcine = Obcina::lists('naziv_obcine');
@@ -412,6 +482,7 @@ class VpisniListController extends Controller {
                 $letnik = array_slice(Letnik::lists('stevilka_letnika'), $vpis->sifra_letnika-1 ,2);
                 array_unshift($letnik, "");
                 $vrste_vpisa = Vrsta_vpisa::lists('opis_vrste_vpisa');
+                array_pop($vrste_vpisa);
                 array_unshift($vrste_vpisa, "");
 
                 $oblik = Oblika_studija::lists('opis_oblike_studija');
@@ -426,11 +497,21 @@ class VpisniListController extends Controller {
                 }
                 array_unshift($vrste_studija, "");
 
+
                 $drz = array_search(Drzava::where('sifra_drzave', $student[0]->sifra_drzave_rojstva)->pluck('naziv_drzave'),$drzave);
-                $obc = array_search($student[0]->obcina_rojstva, $obcine);
+                $obc = array_search(Obcina::where('sifra_obcine', $student[0]->sifra_obcine_rojstva)->pluck('naziv_obcine'), $obcine);
                 $drz2 = array_search(Drzava::where('sifra_drzave', $student[0]->sifra_drzave_drzavljanstva)->pluck('naziv_drzave'), $drzave);
                 $drzs = array_search(Drzava::where('sifra_drzave', $student[0]->sifra_drzave_stalno)->pluck('naziv_drzave'),$drzave);
                 $obcs = array_search(Obcina::where('sifra_obcine', $student[0]->sifra_obcine_stalno)->pluck('naziv_obcine'),$obcine);
+
+                $drzz = "";
+                $obcz = "";
+                if(!empty($student[0]->naslov_zacasno)){
+                    $drzz = array_search(Drzava::where('sifra_drzave', $student[0]->sifra_drzave_zacasno)->pluck('naziv_drzave'),$drzave);
+                    $obcz = array_search(Obcina::where('sifra_obcine', $student[0]->sifra_obcine_zacasno)->pluck('naziv_obcine'),$obcine);
+                }
+
+
                 $stdpro = array_search($vpis->sifra_studijskega_programa." ".Studijski_program::where('sifra_studijskega_programa',
                         $vpis->sifra_studijskega_programa)->pluck('naziv_studijskega_programa'), $studijski_programi);
                 $vpvrs = array_search(Vrsta_vpisa::where('sifra_vrste_vpisa', $vpis->sifra_vrste_vpisa)->pluck('opis_vrste_vpisa'), $vrste_vpisa);
@@ -442,16 +523,15 @@ class VpisniListController extends Controller {
                 $zavod = $vpis->zavod;
                 $kraj = $vpis->kraj_izvajanja;
 
-
                 return view('vpisnilist', ['studijski_programi' => $studijski_programi, 'letnik' => $letnik,
                     'vrste_vpisa' => $vrste_vpisa, 'vrste_studija' => $vrste_studija, 'drzave' => $drzave, 'obcine' => $obcine,
                     'oblik' => $oblik, 'nacin' => $nacin, 'stud'=>$student[0], 'drz' => $drz, 'obc' => $obc, 'drz2'=>$drz2,
-                    'drzs'=>$drzs, 'obcs'=>$obcs, 'stdpro'=>$stdpro, 'vpvrs'=>$vpvrs, 'stdvrs'=> $stdvrs, 'stdnac'=>$stdnac,
-                    'stdobl'=>$stdobl, 'leto'=>$leto, 'zavod'=>$zavod, 'kraj'=>$kraj, 'tip'=>1]);
+                    'drzs'=>$drzs, 'obcs'=>$obcs,'drzz'=>$drzz, 'obcz'=>$obcz, 'stdpro'=>$stdpro, 'vpvrs'=>$vpvrs,
+                    'stdvrs'=> $stdvrs, 'stdnac'=>$stdnac, 'stdobl'=>$stdobl, 'leto'=>$leto, 'zavod'=>$zavod, 'kraj'=>$kraj, 'tip'=>1]);
             }
 
         }else {
-            return redirect('/');
+            return redirect('home')->with('message', 'Neznan uporabnik!');
         }
     }
 }

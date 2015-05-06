@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+    @if($errors->any())
+        <ul class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
     <h4>PRILOGA 1: PREDMETNIK</h4>
             <div class="row">
                 <div class="col-md-7">
@@ -103,24 +110,6 @@
                             <div class="form-inline">
                                 {!! Form::label('prosti2', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
                                 {!! Form::select('prosti2', $prosti , 0, ['class' => 'form-control']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-inline">
-                                {!! Form::label('prosti3', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti3', $prosti , 0, ['class' => 'form-control']) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-inline">
-                                {!! Form::label('prosti4', 'Prosto izbirni predmet: ', ['style' => 'font-weight: bold']) !!}
-                                {!! Form::select('prosti4', $prosti , 0, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                         <div class="col-md-offset-4 col-md-2">

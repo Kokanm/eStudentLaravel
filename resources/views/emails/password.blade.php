@@ -1,1 +1,1 @@
-Click here to reset your password: {{ url('password/reset/'.$token) }}
+Na tej povezavi lahko ponovno nastavite svoje geslo: {{ url('password/reset/'.$token) }}

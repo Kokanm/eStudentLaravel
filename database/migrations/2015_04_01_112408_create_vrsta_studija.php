@@ -15,7 +15,7 @@ class CreateVrstaStudija extends Migration {
         Schema::create('vrsta_studija', function(Blueprint $table)
         {
             $table->decimal('sifra_vrste_studija', 5, 0)->primary();
-            $table->string('opis_vrste_studija', 50);
+            $table->string('opis_vrste_studija', 80);
         });
 	}
 

@@ -14,10 +14,14 @@
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
 				<!--<div class="panel-heading">Home</div>-->
-
 				<div class="panel-body">
-					Pozdravljen študent {{ $email }}
+				    @if (Session::has('message'))
+                        <b style="color:red; font-size: large;">{{ Session::get('message') }}</b>
+                    @else
+					    Pozdravljen študent {{ $email }}
+                    @endif
 				</div>
+
 			</div>
 		</div>
 	</div>

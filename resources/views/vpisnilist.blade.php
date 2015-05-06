@@ -27,7 +27,7 @@
             <div class="col-md-4 col-xs-4">
                 <div class="form-group-sm">
                     {!! Form::label('imepriimek','Ime in Priimek') !!}
-                    {!! Form::text('imepriimek', $kand->ime_kandidata." ".$kand->priimek_kandidata, ['class' => 'form-control']) !!}
+                    {!! Form::text('imepriimek', ucfirst($kand->ime_kandidata)." ".ucfirst($kand->priimek_kandidata), ['class' => 'form-control']) !!}
                 </div>
             </div>
         </div>
@@ -113,19 +113,19 @@
             <tbody>
                 <tr>
                     <td class="col-md-2 col-xs-3">{!! Form::label('stalno','Stalno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje') !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vstalno') !!}</td>
                     <td class="col-md-3 col-xs-4">{!! Form::text('naslovstalno', null, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::text('posta', null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::text('postastalno', null, ['class' => 'form-control']) !!}</td>
                     <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, 0, ['class' => 'form-control']) !!}</td>
                     <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, null, ['class' => 'form-control']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-md-2 col-xs-3">{!! Form::label('zacasno','Začasno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje') !!}</td>
-                    <td class="col-md-3 col-xs-4">{!! Form::text('naslov2', null, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::text('posta2', null, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('drzava2', $drzave, 0, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('obcina2', $obcine, null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vzacasno') !!}</td>
+                    <td class="col-md-3 col-xs-4">{!! Form::text('naslovzacasno', null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::text('postazacasno', null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavazacasno', $drzave, 0, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinazacasno', $obcine, null, ['class' => 'form-control']) !!}</td>
                 </tr>
             </tbody>
         </table>
@@ -531,19 +531,19 @@
             <tbody>
                 <tr>
                     <td class="col-md-2 col-xs-3">{!! Form::label('stalno','Stalno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje') !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vstalno') !!}</td>
                     <td class="col-md-3 col-xs-4">{!! Form::text('naslovstalno', $stud->naslov_stalno, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::text('posta', $stud->postna_stevilka_stalno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::text('postastalno', $stud->postna_stevilka_stalno, ['class' => 'form-control']) !!}</td>
                     <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, $drzs, ['class' => 'form-control']) !!}</td>
                     <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, $obcs, ['class' => 'form-control']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-md-2 col-xs-3">{!! Form::label('zacasno','Začasno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje') !!}</td>
-                    <td class="col-md-3 col-xs-4">{!! Form::text('naslov2', null, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-1 col-xs-2">{!! Form::text('posta2', null, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('drzava2', $drzave, 0, ['class' => 'form-control']) !!}</td>
-                    <td class="col-md-2 col-xs-3">{!! Form::select('obcina2', $obcine, null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vzacasno') !!}</td>
+                    <td class="col-md-3 col-xs-4">{!! Form::text('naslovzacasno', $stud->naslov_zacasno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::text('postazacasno', $stud->postna_stevilka_zacasno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavazacasno', $drzave, $drzz, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinazacasno', $obcine, $obcz, ['class' => 'form-control']) !!}</td>
                 </tr>
             </tbody>
         </table>

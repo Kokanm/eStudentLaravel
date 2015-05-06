@@ -31,12 +31,6 @@
         </div>
         <div class="col-md-2 col-xs-4">
             <div class="form-group-sm">
-                <p>Kraj rojstva</p>
-                <b>{!! $vse['kraj'] !!}</b>
-            </div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-            <div class="form-group-sm">
                 <p>Država, občina rojstva</p>
                 <b>{!! $vse['drzava'] !!}</b>
             </div>
@@ -96,17 +90,18 @@
                 <th>Naslov</th>
                 <th>Država, občina</th>
             </tr>
-        </thead>
+        </thead>izpi
+
         <tbody>
             <tr>
                 <td><b>Stalno bivališče</b></td>
-                <td>{!! Form::checkbox('vrocanje', 1, true) !!}</td>
+                <td>{!! Form::checkbox('vrocanje', 1, $tr1, ['disabled']) !!}</td>
                 <td>{!! $vse['naslov1'] !!}</td>
                 <td>{!! $vse['obcina1'] !!}</td>
             </tr>
             <tr>
                 <td><b>Začasno bivališče</b></td>
-                <td>{!! Form::checkbox('vrocanje', 1, true) !!}</td>
+                <td>{!! Form::checkbox('vrocanje', 2, $tr2, ['disabled']) !!}</td>
                 <td>{!! $vse['naslov2'] !!}</td>
                 <td>{!! $vse['obcina2'] !!}</td>
             </tr>
