@@ -61,6 +61,13 @@ class VpisniListController extends Controller {
                 $std->sifra_drzave_drzavljanstva = Drzava::where('naziv_drzave', $drzave[$list['drzavljanstvo'] - 1])->pluck('sifra_drzave');
                 $std->spol = strtoupper($list["spol"])[0];
 
+                if (Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') == "Slovenija" &&
+                    $std->sifra_obcine_rojstva == 999)
+                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
+                elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') != "Slovenija" && !$std->sifra_obcine_rojstva == 999)
+                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
+
+
                 if (substr($datum, 0, 2) == substr($emso, 0, 2) && substr($datum, 3, 2) == substr($emso, 2, 2)
                     && substr($datum, 7, 3) == substr($emso, 4, 3) && substr($emso, 7, 2) > 49 && substr($emso, 7, 2) < 60
                 ) {
@@ -101,16 +108,22 @@ class VpisniListController extends Controller {
                 $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno'] - 1])->pluck('sifra_obcine');
                 $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno'] - 1])->pluck('sifra_drzave');
                 $std->naslov_stalno = $list["naslovstalno"];
-                if (Posta::where('postna_stevilka', $list['postastalno'])->pluck('naziv_poste') != $obcine[$list['obcinastalno']-1])
-                    return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+                if (Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') == "Slovenija" &&
+                    $std->sifra_obcine_stalno == 999)
+                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
+                elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') != "Slovenija" && !$std->sifra_obcine_stalno == 999)
+                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
 
                 if(!empty($list['obcinazacasno'])){
                     $std->postna_stevilka_zacasno = $list['postazacasno'];
                     $std->sifra_obcine_zacasno = Obcina::where('naziv_obcine', $obcine[$list['obcinazacasno'] - 1])->pluck('sifra_obcine');
                     $std->sifra_drzave_zacasno = Drzava::where('naziv_drzave', $drzave[$list['drzavazacasno'] - 1])->pluck('sifra_drzave');
                     $std->naslov_zacasno = $list["naslovzacasno"];
-                    if (Posta::where('postna_stevilka', $list['postazacasno'])->pluck('naziv_poste') != $obcine[$list['obcinazacasno']-1])
-                        return Redirect::back()->withInput()->withErrors("Napačna poštna številka!");
+                    if (Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') == "Slovenija" &&
+                        $std->sifra_obcine_zacasno == 999)
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
+                    elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') != "Slovenija" && !$std->sifra_obcine_zacasnoo == 999)
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
                 }
 
                 if($list['vrocanje'] == 'vstalno'){
@@ -137,7 +150,7 @@ class VpisniListController extends Controller {
                 $vp->sifra_letnika = $list['letnikdodatno'];
 
                 if($vp->sifra_vrste_vpisa == 1 && $vp->sifra_letnika != 1)
-                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
+                    return Redirect::back()->withInput()->withErrors("Napačѝna kombinacija vrsta vpisa + letnik");
                 elseif($vp->sifra_vrste_vpisa == 2 &&  $vp->sifra_letnika == 1)
                     return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
                 elseif($vp->sifra_vrste_vpisa == 3 &&  $vp->sifra_letnika == 1)
