@@ -11,6 +11,7 @@ use App\Nacin_studija;
 use App\Studijski_program;
 use App\Vpisan_predmet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
 class PotrditevVpisaController extends Controller {
 
@@ -60,7 +61,7 @@ class PotrditevVpisaController extends Controller {
         $vse['letnik'] = Letnik::where('sifra_letnika', $vpis[0]->sifra_letnika)->pluck('stevilka_letnika');
         $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');
         $vse['program'] = Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
-        $st = 3;
+        $st = Input::get('stevilo')-1;
 
         return view('potrdiloovpisu', ['vse'=>$vse, 'st'=>$st]);
     }
