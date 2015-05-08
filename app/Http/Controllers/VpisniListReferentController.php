@@ -353,9 +353,9 @@ class VpisniListReferentController extends Controller {
             else
                 $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram'] - 1])[0];
 
-            //if ($zet->sifra_studijskega_programa != $vp->sifra_studijskega_programa) {
-               // return Redirect::back()->withInput()->withErrors("Nimate dovolenje za ta študijski program!");
-            //}
+            if ($zet->sifra_studijskega_programa != $vp->sifra_studijskega_programa) {
+                return Redirect::back()->withInput()->withErrors("Nimate dovolenje za ta študijski program!");
+            }
 
             $vp->sifra_vrste_studija = explode(" ", $vrste_studija[$list['vrstastudija'] - 1])[0];
             $vp->sifra_vrste_vpisa = Vrsta_vpisa::where('opis_vrste_vpisa', $vrste_vpisa[$list['vrstavpisa'] - 1])->pluck('sifra_vrste_vpisa');
@@ -549,7 +549,7 @@ class VpisniListReferentController extends Controller {
                 }
                 array_unshift($vrste_studija, "");
 
-                return view('vpisnilist', ['studijski_programi' => $studijski_programi, 'letnik' => array_slice($letnik, 0, 2),
+                return view('vpisnilistreferent', ['studijski_programi' => $studijski_programi, 'letnik' => array_slice($letnik, 0, 2),
                     'vrste_vpisa' => $vrste_vpisa, 'vrste_studija' => $vrste_studija, 'drzave' => $drzave, 'obcine' => $obcine,
                     'oblik' => $oblik, 'nacin' => $nacin, 'kand' => $kandidat[0], 'vp' => $vp, 'tip'=>0, 'poste'=>$poste, 'stdpro'=>$stdpro]);
             }else{
@@ -574,7 +574,6 @@ class VpisniListReferentController extends Controller {
                     $studijski_programi[$i] = $programi[$i]->sifra_studijskega_programa . " " . $programi[$i]->naziv_studijskega_programa;
                 }
                 array_unshift($studijski_programi, "");
-
 
                 $drzave = Drzava::lists('naziv_drzave');
                 array_unshift($drzave, "");
@@ -649,7 +648,7 @@ class VpisniListReferentController extends Controller {
                 else
                     $v = false;
 
-                return view('vpisnilist', ['studijski_programi' => $studijski_programi, 'letnik' => $letnik,
+                return view('vpisnilistreferent', ['studijski_programi' => $studijski_programi, 'letnik' => $letnik,
                     'vrste_vpisa' => $vrste_vpisa, 'vrste_studija' => $vrste_studija, 'drzave' => $drzave, 'obcine' => $obcine,
                     'oblik' => $oblik, 'nacin' => $nacin, 'stud'=>$student[0], 'drz' => $drz, 'obc' => $obc, 'drz2'=>$drz2,
                     'drzs'=>$drzs, 'obcs'=>$obcs,'drzz'=>$drzz, 'obcz'=>$obcz, 'stdpro'=>$stdpro, 'vpvrs'=>$vpvrs,
@@ -674,7 +673,5 @@ class VpisniListReferentController extends Controller {
         }
 
         return view('nepotrjeni', ['studenti' => $studenti, 'kandidati' => $kandidati, 'pom'=>1]);
-
     }
-
 }

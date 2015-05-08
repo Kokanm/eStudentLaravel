@@ -33,7 +33,7 @@
                     <th>Ime</th>
                     <th>Priimek</th>
                     <th>E-mail</th>
-                    <th>Vpisi</th>
+                    <th>Vpis</th>
                 </tr>
                 @foreach($kandidati as $row)
                     <tr>
@@ -59,7 +59,8 @@
                         <th>Ime</th>
                         <th>Priimek</th>
                         <th>Vpisna stevilka</th>
-                        <th>Vpisi</th>
+                        <th>Vpis</th>
+                        <th>Izbirni Predmeti</th>
                     </tr>
                     @for($i=0; $i<count($studenti); $i++)
                         @foreach($studenti[$i] as $row)
@@ -67,9 +68,9 @@
                                 <td>{{ $row->ime_studenta }}</td>
                                 <td>{{ $row->priimek_studenta }}</td>
                                 <td>{{ $row->vpisna_stevilka }}</td>
-                            {!! Form::open(array('action' => array('VpisniListReferentController@select', $row->vpisna_stevilka))) !!}
-                                 <td>{!! Form::submit('Vpisi', ['class' => 'btn btn-success btn-xs']) !!}</td>
-                            {!! Form::close() !!}
+                                {!! Form::open(array('action' => array('VpisniListReferentController@select', $row->vpisna_stevilka))) !!}
+                                    <td>{!! Form::submit('Vpisi', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                                {!! Form::close() !!}
                             </tr>
                         @endforeach
                     @endfor

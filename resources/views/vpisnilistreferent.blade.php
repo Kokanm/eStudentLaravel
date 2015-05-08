@@ -15,7 +15,7 @@
     <h3>za študente</h3>
     <h4>Fakulteta za raculanistvo in informatiko</h4>
     <hr />
-    {!! Form::open(array('url' => 'vpis')) !!}
+    {!! Form::open(array('action' => array('VpisniListReferentController@vpisi', $tip))) !!}
         <div class="well">
         <div class="row">
             <div class="col-md-2 col-xs-4">
@@ -433,7 +433,7 @@
     <h3>za študente</h3>
     <h4>Fakulteta za raculanistvo in informatiko</h4>
     <hr />
-    {!! Form::open(array('url' => 'vpis')) !!}
+    {!! Form::open(array('action' => array('VpisniListReferentController@vpisi', $tip))) !!}
         <div class="well">
         <div class="row">
             <div class="col-md-2 col-xs-4">
@@ -648,7 +648,6 @@
         <br />
     {!! Form::close() !!}
     @endif
-
 
 </div>
 @endsection

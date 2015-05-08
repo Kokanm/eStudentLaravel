@@ -4,8 +4,10 @@ use App\Predmet_studijskega_programa;
 use App\Predmet;
 use App\Profesor;
 use App\Izvedba_predmeta;
+use App\Student;
 use App\Studijski_program;
 use App\Sestavni_del_predmetnika;
+use App\Vpis;
 use App\Vpisan_predmet;
 use App\Zeton;
 use App\Http\Requests;
@@ -233,5 +235,7 @@ class IzbirniPredmetiController extends Controller {
         Zeton::where('vpisna_stevilka', $vpisna["vpisna"])->update(['zeton_porabljen'=>1]);
         return redirect('home')->with('message', 'Vpisni list je oddan!');
     }
+
+
 
 }
