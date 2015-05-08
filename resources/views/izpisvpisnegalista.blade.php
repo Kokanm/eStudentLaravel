@@ -90,7 +90,7 @@
                 <th>Naslov</th>
                 <th>Država, občina</th>
             </tr>
-        </thead>izpi
+        </thead>
 
         <tbody>
             <tr>
@@ -127,6 +127,10 @@
     <br />
 
     <div class="row">
+        <div class ="col-md-2 col-xs-3">
+                <p>Zavod</p>
+                <b>{!! $vse['zavod'] !!}</b>
+        </div>
         <div class="col-md-3 col-xs-4">
             <div class="form-group-sm">
                 <p>Kraj izvajanja</p>

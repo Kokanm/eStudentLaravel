@@ -3,7 +3,7 @@
 @section('menu')
 <ul class="nav navbar-nav">
 	<li><a href="{{ url('vpis') }}">Zajem vpisnega lista</a></li>
-	<li><a href="{{ url('/') }}">Izpis vpisnega lista</a></li>
+	<li><a href="{{ url('tisks') }}">Izpis vpisnega lista</a></li>
 	<li><a href="{{ url('/') }}">Potrdilo o vpisu</a></li>
 </ul>
 @endsection

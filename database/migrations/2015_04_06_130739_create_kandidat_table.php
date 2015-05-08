@@ -19,8 +19,6 @@ class CreateKandidatTable extends Migration {
 			$table->string('ime_kandidata', 30);
 			$table->string('priimek_kandidata', 30);
 			$table->string('email_kandidata', 60)->primary();
-            $table->boolean('zeton');
-            $table->boolean('zeton_porabljen');
 		});
 	}
 

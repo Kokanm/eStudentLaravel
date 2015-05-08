@@ -33,8 +33,11 @@ Route::post('najdiprofesor/{stevilo}', ['middleware' => 'skrbnik', 'uses' => 'Na
 
 Route::post('find', ['middleware' => 'referent', 'uses' => 'StudentController@search']);
 
-Route::get('vpis', ['middleware' => 'student', 'uses' => 'VpisniListController@select']);
+Route::get('vpisa', ['middleware' => 'referent', 'uses' => 'VpisniListReferentController@nevpisani']);
+Route::post('vpisa/{vpisna}', ['middleware' => 'referent', 'uses' => 'VpisniListReferentController@select']);
+Route::post('vpisaK/{vpisna}', ['middleware' => 'referent', 'uses' => 'VpisniListReferentController@vpisi']);
 
+Route::get('vpis', ['middleware' => 'student', 'uses' => 'VpisniListController@select']);
 Route::post('vpis', ['middleware' => 'student', 'uses' => 'VpisniListController@vpisi']);
 
 Route::get('potrdi', ['middleware' => 'referent', 'uses' => 'PotrditevVpisaController@nepotrjeni']);
@@ -49,4 +52,5 @@ Route::post('izpis/{vpisna}', ['middleware' => 'referent', 'uses' => 'IzpisVpisn
 
 Route::post('vpisi/{vpisna}', ['middleware' => 'student', 'uses' => 'IzbirniPredmetiController@izberi']);
 
-Route::post('tisk/{vpisna}', ['middleware' => 'referent', 'uses' => 'TiskajController@izpis']);
+Route::post('tisk/{vpisna}', ['middleware' => 'referent', 'uses' => 'TiskajController@izpisReferent']);
+Route::get('tisks', ['middleware' => 'student', 'uses' => 'IzpisVpisnegaListaController@izpisStudent']);

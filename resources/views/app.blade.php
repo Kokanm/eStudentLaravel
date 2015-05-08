@@ -40,7 +40,19 @@
 						<li><a href="{{ url('/auth/register') }}">Registracija</a></li>
 					@else
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
+						    {{--*/ $user = Auth::user()/*--}}
+						    @if($user->type == 0)
+							    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $user->name." (kandidat)" }} <span class="caret"></span></a>
+							@elseif($user->type == 1)
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $user->name." (študent)" }} <span class="caret"></span></a>
+							@elseif($user->type == 2)
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $user->name." (referent)" }} <span class="caret"></span></a>
+							@elseif($user->type == 3)
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $user->name." (profesor)" }} <span class="caret"></span></a>
+							@elseif($user->type == 4)
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $user->name." (skrbnik)" }} <span class="caret"></span></a>
+                            @endif
+
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="{{ url('/auth/logout') }}">Odjava</a></li>
 							</ul>

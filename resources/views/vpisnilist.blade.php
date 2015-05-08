@@ -15,7 +15,7 @@
     <h3>za študente</h3>
     <h4>Fakulteta za raculanistvo in informatiko</h4>
     <hr />
-    {!! Form::open(array('url'=>'vpis')) !!}
+    {!! Form::open(array('action' => array('VpisniListReferentController@vpisi', $tip))) !!}
         <div class="well">
         <div class="row">
             <div class="col-md-2 col-xs-4">
@@ -143,7 +143,7 @@
                 <div class="col-md-7">
                     <div class="form-group">
                        {!! Form::label('studiskiprogram','Študijski program', ['style' => 'font-weight: bold']) !!}
-                       {!! Form::select('studiskiprogram', $studijski_programi, null, ['class' => 'form-control']) !!}
+                       {!! Form::select('studiskiprogram', $studijski_programi, $stdpro, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -433,7 +433,7 @@
     <h3>za študente</h3>
     <h4>Fakulteta za raculanistvo in informatiko</h4>
     <hr />
-    {!! Form::open(array('url'=>'vpis')) !!}
+    {!! Form::open(array('action' => array('VpisniListReferentController@vpisi', $tip))) !!}
         <div class="well">
         <div class="row">
             <div class="col-md-2 col-xs-4">
@@ -518,35 +518,35 @@
         <br />
 
         <table class="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Vročanje</th>
-                            <th>Naslov</th>
-                            <th>Pošta</th>
-                            <th>Občina</th>
-                            <th>Država</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="col-md-2 col-xs-3">{!! Form::label('stalno','Stalno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                            <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vstalno') !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::text('naslovstalno', null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::select('postastalno', $poste, null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, 0, ['class' => 'form-control']) !!}</td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-2 col-xs-3">{!! Form::label('zacasno','Začasno bivališče', ['style' => 'font-weight:bold']) !!}</td>
-                            <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vzacasno') !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::text('naslovzacasno', null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-1 col-xs-2">{!! Form::select('postazacasno', $poste,null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::select('obcinazacasno', $obcine, null, ['class' => 'form-control']) !!}</td>
-                            <td class="col-md-2 col-xs-3">{!! Form::select('drzavazacasno', $drzave, 0, ['class' => 'form-control']) !!}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Vročanje</th>
+                    <th>Naslov</th>
+                    <th>Pošta</th>
+                    <th>Občina</th>
+                    <th>Država</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-md-2 col-xs-3">{!! Form::label('stalno','Stalno bivališče', ['style' => 'font-weight:bold']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vstalno', $v) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::text('naslovstalno', $stud->naslov_stalno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('postastalno', $poste, $nass, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinastalno', $obcine, $obcs, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavastalno', $drzave, $drzs, ['class' => 'form-control']) !!}</td>
+                </tr>
+                <tr>
+                    <td class="col-md-2 col-xs-3">{!! Form::label('zacasno','Začasno bivališče', ['style' => 'font-weight:bold']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::radio('vrocanje', 'vzacasno', !$v) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::text('naslovzacasno', $stud->naslov_zacasno, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-1 col-xs-2">{!! Form::select('postazacasno', $poste, $nasz, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('obcinazacasno', $obcine, $obcz, ['class' => 'form-control']) !!}</td>
+                    <td class="col-md-2 col-xs-3">{!! Form::select('drzavazacasno', $drzave, $drzz, ['class' => 'form-control']) !!}</td>
+                </tr>
+            </tbody>
+        </table>
         </div>
         <br />
         <br />
@@ -603,7 +603,7 @@
                 <div class="col-md-2 col-xs-3">
                     <div class="form-group-sm">
                         {!! Form::label('letnikdodatno','Letnik/dodatno leto') !!}
-                        {!! Form::select('letnikdodatno', $letnik , null, ['class' => 'form-control']) !!}
+                        {!! Form::select('letnikdodatno', $letnik , $let, ['class' => 'form-control']) !!}
                     </div>
                 </div>
                 <div class="col-md-2 col-xs-4">

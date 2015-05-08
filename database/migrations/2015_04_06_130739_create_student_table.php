@@ -36,7 +36,6 @@ class CreateStudentTable extends Migration {
 			$table->string('spol', 1);
 			$table->string('prenosni_telefon', 15)->nullable();
 			$table->string('email_studenta', 60);
-			$table->string('geslo_studenta', 100);
 		});
 	}
 
