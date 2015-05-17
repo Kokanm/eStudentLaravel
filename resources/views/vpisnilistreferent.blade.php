@@ -149,17 +149,6 @@
             </div>
             <br />
 
-            <!--
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="form-group-sm">
-                        {!! Form::label('sumz','Smer/usmeritev/modul/znanstveno področje') !!}
-                        {!! Form::text('sumz', null, ['class' => 'form-control']) !!}
-                    </div>
-                </div>
-            </div>
-            <br />
-            -->
 
             <div class="row">
                 <div class="col-md-3 col-xs-4">
@@ -261,46 +250,6 @@
             <br />
         </div>
 
-        <!--
-        <h4>PODATKI VZPOREDNEM ŠTUDIJU</h4>
-        <div class="row">
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('zavod','Zavod') !!}
-                    {!! Form::text('zavod', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-4 col-xs-6">
-                <div class="form-group-sm">
-                    {!! Form::label('letnikdodatno2','Smer/usmeritev/modul/znanstveno področje') !!}
-                    {!! Form::text('letnikdodatno2', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-md-7">
-                <div class="form-group-sm">
-                    {!! Form::label('studijskiprogram3','Študijski program') !!}
-                    {!! Form::text('studijskiprogram3', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-md-7">
-                <div class="form-group-sm">
-                    {!! Form::label('vrstastudija2','Vrsta študija') !!}
-                    {!! Form::text('vrstastudija2', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-        -->
-
         <div class="row">
             <div class="col-md-11 col-xs-3">
                 <div class="form-group-sm">
@@ -314,119 +263,6 @@
         </div>
         <br />
 
-
-        <!--
-        <h4>PRILOGA 2: PREDHODNO DOSEŽENA IZOBRAZBA</h4>
-        <div class="row">
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('zavod2','Zavod') !!}
-                    {!! Form::text('zavod2', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('kraj','Kraj') !!}
-                    {!! Form::text('kraj', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('drzava','Država') !!}
-                    {!! Form::text('drzava', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('program','Program') !!}
-                    {!! Form::text('program', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('letozakljucka','Leto zaključka') !!}
-                    {!! Form::text('letozakljucka', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-3 col-xs-4">
-                <div class="form-group-sm">
-                    {!! Form::label('uspeh','Uspeh') !!}
-                    {!! Form::text('uspeh', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-md-4 col-xs-5">
-                <div class="form-group-sm">
-                    {!! Form::label('snsi','Smer/naziv strokone izobrazbe') !!}
-                    {!! Form::text('snsi', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-4 col-xs-5">
-                <div class="form-group-sm">
-                    {!! Form::label('nacinkoncanja','Način končanja srednje šole') !!}
-                    {!! Form::text('nacinkoncanja', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-md-4 col-xs-5">
-                <div class="form-group-sm">
-                    {!! Form::label('klasius','KLASIUS SRV') !!}
-                    {!! Form::text('klasius', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-            <div class="col-md-4 col-xs-5">
-                <div class="form-group-sm">
-                    {!! Form::label('najvisjaizobrazba','Najvišja dosežena izobrazba') !!}
-                    {!! Form::text('najvisjaizobrazba', null, ['class' => 'form-control']) !!}
-                </div>
-            </div>
-        </div>
-        <br />
-
-        <h4>PRILOGA 3: DODATNI PODATKI</h4>
-        <br />
-        <div class="form-horizontal">
-            <div class="row">
-                <div class="form-group-sm">
-                    {!! Form::label('tutor','Tutor', ['class' => 'col-sm-3 control-label']) !!}
-                    <div class="col-md-5">
-                        {!! Form::text('tutor', null, ['class' => 'form-control']) !!}
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="form-group-sm">
-                    {!! Form::label('steviloobrokov','Število obrokov za plačilo šolni', ['class' => 'col-sm-3 control-label']) !!}
-                    <div class="col-md-5">
-                        {!! Form::text('steviloobrokov', null, ['class' => 'form-control']) !!}
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="form-group-sm">
-                    {!! Form::label('trr','TRR za plačilo štipendije', ['class' => 'col-sm-3 control-label']) !!}
-                    <div class="col-md-5">
-                        {!! Form::text('trr', null, ['class' => 'form-control']) !!}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br />
-        -->
         {!! Form::close() !!}
     @elseif($tip==1)
     <h2>VPISNI LIST {!! date('Y')."/".(date('Y')+1) !!}</h2>

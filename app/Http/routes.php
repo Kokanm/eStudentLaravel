@@ -51,6 +51,11 @@ Route::post('natisni/{vpisna}', ['middleware' => 'referent', 'uses' => 'Potrdite
 Route::post('izpis/{vpisna}', ['middleware' => 'referent', 'uses' => 'IzpisVpisnegaListaController@vpisnilist']);
 
 Route::post('vpisi/{vpisna}', ['middleware' => 'student', 'uses' => 'IzbirniPredmetiController@izberi']);
+Route::post('vpisi/{vpisna}', ['middleware' => 'referent', 'uses' => 'IzbirniPredmetiController@izberi2']);
 
 Route::post('tisk/{vpisna}', ['middleware' => 'referent', 'uses' => 'TiskajController@izpisReferent']);
 Route::get('tisks', ['middleware' => 'student', 'uses' => 'IzpisVpisnegaListaController@izpisStudent']);
+
+Route::post('zeton/{vpisna}', ['middleware' => 'referent', 'uses' => 'ReferentController@dodajZeton']);
+Route::get('prijava', ['middleware' => 'student', 'uses' => 'PrijavaNaIzpitController@Roki']);
+Route::post('prijava/{vse}', ['middleware' => 'student', 'uses' => 'PrijavaNaIzpitController@Prijava']);

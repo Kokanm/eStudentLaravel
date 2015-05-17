@@ -19,12 +19,6 @@ class AddForeignKeysToVpisanPredmetTable extends Migration {
 		});
 	}
 
-
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
 	public function down()
 	{
 		Schema::table('vpisan_predmet', function(Blueprint $table)

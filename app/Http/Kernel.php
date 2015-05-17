@@ -29,7 +29,9 @@ class Kernel extends HttpKernel {
         'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
         'referent' => 'App\Http\Middleware\RedirectIfNotReferent',
         'student' => 'App\Http\Middleware\RedirectIfNotStudent',
-        'skrbnik' => 'App\Http\Middleware\RedirectIfNotSkrbnik'
+        'skrbnik' => 'App\Http\Middleware\RedirectIfNotSkrbnik',
+        'ucitelj'=>  'App\Http\Middleware\RedirectIfNotUcitelj',
+        'RefUci'=>  'App\Http\Middleware\RedirectIfNotRefUci'
     ];
 
 }

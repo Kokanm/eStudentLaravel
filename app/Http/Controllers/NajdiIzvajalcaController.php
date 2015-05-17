@@ -81,7 +81,7 @@ class NajdiIzvajalcaController extends Controller {
         $predmeti = [];
         $pomos = "";
         foreach($izvPredmeti as $izv) {
-            $predmeti[$izv->sifra_predmeta] = Predmet::where('sifra_predmeta', $izv->sifra_predmeta)->pluck('naziv_predmeta');
+            $predmeti[$izv->sifra_predmeta] = $izv->sifra_predmeta." ".Predmet::where('sifra_predmeta', $izv->sifra_predmeta)->pluck('naziv_predmeta');
             $pomos = $pomos.$izv->sifra_predmeta." ";
         }
 
@@ -110,7 +110,28 @@ class NajdiIzvajalcaController extends Controller {
         $profesor[""]="/";
         asort($profesor);
 
-        for($i=0; $i<count(explode(" ",$izvedbe))-1; $i++) {
+        $izv = explode(" ",$izvedbe);
+        $dup = [];
+        $z = 0;
+        foreach(array_count_values($izv) as $d){
+            if($d == 3) {
+                $dup[$z] = 3;
+                $z += 2;
+            }
+            if($d == 2) {
+                $dup[$z] = 2;
+                $z++;
+            }
+
+            $z++;
+        }
+
+        $temp1 = null;
+        $temp2 = null;
+        $temp3 = null;
+        $j = 0;
+
+        for($i=0; $i<count($izv)-1; $i++) {
             $prof1 = Input::get('prof1' . $i);
             $prof2 = Input::get('prof2' . $i);
             $prof3 = Input::get('prof3' . $i);
@@ -119,22 +140,59 @@ class NajdiIzvajalcaController extends Controller {
             $sifra2 = null;
             $sifra3 = null;
 
+
+            $ne = 0;
+
             if ($profesor[$prof1] != "/") {
                 $sifra1 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof1])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof1]), 1, count(explode(" ", $profesor[$prof1]))+1)))->pluck('sifra_profesorja');
+                if($temp1 != null && $temp1 == $sifra1){
+                    $ne = 1;
+                }
             }
 
             if ($profesor[$prof2] != "/") {
                 $sifra2 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof2])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof2]), 1, count(explode(" ", $profesor[$prof2]))+1)))->pluck('sifra_profesorja');
+                if($temp2 != null && $temp2 == $sifra2){
+                    $ne = 1;
+                }
             }
 
             if ($profesor[$prof3] != "/") {
                 $sifra3 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof3])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof3]), 1, count(explode(" ", $profesor[$prof3]))+1)))->pluck('sifra_profesorja');
+                if($temp3 != null && $temp3 == $sifra3){
+                    $ne = 1;
+                }
+            }
+
+
+            if(array_key_exists($i, $dup) && $dup[$i] == 2){
+                $temp1 = $sifra1;
+                $temp2 = $sifra2;
+                $temp3 = $sifra3;
             }
 
             if($sifra1!=$sifra2 && $sifra1!=$sifra3 && $sifra3!=$sifra2) {
-                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja' => $sifra1]);
-                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja2' => $sifra2]);
-                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja3' => $sifra3]);
+                if(Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get() != null) {
+                    if($ne == 0) {
+                        $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[$j];
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $sifra1]);
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $sifra2]);
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $sifra3]);
+                        $j++;
+                        if($j==1){
+                            $j = 0;
+                            $temp1 = null;
+                            $temp2 = null;
+                            $temp3 = null;
+                        }
+                    }else{
+                        $ne = 0;
+                    }
+                }else{
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja' => $sifra1]);
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja2' => $sifra2]);
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja3' => $sifra3]);
+                }
             }
         }
 
@@ -180,7 +238,7 @@ class NajdiIzvajalcaController extends Controller {
         $predmeti = [];
         $pomos = "";
         foreach($izvPredmeti as $izv) {
-            $predmeti[$izv->sifra_predmeta] = Predmet::where('sifra_predmeta', $izv->sifra_predmeta)->pluck('naziv_predmeta');
+            $predmeti[$izv->sifra_predmeta] = $izv->sifra_predmeta." ".Predmet::where('sifra_predmeta', $izv->sifra_predmeta)->pluck('naziv_predmeta');
             $pomos = $pomos.$izv->sifra_predmeta." ";
         }
 

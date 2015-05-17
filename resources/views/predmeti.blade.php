@@ -45,7 +45,11 @@
             <br />
             <br />
             @if(!empty($prosti))
-            {!! Form::open(array('action' => array('IzbirniPredmetiController@izberi', $vpisna))) !!}
+            @if($tips==0)
+                {!! Form::open(array('action' => array('IzbirniPredmetiController@izberi', $vpisna))) !!}
+            @else
+                {!! Form::open(array('action' => array('IzbirniPredmetiController@izberi2', $vpisna))) !!}
+            @endif
                 @if(empty($moduli))
                     <div class="row">
                         <div class="col-md-6">

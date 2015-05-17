@@ -14,7 +14,8 @@ class CreateZetonTable extends Migration {
     {
         Schema::create('zeton', function(Blueprint $table)
         {
-        	$table->decimal('vpisna_stevilka', 8, 0);
+            $table->increments('id');
+            $table->decimal('vpisna_stevilka', 8, 0);
             $table->decimal('sifra_studijskega_programa', 7,0)->index('FK_Relationship_39');
             $table->decimal('sifra_studijskega_leta', 2, 0)->index('FK_Relationship_34');
             $table->decimal('sifra_letnika', 1, 0)->index('FK_Relationship_35');
@@ -25,7 +26,7 @@ class CreateZetonTable extends Migration {
             $table->boolean('zeton_porabljen');
             $table->boolean('prosta_izbira_predmetov');
 
-            $table->primary(array('vpisna_stevilka','sifra_studijskega_leta'), 'PK_zeton');
+            //$table->primary(array('vpisna_stevilka','sifra_studijskega_programa','sifra_studijskega_leta','sifra_letnika'), 'PK_zeton');
         });
     }
 
