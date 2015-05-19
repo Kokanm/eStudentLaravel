@@ -110,13 +110,9 @@ class PrijavaNaIzpitController extends Controller {
             return Redirect::back()->with('message', 'Rok za prijavo je potekel!');
         }
 
-        if($iz){
-            echo "AAAA";
+        if(count($iz) > 0 && $iz[0]->cas_odjave == null) {
+            Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->update(['email_odjavitelja' => null, 'cas_odjave' => null, 'datum' => $datum]);;
         }else{
-            echo "BBBB";
-        }
-        asd;
-        if($iz->cas_odjave == null) {
             $izp = new Izpit();
             $izp->vpisna_stevilka = $vp;
             $izp->sifra_letnika = $slet;
@@ -126,8 +122,6 @@ class PrijavaNaIzpitController extends Controller {
             $izp->sifra_studijskega_leta = $sstdleta;
             $izp->datum = $datum;
             $izp->save();
-        }else{
-            Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->update(['email_odjavitelja' => null, 'cas_odjave' => null, 'datum' => $datum]);;
         }
 
         return $this->Roki();
