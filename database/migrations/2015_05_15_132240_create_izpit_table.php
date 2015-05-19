@@ -20,8 +20,11 @@ class CreateIzpitTable extends Migration {
             $table->decimal('tocke_izpita')->nullable();
             $table->decimal('tocke_kolokvijev')->nullable();
             $table->decimal('tocke_vaj')->nullable();
+            $table->decimal('tocke_ustni')->nullable();
+            $table->time('cas_odjave')->nullable();
+            $table->string('email_odjavitelja')->nullable();
             $table->primary(array('sifra_predmeta','sifra_studijskega_programa','sifra_studijskega_leta', 'sifra_letnika',
-                'sifra_profesorja', 'vpisna_stevilka', 'datum'));
+                'sifra_profesorja', 'vpisna_stevilka', 'datum'), 'PK_izpit_table');
         });
 	}
 

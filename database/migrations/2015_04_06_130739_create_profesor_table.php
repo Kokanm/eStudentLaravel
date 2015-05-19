@@ -17,6 +17,7 @@ class CreateProfesorTable extends Migration {
 			$table->decimal('sifra_profesorja', 5, 0)->primary();
 			$table->string('ime_profesorja', 30);
 			$table->string('priimek_profesorja', 30);
+            $table->string('email_profesorja', 50)->unique();
 		});
 	}
 

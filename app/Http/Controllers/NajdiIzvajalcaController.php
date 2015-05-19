@@ -126,6 +126,18 @@ class NajdiIzvajalcaController extends Controller {
             $z++;
         }
 
+        $studleto = Studijsko_leto::get();
+        $leto = [];
+        for ($i = 0; $i < count($studleto); $i++) {
+            $leto[$i] = $studleto[$i]->stevilka_studijskega_leta;
+        }
+        array_unshift($leto, "");
+
+        $vse = Input::get();
+        $stleto = $vse['stleto'];
+        $stlet = Studijsko_leto::where('stevilka_studijskega_leta', $leto[$stleto])->pluck('sifra_studijskega_leta');
+
+
         $temp1 = null;
         $temp2 = null;
         $temp3 = null;
@@ -145,21 +157,21 @@ class NajdiIzvajalcaController extends Controller {
 
             if ($profesor[$prof1] != "/") {
                 $sifra1 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof1])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof1]), 1, count(explode(" ", $profesor[$prof1]))+1)))->pluck('sifra_profesorja');
-                if($temp1 != null && $temp1 == $sifra1){
+                if($temp1 != null && $temp1 == $sifra1 && $temp1 == $sifra2 && $temp1 == $sifra1){
                     $ne = 1;
                 }
             }
 
             if ($profesor[$prof2] != "/") {
                 $sifra2 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof2])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof2]), 1, count(explode(" ", $profesor[$prof2]))+1)))->pluck('sifra_profesorja');
-                if($temp2 != null && $temp2 == $sifra2){
+                if($temp2 != null && $temp2 == $sifra2 && $temp2 == $sifra2 && $temp2 == $sifra1){
                     $ne = 1;
                 }
             }
 
             if ($profesor[$prof3] != "/") {
                 $sifra3 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof3])[0])->where('priimek_profesorja', implode(" ",array_slice(explode(" ", $profesor[$prof3]), 1, count(explode(" ", $profesor[$prof3]))+1)))->pluck('sifra_profesorja');
-                if($temp3 != null && $temp3 == $sifra3){
+                if($temp3 != null && $temp3 == $sifra3 && $temp3 == $sifra2 && $temp3 == $sifra1){
                     $ne = 1;
                 }
             }
@@ -175,9 +187,16 @@ class NajdiIzvajalcaController extends Controller {
                 if(Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get() != null) {
                     if($ne == 0) {
                         $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[$j];
-                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $sifra1]);
-                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $sifra2]);
-                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $sifra3]);
+
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $sifra2]);
+
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $sifra3]);
+
+                        Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $sifra1]);
+
                         $j++;
                         if($j==1){
                             $j = 0;
@@ -185,18 +204,16 @@ class NajdiIzvajalcaController extends Controller {
                             $temp2 = null;
                             $temp3 = null;
                         }
-                    }else{
-                        $ne = 0;
                     }
                 }else{
-                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja' => $sifra1]);
-                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja2' => $sifra2]);
-                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->update(['sifra_profesorja3' => $sifra3]);
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja' => $sifra1]);
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja2' => $sifra2]);
+                    Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja3' => $sifra3]);
                 }
             }
         }
 
-        $vse = Input::get();
+
 
         return $this->najdi2($vse);
     }

@@ -6,7 +6,7 @@ class Izpit extends Model {
 
     protected $table = 'izpit';
     public $timestamps = false;
-    protected $fillable = [''];
+    protected $fillable = ['email_odjavitelja, cas_odjave, datum'];
     protected $guarded = ['*'];
     protected $hidden = [''];
 

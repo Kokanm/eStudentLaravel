@@ -13,6 +13,7 @@
                 <th>Datum</th>
                 <th>Opombe</th>
                 <th></th>
+                <th></th>
             </tr>
             @for($i=0; $i<count($rok); $i++)
                 @if(!empty($rok[$i][0]))
@@ -22,10 +23,17 @@
                     <td>{{ $profesorji[$i] }}</td>
                     <td>{{ date("d.m.Y", strtotime($rok[$i][0]->datum)) }}</td>
                     <td>{{ $rok[$i][0]->opombe }}</td>
-                    {!! Form::open(array('action' => array('PrijavaNaIzpitController@Prijava', $vpisna." ".$rok[$i][0]->sifra_letnika." ".$rok[$i][0]->sifra_predmeta." ".
-                            $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum))) !!}
-                        <td>{!! Form::submit('Prijavi se', ['class' => 'btn btn-success btn-xs']) !!}</td>
-                    {!! Form::close() !!}
+                    @if($rok[$i][1]==0)
+                        {!! Form::open(array('action' => array('PrijavaNaIzpitController@Prijava', $vpisna." ".$rok[$i][0]->sifra_letnika." ".$rok[$i][0]->sifra_predmeta." ".
+                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum))) !!}
+                            <td>{!! Form::submit('Prijavi se', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                        {!! Form::close() !!}
+                    @else
+                        {!! Form::open(array('action' => array('PrijavaNaIzpitController@Odjava', $vpisna." ".$rok[$i][0]->sifra_letnika." ".$rok[$i][0]->sifra_predmeta." ".
+                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum))) !!}
+                            <td>{!! Form::submit('Odjavi se', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                        {!! Form::close() !!}
+                    @endif
                 </tr>
                 @endif
             @endfor
