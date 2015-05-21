@@ -1,6 +1,14 @@
 @extends('app')
 @section('content')
 <div class="container">
+    @if(!empty($msg))
+        @foreach($msg as $m)
+            <div class="row">
+                <b style="color:red;">{{ $m }}</b>
+            </div>
+        @endforeach
+    @endif
+
     @if(!empty($predmeti))
         {!! Form::open(array('action' => array('NajdiIzvajalcaController@dodaj', $pomos))) !!}
         <div class="row">
@@ -18,12 +26,14 @@
                         {!! Form::label('stprogram','Študijski program', ['style' => 'font-weight: bold']) !!}
                         {!! Form::select('stprogram', $program, $stprogram, ['class' => 'form-control', 'id'=>'program']) !!}
                     </div>
+                    {!! Form::submit('Naprej', ['name'=>'isci', 'class'=>'btn btn-success', 'style' => 'margin-top: 25px; margin-left: 15px;']) !!}
+
                 </div>
+
         </div>
         <hr/>
         <br/>
         <br/>
-
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -76,7 +86,7 @@
         <hr/>
         <br/>
         <br/>
-@endif
+    @endif
     <br />
 </div>
 @endsection

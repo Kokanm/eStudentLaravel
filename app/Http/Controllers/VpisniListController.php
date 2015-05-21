@@ -106,88 +106,93 @@ class VpisniListController extends Controller {
                 $datum = $list["datumrojstva"];
 
                 $std = new Student;
-                $std->vpisna_stevilka = $list["vstevilka"];
-                $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
-                $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
-                $std->datum_rojstva = date("Y-m-d", strtotime($datum));
-                $std->sifra_obcine_rojstva = Obcina::where('naziv_obcine', $obcine[$list['krajrojstva'] - 1])->pluck('sifra_obcine');
-                $std->sifra_drzave_rojstva = Drzava::where('naziv_drzave', $drzave[$list['drzavarojstva'] - 1])->pluck('sifra_drzave');
-                $std->sifra_drzave_drzavljanstva = Drzava::where('naziv_drzave', $drzave[$list['drzavljanstvo'] - 1])->pluck('sifra_drzave');
-                $std->spol = strtoupper($list["spol"])[0];
+                if(!Student::where('vpisna_stevilka', $list["vstevilka"])->first()) {
+                    $std->vpisna_stevilka = $list["vstevilka"];
+                    $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
+                    $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
+                    $std->datum_rojstva = date("Y-m-d", strtotime($datum));
+                    $std->sifra_obcine_rojstva = Obcina::where('naziv_obcine', $obcine[$list['krajrojstva'] - 1])->pluck('sifra_obcine');
+                    $std->sifra_drzave_rojstva = Drzava::where('naziv_drzave', $drzave[$list['drzavarojstva'] - 1])->pluck('sifra_drzave');
+                    $std->sifra_drzave_drzavljanstva = Drzava::where('naziv_drzave', $drzave[$list['drzavljanstvo'] - 1])->pluck('sifra_drzave');
+                    $std->spol = strtoupper($list["spol"])[0];
 
-                if (Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') == "Slovenija" &&
-                    $std->sifra_obcine_rojstva == 999)
-                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
-                elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_rojstva != 999)
-                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
+                    if (Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') == "Slovenija" &&
+                        $std->sifra_obcine_rojstva == 999
+                    )
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
+                    elseif (Drzava::where('sifra_drzave', $std->sifra_drzave_rojstva)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_rojstva != 999)
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država rojstva!");
 
 
-                if (substr($datum, 0, 2) == substr($emso, 0, 2) && substr($datum, 3, 2) == substr($emso, 2, 2)
-                    && substr($datum, 7, 3) == substr($emso, 4, 3) && substr($emso, 7, 2) > 49 && substr($emso, 7, 2) < 60
-                ) {
-                    if ($std->spol == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500) {
-                        $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
-                            $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
-                            $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
+                    if (substr($datum, 0, 2) == substr($emso, 0, 2) && substr($datum, 3, 2) == substr($emso, 2, 2)
+                        && substr($datum, 7, 3) == substr($emso, 4, 3) && substr($emso, 7, 2) > 49 && substr($emso, 7, 2) < 60
+                    ) {
+                        if ($std->spol == "M" && substr($emso, 9, 3) >= 0 && substr($emso, 9, 3) < 500) {
+                            $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
+                                $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
+                                $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
 
-                        $ost = 11 - $kontrolna % 11;
-                        if ($emso[12] == $ost) {
-                            $std->emso = $emso;
+                            $ost = 11 - $kontrolna % 11;
+                            if ($emso[12] == $ost) {
+                                $std->emso = $emso;
+                            } else {
+                                return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
+                            }
+
+                        } elseif (($std->spol == "Z" || $std->spol == "Ž") && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000) {
+                            $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
+                                $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
+                                $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
+                            $ost = 11 - $kontrolna % 11;
+                            if ($emso[12] == $ost) {
+                                $std->emso = $emso;
+                            } else {
+                                return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
+                            }
                         } else {
-                            return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
-                        }
-
-                    } elseif (($std->spol == "Z" || $std->spol == "Ž") && substr($emso, 9, 3) >= 500 && substr($emso, 9, 3) < 1000) {
-                        $kontrolna = $emso[0] * 7 + $emso[1] * 6 + $emso[2] * 5 + $emso[3] * 4 +
-                            $emso[4] * 3 + $emso[5] * 2 + $emso[6] * 7 + $emso[7] * 6 + $emso[8] * 5 +
-                            $emso[9] * 4 + $emso[10] * 3 + $emso[11] * 2;
-                        $ost = 11 - $kontrolna % 11;
-                        if ($emso[12] == $ost) {
-                            $std->emso = $emso;
-                        } else {
-                            return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (kontrolna)");
+                            return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (spol)");
                         }
                     } else {
-                        return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (spol)");
+                        return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (datum)");
                     }
-                } else {
-                    return Redirect::back()->withInput()->withErrors("Napačno EMŠO!!! (datum)");
+
+                    $std->davcna_stevilka = $list["davcna"];
+                    $std->email_studenta = $list["email"];
+                    $std->prenosni_telefon = $list["gsm"];
+
+                    $std->postna_stevilka_stalno = explode(" ", $poste[$list['postastalno']])[0];
+                    $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno'] - 1])->pluck('sifra_obcine');
+                    $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno'] - 1])->pluck('sifra_drzave');
+                    $std->naslov_stalno = $list["naslovstalno"];
+                    if (Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') == "Slovenija" &&
+                        !$std->sifra_obcine_stalno == 999
+                    ) {
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
+                    } elseif (Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_stalno != 999) {
+                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
+                    }
+
+                    if (!empty($list['obcinazacasno'])) {
+                        $std->postna_stevilka_zacasno = explode(" ", $poste[$list['postazacasno']])[0];
+                        $std->sifra_obcine_zacasno = Obcina::where('naziv_obcine', $obcine[$list['obcinazacasno'] - 1])->pluck('sifra_obcine');
+                        $std->sifra_drzave_zacasno = Drzava::where('naziv_drzave', $drzave[$list['drzavazacasno'] - 1])->pluck('sifra_drzave');
+                        $std->naslov_zacasno = $list["naslovzacasno"];
+                        if (Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') == "Slovenija" &&
+                            $std->sifra_obcine_zacasno == 999
+                        )
+                            return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
+                        elseif (Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_zacasnoo != 999)
+                            return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
+                    }
+
+                    if ($list['vrocanje'] == 'vstalno') {
+                        $std->naslov_vrocanja = $list["naslovstalno"];
+                    } elseif ($list['vrocanje'] == 'vzacasno') {
+                        $std->naslov_vrocanja = $list["naslovzacasno"];
+                    }
+
+                    $std->save();
                 }
-
-                $std->davcna_stevilka = $list["davcna"];
-                $std->email_studenta = $list["email"];
-                $std->prenosni_telefon = $list["gsm"];
-
-                $std->postna_stevilka_stalno = explode(" ", $poste[$list['postastalno']])[0];
-                $std->sifra_obcine_stalno = Obcina::where('naziv_obcine', $obcine[$list['obcinastalno'] - 1])->pluck('sifra_obcine');
-                $std->sifra_drzave_stalno = Drzava::where('naziv_drzave', $drzave[$list['drzavastalno'] - 1])->pluck('sifra_drzave');
-                $std->naslov_stalno = $list["naslovstalno"];
-                if (Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') == "Slovenija" &&
-                    !$std->sifra_obcine_stalno == 999) {
-                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
-                }elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_stalno)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_stalno != 999) {
-                    return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država stalnega prebivališča!");
-                }
-
-                if(!empty($list['obcinazacasno'])){
-                    $std->postna_stevilka_zacasno = explode(" ", $poste[$list['postazacasno']])[0];
-                    $std->sifra_obcine_zacasno = Obcina::where('naziv_obcine', $obcine[$list['obcinazacasno'] - 1])->pluck('sifra_obcine');
-                    $std->sifra_drzave_zacasno = Drzava::where('naziv_drzave', $drzave[$list['drzavazacasno'] - 1])->pluck('sifra_drzave');
-                    $std->naslov_zacasno = $list["naslovzacasno"];
-                    if (Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') == "Slovenija" &&
-                        $std->sifra_obcine_zacasno == 999)
-                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
-                    elseif(Drzava::where('sifra_drzave', $std->sifra_drzave_zacasno)->pluck('naziv_drzave') != "Slovenija" && $std->sifra_obcine_zacasnoo != 999)
-                        return Redirect::back()->withInput()->withErrors("Izbrana napačna občina ali država začasnega prebivališča!");
-                }
-
-                if($list['vrocanje'] == 'vstalno'){
-                    $std->naslov_vrocanja = $list["naslovstalno"];
-                }elseif($list['vrocanje'] == 'vzacasno'){
-                    $std->naslov_vrocanja = $list["naslovzacasno"];
-                }
-
-                $std->save();
 
                 $vp = new Vpis;
                 $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram'] - 1])[0];
@@ -592,6 +597,9 @@ class VpisniListController extends Controller {
         if ($user = Auth::user()) {
             if ($user->type == 0) {
                 $kandidat = Kandidat::where('email_kandidata', $user->email)->get();
+                if(count($kandidat) == 0){
+                    return redirect('home')->with('message', 'Niste kandidat!');
+                }
                 $zac = "63" . substr(date('Y'), 2, 2);
                 $st = count(Student::where('vpisna_stevilka', 'LIKE', $zac . '%')->get());
                 if (floor($st / 10) == 0)
