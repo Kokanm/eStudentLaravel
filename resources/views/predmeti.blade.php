@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-<div class="container">
+<div class="container">`
     @if($errors->any())
         <ul class="alert alert-danger">
             @foreach($errors->all() as $error)

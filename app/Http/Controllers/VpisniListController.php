@@ -232,7 +232,7 @@ class VpisniListController extends Controller {
                 $vp->save();
 
                 $obvezni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
-                where('sifra_letnika', $vp->sifra_letnika)->where('sifra_sestavnega_dela', NULL)->lists('sifra_predmeta');
+                    where('sifra_letnika', $vp->sifra_letnika)->where('sifra_sestavnega_dela', NULL)->lists('sifra_predmeta');
                 $obvezni_predmeti = [];
                 $sum = 0;
                 for ($i = 0; $i < count($obvezni); $i++) {
@@ -276,7 +276,7 @@ class VpisniListController extends Controller {
 
 
                 return view('predmeti', ['studijski_program' => $studijski_programi[$list['studiskiprogram'] - 1], 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'vpisna' => $pomos, 'tip' => 0, 'tips' => 0]);
+                    'prosti' => $prosti, 'strokovni' => $strokovni, 'vpisna' => $pomos, 'tips' => 0]);
 
             }elseif($user->type == 1){
                 $programi = Studijski_program::get();
@@ -352,10 +352,10 @@ class VpisniListController extends Controller {
                     return Redirect::back()->withInput()->withErrors($errors);
                 }
 
-                $zet = Zeton::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->get()[0];
                 $emso = $list["emso"];
                 $datum = $list["datumrojstva"];
 
+                Vpisan_predmet::where('vpisna_stevilka', $list["vstevilka"])->delete();
                 $std = Student::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
                 $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
                 $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
@@ -447,44 +447,11 @@ class VpisniListController extends Controller {
                 else
                     $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram']-1])[0];
 
-                if($zet->sifra_studijskega_programa != $vp->sifra_studijskega_programa){
-                    return Redirect::back()->withInput()->withErrors("Nimate dovolenje za ta študijski program!");
-                }
-
                 $vp->sifra_vrste_studija = explode(" ", $vrste_studija[$list['vrstastudija']-1])[0];
                 $vp->sifra_vrste_vpisa = Vrsta_vpisa::where('opis_vrste_vpisa', $vrste_vpisa[$list['vrstavpisa']-1])->pluck('sifra_vrste_vpisa');
-                if($zet->sifra_vrste_vpisa != $vp->sifra_vrste_vpisa){
-                    return Redirect::back()->withInput()->withErrors("Nimate dovolenje za to vrsto vpisa!");
-                }
-
-                if($vp->sifra_vrste_studija == 16204 && !($vp->sifra_studijskega_programa == 1000425 || $vp->sifra_studijskega_programa == 1000475
-                        || $vp->sifra_studijskega_programa == 1001001 || $vp->sifra_studijskega_programa == 1000469))
-                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija UNI");
-                elseif($vp->sifra_vrste_studija == 16203 && !($vp->sifra_studijskega_programa == 1000470 || $vp->sifra_studijskega_programa == 1000477))
-                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija VS");
-                elseif($vp->sifra_vrste_studija == 17003 && !($vp->sifra_studijskega_programa == 1000471 || $vp->sifra_studijskega_programa == 1000934))
-                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija MAG");
-
-
-                $vp->sifra_nacina_studija = Nacin_studija::where('opis_nacina_studija', $nacin[$list['nacin']-1])->pluck('sifra_nacina_studija');
-                if($zet->sifra_nacina_studija != $vp->sifra_nacina_studija){
-                    return Redirect::back()->withInput()->withErrors("Nimate dovolenje za ta nacin študija!");
-                }
-
                 $vp->sifra_oblike_studija = Oblika_studija::where('opis_oblike_studija', $oblik[$list['oblika']-1])->pluck('sifra_oblike_studija');
-                if($zet->sifra_oblike_studija != $vp->sifra_oblike_studija){
-                    return Redirect::back()->withInput()->withErrors("Nimate dovolenje za to obliko študija!");
-                }
-
                 $vp->sifra_studijskega_leta = substr(date('Y'),2,2);
-
-                if(array_key_exists('zavod', $list)){
-                    $vp->zavod = $list['zavod'];
-                }
-
-                if(array_key_exists('krajizvajanja', $list)){
-                    $vp->kraj_izvajanja = $list['krajizvajanja'];
-                }
+                $vp->sifra_nacina_studija = Nacin_studija::where('opis_nacina_studija', $nacin[$list['nacin']-1])->pluck('sifra_nacina_studija');
 
                 $let = Vpis::where('vpisna_stevilka', $list['vstevilka'])->pluck('sifra_letnika');
 
@@ -496,8 +463,28 @@ class VpisniListController extends Controller {
                 }else
                     $vp->sifra_letnika = 7;
 
-                if($zet->sifra_letnika != $vp->sifra_letnika){
-                    return Redirect::back()->withInput()->withErrors("Nimate dovolenje za vpis v ta letnik!");
+                $zet = Zeton::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->where('sifra_vrste_vpisa', $vp->sifra_vrste_vpisa)->
+                    where('sifra_oblike_studija', $vp->sifra_oblike_studija)->where('sifra_nacina_studija', $vp->sifra_nacina_studija)->where('sifra_letnika', $vp->sifra_letnika)->get();
+
+                if(count($zet) == 0)
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija UNI");
+
+                $prostaizbira = $zet[0]->prosta_izbira_predmetov;
+
+                if($vp->sifra_vrste_studija == 16204 && !($vp->sifra_studijskega_programa == 1000425 || $vp->sifra_studijskega_programa == 1000475
+                        || $vp->sifra_studijskega_programa == 1001001 || $vp->sifra_studijskega_programa == 1000469))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija UNI");
+                elseif($vp->sifra_vrste_studija == 16203 && !($vp->sifra_studijskega_programa == 1000470 || $vp->sifra_studijskega_programa == 1000477))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija VS");
+                elseif($vp->sifra_vrste_studija == 17003 && !($vp->sifra_studijskega_programa == 1000471 || $vp->sifra_studijskega_programa == 1000934))
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija študijski program + vrsta študija MAG");
+
+                if(array_key_exists('zavod', $list)){
+                    $vp->zavod = $list['zavod'];
+                }
+
+                if(array_key_exists('krajizvajanja', $list)){
+                    $vp->kraj_izvajanja = $list['krajizvajanja'];
                 }
 
                 if($vp->sifra_vrste_vpisa == 1 && $vp->sifra_letnika != $let+1)
@@ -513,7 +500,7 @@ class VpisniListController extends Controller {
                 $vp->save();
 
                 $obvezni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
-                where('sifra_letnika', $vp->sifra_letnika)->where('sifra_sestavnega_dela', NULL)->lists('sifra_predmeta');
+                    where('sifra_letnika', $vp->sifra_letnika)->where('sifra_sestavnega_dela', NULL)->lists('sifra_predmeta');
                 $obvezni_predmeti = [];
                 $sum = 0;
                 for($i=0; $i<count($obvezni); $i++){
@@ -549,12 +536,19 @@ class VpisniListController extends Controller {
                     array_unshift($moduli, "");
                 }
 
-                $pomos = $vp->vpisna_stevilka.$vp->sifra_studijskega_leta.$vp->sifra_studijskega_programa.$vp->sifra_letnika.$zet->prosta_izbira_predmetov;
+                $pomos = $vp->vpisna_stevilka.$vp->sifra_studijskega_leta.$vp->sifra_studijskega_programa.$vp->sifra_letnika.$prostaizbira;
                 $modularni = [];
+
+                if($vp->sifra_letnika == 1) {
+                    Zeton::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->
+                        where('sifra_letnika', $vp->sifra_letnika)->update(['zeton_porabljen' => 1]);
+                    return view('predmeti', ['studijski_program' => $studijski_programi[$list['studiskiprogram'] - 1], 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                        'prosti' => [], 'strokovni' => [], 'moduli' => [], 'vpisna' => $pomos, 'modularni' => [], 'tips' => 0]);
+                }
 
                 if($vp->sifra_letnika == 2) {
                     $prosto_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
-                    where('sifra_letnika', $vp->sifra_letnika)->where('sifra_sestavnega_dela', '7')->orWhere('sifra_sestavnega_dela', '6')->lists('sifra_predmeta');
+                        where('sifra_letnika', $vp->sifra_letnika)->whereBetween('sifra_sestavnega_dela', [6, 7])->lists('sifra_predmeta');
                     $prosti = [];
                     for ($i = 0; $i < count($prosto_izbirni); $i++) {
                         $prosti[$i] = Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->pluck('naziv_predmeta') . " - " . Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->
@@ -562,7 +556,7 @@ class VpisniListController extends Controller {
                     }
                 }else{
                     $prosto_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
-                    where('sifra_letnika', $vp->sifra_letnika)->lists('sifra_predmeta');
+                        where('sifra_letnika', $vp->sifra_letnika)->lists('sifra_predmeta');
                     $prosti = [];
                     for ($i = 0; $i < count($prosto_izbirni); $i++) {
                         $prosti[$i] = Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->pluck('naziv_predmeta') . " - " . Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->
@@ -572,7 +566,7 @@ class VpisniListController extends Controller {
                 if (!empty($prosti))
                     array_unshift($prosti, "");
 
-                if($vp->sifra_letnika==3 && $zet->prosta_izbira_predmetov == 1){
+                if($vp->sifra_letnika==3 && $prostaizbira == 1){
                     $modpredmeti = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->where('sifra_letnika', $vp->sifra_letnika)->
                     where('sifra_sestavnega_dela','!=', '6')->where('sifra_sestavnega_dela', '!=', '7')->whereNotNull('sifra_sestavnega_dela')->lists('sifra_predmeta');
 
@@ -666,11 +660,18 @@ class VpisniListController extends Controller {
                 $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->
                     where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->get();
 
+                $porabljen = 1;
                 if(!empty($zet[0])) {
-                    if ($zet[0]->zeton_porabljen)
+                    for($i=0; $i<count($zet); $i++){
+                        if($zet[$i]->zeton_porabljen == 0){
+                            $porabljen=0;
+                            $zet[0] = $zet[$i];
+                        }
+                    }
+                    if($porabljen)
                         return redirect('home')->with('message', 'Porabljen žeton!');
-                }else {
-                    return redirect('home')->with('message', 'Nimate dovolenje za vpis!');
+                } else {
+                    return redirect('home')->with('message', 'Nimate žeton za vpis!');
                 }
 
                 Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->update(['vpis_potrjen'=>0]);
