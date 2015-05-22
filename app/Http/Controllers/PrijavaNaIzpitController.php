@@ -42,7 +42,8 @@ class PrijavaNaIzpitController extends Controller {
 
             $iz = null;
             if(!empty($rok[$i][0])) {
-                $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->whereNull('cas_odjave')->first();
+                $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('datum', $rok[$i][0]->datum)->
+                    where('sifra_predmeta', $roki[$i]->sifra_predmeta)->whereNull('cas_odjave')->first();
                 $date = date( 'Y-m-d 01:00:00', strtotime($rok[$i][0]->datum));
             }
 
