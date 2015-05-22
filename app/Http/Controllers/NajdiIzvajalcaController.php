@@ -330,6 +330,25 @@ class NajdiIzvajalcaController extends Controller {
                 $sifra2 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof2])[0])->where('priimek_profesorja', implode(" ", array_slice(explode(" ", $profesor[$prof2]), 1, count(explode(" ", $profesor[$prof2])) + 1)))->pluck('sifra_profesorja');
                 $sifra3 = Profesor::where('ime_profesorja', explode(" ", $profesor[$prof3])[0])->where('priimek_profesorja', implode(" ", array_slice(explode(" ", $profesor[$prof3]), 1, count(explode(" ", $profesor[$prof3])) + 1)))->pluck('sifra_profesorja');
 
+
+                if($sifra1 == null){
+                    if($sifra2 != null) {
+                        $sifra1 = $sifra2;
+                        $sifra2 = $sifra3;
+                        $sifra3 = null;
+                    }elseif($sifra3 != null){
+                        $sifra1 = $sifra3;
+                        $sifra3 = null;
+                    }
+                }
+
+                if($sifra2 == null){
+                    if($sifra3 != null){
+                        $sifra2 = $sifra3;
+                        $sifra3 = null;
+                    }
+                }
+
                 if($sifra1 == null){
                     $sifra1 = $i+10000;
                 }
@@ -370,18 +389,20 @@ class NajdiIzvajalcaController extends Controller {
             for ($i = 0; $i < count($izv) - 1; $i++) {
                 if($dup[$i] == 1) {
                     if (max(array_count_values($izvajalci[$i])) == 1) {
-                        if($izvajalci[$i][0] != $i+10000)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja' => null]);
-                        if($izvajalci[$i][1] != $i+20001)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja2' => null]);
-                        if($izvajalci[$i][2] != $i+30007)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja3' => null]);
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja2' => null]);
+                            if ($izvajalci[$i][2] != $i + 30007)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja3' => null]);
+                            if ($izvajalci[$i][0] != $i + 10000)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->update(['sifra_profesorja' => null]);
+                        }
                     }else{
                         $messages[] = "Ne sme biti dvakrat isti profesor! (predmet: ".explode(" ", $izvedbe)[$i].")";
                     }
@@ -389,51 +410,57 @@ class NajdiIzvajalcaController extends Controller {
                     $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[0];
                     $result = array_merge($izvajalci[$i], $izvajalci[$i+1]);
                     if (max(array_count_values($result)) == 1) {
-                        if($izvajalci[$i][0] != $i+10000) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
-                        }
 
-                        if($izvajalci[$i][1] != $i+20001) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
-                        }
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
+                            }
 
-                        if($izvajalci[$i][2] != $i+30007) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            if ($izvajalci[$i][2] != $i + 30007) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            }
+
+                            if ($izvajalci[$i][0] != $i + 10000) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
+                            }
                         }
                     }
                     $i++;
                     $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[1];
                     if (max(array_count_values($result)) == 1) {
-                        if($izvajalci[$i][0] != $i+10000)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
-                        if($izvajalci[$i][1] != $i+20001)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
-                        if($izvajalci[$i][2] != $i+30007)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
+                            if ($izvajalci[$i][2] != $i + 30007)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+
+                            if ($izvajalci[$i][0] != $i + 10000)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
+                        }
                     }else{
                         $messages[] = "Ne sme biti dvakrat isti profesor! (predmet: ".explode(" ", $izvedbe)[$i].",".explode(" ", $izvedbe)[$i-1].")";
                     }
@@ -441,76 +468,83 @@ class NajdiIzvajalcaController extends Controller {
                     $result = array_merge($izvajalci[$i], $izvajalci[$i+1], $izvajalci[$i+2]);
                     $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[0];
                     if (max(array_count_values($result)) == 1) {
-                        if($izvajalci[$i][0] != $i+10000) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
-                        }
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
+                            }
 
-                        if($izvajalci[$i][1] != $i+20001) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
-                        }
+                            if ($izvajalci[$i][2] != $i + 30007) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            }
 
-                        if($izvajalci[$i][2] != $i+30007) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            if ($izvajalci[$i][0] != $i + 10000) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
+                            }
                         }
                     }
                     $i++;
                     $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[1];
                     if (max(array_count_values($result)) == 1) {
-                        if($izvajalci[$i][0] != $i+10000)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
-                        if($izvajalci[$i][1] != $i+20001)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
-                        if($izvajalci[$i][2] != $i+30007)
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        else
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
+                            if ($izvajalci[$i][2] != $i + 30007)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            if ($izvajalci[$i][0] != $i + 10000)
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            else
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
+                        }
                     }
                     $i++;
+                    $pr = Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->get()[2];
                     if (max(array_count_values($result)) == 1) {
-                        if($izvajalci[$i][0] != $i+10000) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
-                        }
+                        if(min($izvajalci[$i]) != $i+10000) {
+                            if ($izvajalci[$i][1] != $i + 20001) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
+                            }
 
-                        if($izvajalci[$i][1] != $i+20001) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => $izvajalci[$i][1]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja2' => null]);
-                        }
+                            if ($izvajalci[$i][2] != $i + 30007) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            }
 
-                        if($izvajalci[$i][2] != $i+30007) {
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => $izvajalci[$i][2]]);
-                        }else{
-                            Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
-                            where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja3' => null]);
+                            if ($izvajalci[$i][0] != $i + 10000) {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => $izvajalci[$i][0]]);
+                            } else {
+                                Izvedba_predmeta::where('sifra_predmeta', explode(" ", $izvedbe)[$i])->where('sifra_studijskega_leta', $stlet)->
+                                    where('sifra_profesorja', $pr->sifra_profesorja)->update(['sifra_profesorja' => null]);
+                            }
                         }
                     }else{
                         $messages[] = "Ne sme biti dvakrat isti profesor! (predmet: ".explode(" ", $izvedbe)[$i].",".explode(" ", $izvedbe)[$i-1].", ".explode(" ", $izvedbe)[$i-2].")";
