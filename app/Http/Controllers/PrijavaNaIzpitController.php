@@ -180,11 +180,12 @@ class PrijavaNaIzpitController extends Controller {
         $email = Auth::user()->email;
         $vp = explode(" ", $vse)[0];
         $spred = explode(" ", $vse)[2];
+        $datum = explode(" ", $vse)[6];
 
         $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('sifra_predmeta', $spred)->first();
 
         if($iz){
-            Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('sifra_predmeta', $spred)->update(['email_odjavitelja' => $email, 'cas_odjave' => date('H:m:s')]);
+            Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('sifra_predmeta', $spred)->where('datum', $datum)->update(['email_odjavitelja' => $email, 'cas_odjave' => date('H:m:s')]);
         }
 
         return $this->Roki();
