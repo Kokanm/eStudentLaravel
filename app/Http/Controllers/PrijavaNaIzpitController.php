@@ -56,6 +56,7 @@ class PrijavaNaIzpitController extends Controller {
                 $rok[$i][1] = 0;
             }
 
+            $iz3 = null;
             if(!empty($rok[$i][0]))
                 $iz3 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->whereNull('cas_odjave')->first();
 

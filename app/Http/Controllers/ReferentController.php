@@ -188,9 +188,11 @@ class ReferentController extends Controller {
                 $stprogram = Studijski_program::where('sifra_studijskega_programa', $studijski_programi[$stprogram2])->pluck('sifra_studijskega_programa');
             }
 
+            $idzetona = Input::get( 'idzetona' );
             if($stleto2 != null && $stprogram2 != null) {
-                Zeton::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $stleto)->where('sifra_studijskega_programa', $stprogram)->delete();
+                //ta je predzadnji Zeton::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $stleto)->where('sifra_studijskega_programa', $stprogram)->delete();
                 //Zeton::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $stleto)->where('sifra_studijskega_programa', $stprogram)->update(['sifra_letnika'=>$stletnik, 'sifra_oblike_studija'=>$oblikaStudija, 'sifra_nacina_studija'=>$nacinStudija, 'sifra_vrste_vpisa'=>$vrstaVpisa, 'prosta_izbira_predmetov'=>$prostaIzbira]);
+                Zeton::where('id', $idzetona)->delete();
             }
         }
 

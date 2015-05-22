@@ -657,8 +657,7 @@ class VpisniListController extends Controller {
                 $student = Student::where('email_studenta', $user->email)->get();
                 $vpis = Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->get()[0];
 
-                $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->
-                    where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->get();
+                $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->get();
 
                 $porabljen = 1;
                 if(!empty($zet[0])) {

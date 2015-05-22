@@ -205,7 +205,7 @@ class IzbirniPredmetiController extends Controller {
                     }else{
                         return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
                             'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->
-                        withErrors("Izberite modularne predmete! ");
+                            withErrors("Izberite modularne predmete! ");
                     }
                 }
             }

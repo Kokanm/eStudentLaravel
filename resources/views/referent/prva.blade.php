@@ -4,7 +4,7 @@
 <ul class="nav navbar-nav">
 	<li><a href="{{ url('referent/uvoz_podatkov') }}">Uvoz kandidatov</a></li>
 	<li><a href="{{ url('vpisa') }}">Zajem vpisnega lista</a></li>
-	<li><a href="{{ url('find') }}">Izpis vpisnega lista</a></li>
+	<li><a href="{{ url('find') }}">Študenti - možnosti</a></li>
 	<li><a href="{{ url('potrdi') }}">Potrditev vpisa</a></li>
 	
 </ul>

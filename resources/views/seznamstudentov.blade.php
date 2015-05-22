@@ -18,7 +18,7 @@
                     <td>{{ $row->email_studenta }}</td>
                     @if($tip==2)
                     {!! Form::open(array('action' => array('TiskajController@izpisReferent', $row->vpisna_stevilka))) !!}
-                        <td>{!! Form::submit('Tiskaj', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                        <td>{!! Form::submit('Možnosti', ['class' => 'btn btn-success btn-xs']) !!}</td>
                     {!! Form::close() !!}
                     @endif
                     @if($tip==3)

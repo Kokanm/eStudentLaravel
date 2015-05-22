@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="container">
+<div class="panel panel-default">
+<div class="panel-body">
 	@if(!empty($porabljeniZetoni))
 		<h3>PORABLJENI ŽETONI</h3><br/>
 		<table class="table table-hover">
@@ -129,6 +131,8 @@
         </div>
     </div>
     {!! Form::close() !!}
+</div>
+</div>
 </div>
 @endsection
 
