@@ -25,7 +25,7 @@ class IzpisVpisnegaListaController extends Controller {
 
 	public function vpisnilist($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
-        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
         $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
             pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
             pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
@@ -106,15 +106,6 @@ class IzpisVpisnegaListaController extends Controller {
         else
             $vse['obcina2'] = "";
 
-        $tr1 = false;
-        $tr2 = false;
-        if($student[0]->naslov_vrocanja != null){
-            if($student[0]->naslov_vrocanja == $vse['naslov1'])
-                $tr1 = true;
-            elseif($student[0]->naslov_vrocanja == $vse['naslov2'])
-                $tr2 = true;
-        }
-
         $vse['program'] = $vpis[0]->sifra_studijskega_programa." ".Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
 
         if(!$vpis[0]->kraj_izvajanja)
@@ -148,7 +139,7 @@ class IzpisVpisnegaListaController extends Controller {
 
     public function pregled($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
-        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
         $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
         pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
         pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
@@ -264,7 +255,7 @@ class IzpisVpisnegaListaController extends Controller {
         $email = Auth::user()->email;
         $vs = Student::where('email_studenta', $email)->pluck('vpisna_stevilka');
         $student = Student::where('vpisna_stevilka', $vs)->get();
-        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
         $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
             pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
             pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');

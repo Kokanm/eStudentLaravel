@@ -321,8 +321,7 @@ class IzbirniPredmetiController extends Controller {
         }
 
 
-        Zeton::where('vpisna_stevilka', $vpisna["vpisna"])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->
-            where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->where('sifra_letnika', $vpisna['sifra_letnika'])->update(['zeton_porabljen'=>1]);
+        Zeton::where('vpisna_stevilka', $vpisna["vpisna"])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->update(['zeton_porabljen'=>1]);
         return redirect('home')->with('message', 'Vpisni list je oddan!');
     }
 
@@ -626,7 +625,7 @@ class IzbirniPredmetiController extends Controller {
             }
         }
 
-        Vpis::where('vpisna_stevilka', $vpisna["vpisna"])->update(['vpis_potrjen'=>1]);
+        Vpis::where('vpisna_stevilka', $vpisna["vpisna"])->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->update(['vpis_potrjen'=>1]);
 
         return redirect('home')->with('message', 'Vpisni list je oddan!');
     }

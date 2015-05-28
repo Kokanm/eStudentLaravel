@@ -33,5 +33,15 @@
     </div>
 </div>
 
+<hr />
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-1">
+        {!! Form::open(array('action' => array('PrijavaNaIzpitController@RokiR', $vp))) !!}
+            {!! Form::submit('Prijava na izpit', ['class'=>'btn btn-default']) !!}
+        {!! Form::close() !!}
+    </div>
+</div>
+
 
 @endsection

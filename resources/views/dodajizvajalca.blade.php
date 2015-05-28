@@ -41,24 +41,52 @@
                         <th>Izvajalec 1</th>
                         <th>Izvajalec 2</th>
                         <th>Izvajalec 3</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {{--*/ $i = 0 /*--}}
                     @foreach($izvPredmeti as $row)
                     <tr>
-                        <td class="col-md-offset-2 col-md-1 col-xs-3">{{ $predmeti[$row->sifra_predmeta] }}</td>
+                        <td class="col-md-offset-2 col-md-2 col-xs-3">{{ $predmeti[$row->sifra_predmeta] }}</td>
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof1'.$i, $profesor, $row->sifra_profesorja, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof2'.$i, $profesor, $row->sifra_profesorja2, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof3'.$i, $profesor, $row->sifra_profesorja3, ['class' => 'form-control']) !!}</td>
+                        <td class="col-md-1" style="padding-left: 40px">{!! Form::submit('Odstrani', ['class'=>'btn btn-success' , 'name'=>'brisip'.$i, 'style'=>'margin-left: 10px']) !!}</td>
                     </tr>
                     {{--*/ $i+=1 /*--}}
                     @endforeach
                 </tbody>
             </table>
+            <hr />
             <div class="col-md-offset-10 col-md-1">
-                {!! Form::submit('Posodobi', ['class'=>'btn btn-success', 'style' => 'margin-bottom: 50px; margin-left:84px']) !!}
+                {!! Form::submit('Posodobi', ['class'=>'btn btn-success', 'name' => 'posod', 'style' => 'margin-bottom: 50px;']) !!}
             </div>
+            <br />
+            <br />
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Predmet</th>
+                        <th style="padding-left: 20px">Izvajalec 1</th>
+                        <th style="padding-left: 20px">Izvajalec 2</th>
+                        <th style="padding-left: 20px">Izvajalec 3</th>
+                        <th style="padding-left: 20px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-md-offset-2 col-md-2 col-xs-3">{!! Form::select('predmet', $predmeti, 0, ['class' => 'form-control']) !!}</td>
+                        <td class="col-md-1">{!! Form::select('profe1', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>
+                        <td class="col-md-1">{!! Form::select('profe2', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>
+                        <td class="col-md-1">{!! Form::select('profe3', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>
+                        <td class="col-md-1">{!! Form::submit('Dodaj', ['class'=>'btn btn-success' , 'name'=>'dodajp', 'style'=>'margin-left: 10px']) !!}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            <br />
+            <br />
         {!! Form::close() !!}
     @else
         <div class="row">

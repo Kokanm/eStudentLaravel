@@ -54,5 +54,8 @@ Route::get('tisks', ['middleware' => 'student', 'uses' => 'IzpisVpisnegaListaCon
 Route::post('zeton/{vpisna}', ['middleware' => 'referent', 'uses' => 'ReferentController@dodajZeton']);
 
 Route::get('prijava', ['middleware' => 'student', 'uses' => 'PrijavaNaIzpitController@Roki']);
-Route::post('prijava/{vse}', ['middleware' => 'student', 'uses' => 'PrijavaNaIzpitController@Prijava']);
-Route::post('odjava/{vse}', ['middleware' => 'student', 'uses' => 'PrijavaNaIzpitController@Odjava']);
+Route::post('prijava/{vse}', ['middleware' => 'StudRef', 'uses' => 'PrijavaNaIzpitController@Prijava']);
+Route::post('odjava/{vse}', ['middleware' => 'StudRef', 'uses' => 'PrijavaNaIzpitController@Odjava']);
+Route::post('prijavaodjava/{vse}', ['middleware' => 'referent', 'uses' => 'PrijavaNaIzpitController@RokiR']);
+
+Route::get('kartotecniS', ['middleware' => 'student', 'uses' => 'KartotecniListController@vrni']);

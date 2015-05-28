@@ -14,6 +14,7 @@ class CreateIzvedbaPredmetaTable extends Migration {
 	{
 		Schema::create('izvedba_predmeta', function(Blueprint $table)
 		{
+            #$table->increments('id');
 			$table->decimal('sifra_predmeta', 5, 0);
 			$table->decimal('sifra_studijskega_programa', 7, 0);
 			$table->decimal('sifra_letnika', 1, 0);

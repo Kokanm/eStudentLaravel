@@ -440,13 +440,9 @@ class VpisniListController extends Controller {
 
                 $std->save();
 
-                $vp = Vpis::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
-
-                if($list['studiskiprogram'] == 0)
-                    return Redirect::back()->withInput()->withErrors("Izberite študijski program!");
-                else
-                    $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram']-1])[0];
-
+                $vp = new Vpis;
+                $vp->vpisna_stevilka = $list["vstevilka"];
+                $vp->sifra_studijskega_programa = explode(" ", $studijski_programi[$list['studiskiprogram']-1])[0];
                 $vp->sifra_vrste_studija = explode(" ", $vrste_studija[$list['vrstastudija']-1])[0];
                 $vp->sifra_vrste_vpisa = Vrsta_vpisa::where('opis_vrste_vpisa', $vrste_vpisa[$list['vrstavpisa']-1])->pluck('sifra_vrste_vpisa');
                 $vp->sifra_oblike_studija = Oblika_studija::where('opis_oblike_studija', $oblik[$list['oblika']-1])->pluck('sifra_oblike_studija');
@@ -594,16 +590,13 @@ class VpisniListController extends Controller {
                 if(count($kandidat) == 0){
                     return redirect('home')->with('message', 'Niste kandidat!');
                 }
-                $zac = "63" . substr(date('Y'), 2, 2);
-                $st = count(Student::where('vpisna_stevilka', 'LIKE', $zac . '%')->get());
-                if (floor($st / 10) == 0)
-                    $vp = $zac . "000" . $st;
-                elseif (floor($st / 100) == 0)
-                    $vp = $zac . "00" . $st;
-                elseif (floor($st / 1000) == 0)
-                    $vp = $zac . "0" . $st;
-                else
-                    $vp = $zac . "" . $st;
+                $zac = "63".substr(date('Y'), 2, 2);
+                $st = Student::where('vpisna_stevilka', 'LIKE', $zac . '%')->orderBy('vpisna_stevilka', 'desc')->first();
+                if($st){
+                    $vp = $st->vpisna_stevilka + 1;
+                } else {
+                    $vp = $zac."0001";
+                }
 
                 $kandidat->vpisna_stevilka = $vp;
                 $programi = Studijski_program::get();
@@ -673,7 +666,7 @@ class VpisniListController extends Controller {
                     return redirect('home')->with('message', 'Nimate žeton za vpis!');
                 }
 
-                Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->update(['vpis_potrjen'=>0]);
+                Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->update(['vpis_potrjen'=>0]);
 
                 $programi = Studijski_program::get();
                 $studijski_programi = [];

@@ -18,7 +18,7 @@ class PotrditevVpisaController extends Controller {
 
     public function nepotrjeni()
     {
-        $vpisi = Vpis::where('vpis_potrjen', 0)->lists('vpisna_stevilka');
+        $vpisi = Vpis::where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->where('vpis_potrjen', 0)->lists('vpisna_stevilka');
 
         if (count($vpisi) > 0) {
 
@@ -35,7 +35,7 @@ class PotrditevVpisaController extends Controller {
 
 	public function potrdi($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
-        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
 
         $vse['vpisnastevilka'] = $vs;
         $vse['priimekime'] = $student[0]->priimek_studenta . ', ' . $student[0]->ime_studenta;
@@ -44,7 +44,7 @@ class PotrditevVpisaController extends Controller {
         $vse['letnik'] = Letnik::where('sifra_letnika', $vpis[0]->sifra_letnika)->pluck('stevilka_letnika');
         $vse['nacin'] = Nacin_studija::where('sifra_nacina_studija', $vpis[0]->sifra_nacina_studija)->pluck('opis_nacina_studija');
         $vse['program'] = Studijski_program::where('sifra_studijskega_programa', $vpis[0]->sifra_studijskega_programa)->pluck('naziv_studijskega_programa');
-        Vpis::where('vpisna_stevilka', $vs)->update(['vpis_potrjen'=>1]);
+        Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->update(['vpis_potrjen'=>1]);
         User::where('email', $student[0]->email_studenta)->update(['type'=>1]);
         Kandidat::where('email_kandidata', $student[0]->email_studenta)->delete();
         $st = 5;
@@ -53,7 +53,7 @@ class PotrditevVpisaController extends Controller {
 
     public function natisni($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
-        $vpis = Vpis::where('vpisna_stevilka', $vs)->get();
+        $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
 
         $vse['vpisnastevilka'] = $vs;
         $vse['priimekime'] = $student[0]->priimek_studenta . ', ' . $student[0]->ime_studenta;

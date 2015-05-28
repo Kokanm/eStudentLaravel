@@ -218,7 +218,7 @@ class VpisniListReferentController extends Controller {
             $vp->sifra_nacina_studija = Nacin_studija::where('opis_nacina_studija', $nacin[$list['nacin'] - 1])->pluck('sifra_nacina_studija');
             $vp->sifra_oblike_studija = Oblika_studija::where('opis_oblike_studija', $oblik[$list['oblika'] - 1])->pluck('sifra_oblike_studija');
             $vp->sifra_studijskega_leta = Studijsko_leto::where('stevilka_studijskega_leta', date('Y') . "/" . (date('Y') + 1))->pluck('sifra_studijskega_leta');
-            $vp->vpisna_stevilka = $list["vstevilka"];
+            $vp->vpisna_stevilka = $list['vstevilka'];
 
             if (array_key_exists('zavod', $list)) {
                 $vp->zavod = $list['zavod'];
@@ -391,7 +391,7 @@ class VpisniListReferentController extends Controller {
 
             $std->save();
 
-            $vp = Vpis::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
+            $vp = new Vpis;
 
             if ($list['studiskiprogram'] == 0)
                 return Redirect::back()->withInput()->withErrors("Izberite študijski program!");
@@ -426,6 +426,7 @@ class VpisniListReferentController extends Controller {
             if (array_key_exists('krajizvajanja', $list)) {
                 $vp->kraj_izvajanja = $list['krajizvajanja'];
             }
+            $vp->vpisna_stevilka = $list['vstevilka'];
 
             $let = Vpis::where('vpisna_stevilka', $list['vstevilka'])->pluck('sifra_letnika');
 
@@ -599,7 +600,7 @@ class VpisniListReferentController extends Controller {
 
                 $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->get();
 
-                Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->update(['vpis_potrjen'=>0]);
+                Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->update(['vpis_potrjen'=>0]);
 
                 $programi = Studijski_program::get();
                 $studijski_programi = [];

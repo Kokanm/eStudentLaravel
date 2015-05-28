@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Izpit;
 use App\Izpitni_rok;
 use App\Izvedba_predmeta;
+use App\Placljiv;
 use App\Predmet;
 use App\Profesor;
 use App\Student;
@@ -20,9 +21,11 @@ class PrijavaNaIzpitController extends Controller {
 	public function Roki(){
         date_default_timezone_set('Europe/Ljubljana');
         $vp = Student::where('email_studenta', Auth::user()->email)->pluck('vpisna_stevilka');
-        $vpis = Vpis::where('vpisna_stevilka', $vp)->first();
+        $vpis = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->first();
         if(!$vpis){
-            return redirect('home')->with('message', 'Nimate predmete!');
+            $vpis = Vpis::where('vpisna_stevilka', $vp)->orderBy('sifra_studijskega_leta', 'desc')->first();
+            if(!$vpis)
+                return redirect('home')->with('message', 'Nimate predmetov!');
         }
         $vpredmeti = Vpisan_predmet::where('vpisna_stevilka', $vp)->where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->lists('sifra_predmeta');
         $roki = Izpitni_rok::where('sifra_studijskega_leta',  substr(date('Y'), 2, 2))->where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->
@@ -30,20 +33,26 @@ class PrijavaNaIzpitController extends Controller {
         $rok = [];
         $predmeti = [];
         $profesorji = [];
+        $stSkupajPrikaz = [];
+        $stleto = [];
         $message = [];
-        $tip = [];
+        $mozno = [];
         for($i=0; $i<count($roki); $i++){
-            $message[$i] = "";
+            $mozno[$i] = 1;
             if(in_array($roki[$i]->sifra_predmeta, $vpredmeti)){
                 $rok[$i][0] = $roki[$i];
+                if($rok[$i][0]->opombe)
+                    $message[$i] = $rok[$i][0]->opombe;
+                else
+                    $message[$i] = "";
             }else{
                 $rok[$i][0] = [];
             }
 
             $iz = null;
             if(!empty($rok[$i][0])) {
-                $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('datum', $rok[$i][0]->datum)->
-                    where('sifra_predmeta', $roki[$i]->sifra_predmeta)->whereNull('cas_odjave')->first();
+                $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('datum', $rok[$i][0]->datum)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->
+                    whereNull('cas_odjave')->first();
                 $date = date( 'Y-m-d 01:00:00', strtotime($rok[$i][0]->datum));
             }
 
@@ -51,16 +60,18 @@ class PrijavaNaIzpitController extends Controller {
                 $rok[$i][1] = 1;
                 if(date('Y-m-d H:m:s') > $date){
                     $message[$i] = "Rok za odjavo je potekel!";
+                    $mozno[$i] = 0;
                 }
             }else{
                 $rok[$i][1] = 0;
             }
 
-            $iz3 = null;
+            $veke_prijaven = null;
             if(!empty($rok[$i][0]))
-                $iz3 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->whereNull('cas_odjave')->first();
+                $veke_prijaven = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->
+                    where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('datum', $rok[$i][0]->datum)->whereNull('cas_odjave')->first();
 
-            if($iz3){
+            if($veke_prijaven){
                 $rok[$i][2] = 1;
             }else{
                 $rok[$i][2] = 0;
@@ -71,84 +82,103 @@ class PrijavaNaIzpitController extends Controller {
                 $profesorji[$i] = Profesor::where('sifra_profesorja', $rok[$i][0]->sifra_profesorja)->pluck('priimek_profesorja').", ".
                     Profesor::where('sifra_profesorja', $rok[$i][0]->sifra_profesorja)->pluck('ime_profesorja');
 
-                $zad = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->whereNull('cas_odjave')->get();
+                $zad = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->
+                    where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->whereNull('cas_odjave')->get();
                 $iz2 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->
                     where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->get();
 
-                $pavzer = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', '<', $rok[$i][0]->sifra_studijskega_leta)->get();
-                $ponavljalec = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('sifra_studijskega_programa', $rok[$i][0]->sifra_studijskega_programa)->
-                    where('sifra_vrste_vpisa', 2)->get();
+                $pavzer = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->get();
 
-                if(count($ponavljalec) == 1){
-                    Izpit::where('vpisna_stevilka', $vp)->where('ocena', '<', '6')->update(['ocena'=>0]);;
+                $stOdsteti = 0;
+                $leta = Vpis::where('vpisna_stevilka', $vp)->where('sifra_vrste_vpisa', 2)->where('sifra_studijskega_programa', $rok[$i][0]->sifra_studijskega_programa)->pluck('sifra_studijskega_leta');
+                if($pom=Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('sifra_studijskega_leta', $leta-1)->get()){
+                    $stOdsteti = count($pom);
                 }
 
-                $stleto = Izpit::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
-                $stskupaj = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
+                $stleto[$i] = Izpit::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
+                $stskupaj[$i] = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
+                if($stOdsteti > 0)
+                    $stSkupajPrikaz[$i] = $stskupaj[$i]." (-".$stOdsteti.")";
+                else
+                    $stSkupajPrikaz[$i] = $stskupaj[$i];
 
                 if(!$rok[$i][2]) {
-
-                    if (date('Y-m-d H:m:s') > $date) {
-                        $message[$i] = 'Rok za prijavo je potekel! ';
-                    }
-
-                    if (count($zad) > 0) {
-                        $limit = date('Y-m-d', strtotime($zad[0]->datum . ' +14 day'));
-                        if ($limit > date('Y-m-d')) {
-                            $message[$i] = 'Ni preteklo dovolj dni od zadnjega polaganja! ';
-                        }
-                    }
-
-                    if ($stleto > 3) {
-                        $message[$i] = 'Prekoračili ste število polaganj v tekočem študijskem letu! ';
-                    }
-
-                    if ($stskupaj > 6) {
-                        $message[$i] = 'Prekoračili ste celotno število polaganj! ';
-                    }
-
-                    if ($stskupaj > 3) {
-                        $message[$i] = 'Morate plačat za ta rok! ';
-                    }
-
-                    if (count($pavzer) == 1) {
-                        $message[$i] = 'Morate plačat za ta rok (pavzer)! ';
-                    }
-
-
-                    if (count($iz2) > 0 && $iz2[0]->cas_odjave == null) {
-                        if ($iz2[0]->ocena > 5) {
-                            $message[$i] = 'Opravljen izpit!';
-                        }
-
-                        if ($iz2[0]->ocena == null) {
-                            if ($iz2[0]->datum > date('Y-m-d')) {
-                                $message[$i] = 'Prijava na izpit za ta predmet že obstaja! ';
-                            }else {
-                                $message[$i] = 'Za prejšnji rok še ni bila zaključena ocena! ';
+                    if ($stskupaj[$i] - $stOdsteti >= 3) {
+                        $message[$i] = 'Za opravljanje izpita je potrebno plačati 80 EUR!';
+                        if($plac=Placljiv::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->first()){
+                            if(!$plac[0]->placeno){
+                                $message[$i] = 'Imate neporavnan račun.';
                             }
                         }
                     }
+
+                    if (count($pavzer) == 0) {
+                        $message[$i] = 'Za opravljanje izpita je potrebno plačati 140 EUR! ';
+                    }
+
+                    if (count($iz2) > 0) {
+                        for ($k = 0; $k < count($iz2); $k++){
+                            if ($iz2[$k]->cas_odjave == null) {
+                                if ($iz2[$k]->ocena == null) {
+                                    if ($iz2[$k]->datum > date('Y-m-d')) {
+                                        $message[$i] = 'Prijava na izpit za ta predmet že obstaja! ';
+                                        $mozno[$i] = 0;
+                                    } else {
+                                        $message[$i] = 'Za prejšnji rok še ni bila zaključena ocena! ';
+                                        $mozno[$i] = 0;
+                                    }
+                                }else{
+                                    if (count($zad) > 0) {
+                                        $limit = date('Y-m-d', strtotime($zad[0]->datum.' +7 day'));
+                                        if ($limit > date('Y-m-d')) {
+                                            $message[$i] = 'Ni preteklo dovolj dni od zadnjega polaganja! ';
+                                            $mozno[$i] = 0;
+                                        }
+                                    }
+                                }
+
+                                if ($iz2[$k]->ocena > 5) {
+                                    $message[$i] = 'Opravljen izpit!';
+                                    $mozno[$i] = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    if (date('Y-m-d H:m:s') > $date) {
+                        $message[$i] = 'Rok za prijavo je potekel! ';
+                        $mozno[$i] = 0;
+                    }
+
+                    if ($stleto[$i] >= 3) {
+                        $message[$i] = 'Prekoračili ste število polaganj v tekočem študijskem letu! ';
+                        $mozno[$i] = 0;
+                    }
+
+                    if ($stskupaj[$i] - $stOdsteti >= 6) {
+                        $message[$i] = 'Prekoračili ste celotno število polaganj! ';
+                        $mozno[$i] = 0;
+                    }
+
                 }else{
-                    if($iz3->ocena != null) {
+                    if($veke_prijaven->ocena != null) {
                         $message[$i] = "Ocenjeno!";
-                        if($iz3->ocena > 5)
+                        if($veke_prijaven->ocena > 5)
                             $message[$i] = "Opravljen izpit!";
+
+                        $mozno[$i] = 0;
                     }
                 }
-
-                $tip[$i] = 0;
-                if (count($iz2) > 0 && $iz2[0]->cas_odjave != null) {
-                    $tip[$i] = 1;
-                }
             }
-
         }
-        return view('prijavanaizpit', ['rok' => $rok, 'predmeti' => $predmeti, 'profesorji' => $profesorji, 'vpisna' => $vp, 'msg' => $message, 'tip' => $tip]);
+
+        return view('prijavanaizpit', ['rok' => $rok, 'predmeti' => $predmeti, 'profesorji' => $profesorji, 'vpisna' => $vp, 'msg' => $message, 'stleto'=>$stleto,
+            'stskupaj'=>$stSkupajPrikaz, 'mozno' => $mozno]);
     }
 
     public function Prijava($vse){
         date_default_timezone_set('Europe/Ljubljana');
+        $type = Auth::user()->type;
         $vp = explode(" ", $vse)[0];
         $slet = explode(" ", $vse)[1];
         $spred = explode(" ", $vse)[2];
@@ -156,10 +186,23 @@ class PrijavaNaIzpitController extends Controller {
         $sstdprog = explode(" ", $vse)[4];
         $sstdleta = explode(" ", $vse)[5];
         $datum = explode(" ", $vse)[6];
-        $tip = explode(" ", $vse)[7];
+/*
+    else{
+            $placl = new Placljiv();
+            $placl->$vpisna_stevilka = $vp;
+            $placl->$sifra_predmeta = $rok[$i][0]->sifra_predmeta;
+            $placl->placeno = 0;
+            $placl->save();
+        }
 
-        if($tip == 1) {
-            Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->update(['email_odjavitelja' => null, 'cas_odjave' => null, 'datum' => $datum]);;
+    else{
+            Placljiv::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->update(['placeno'=>0]);
+        }
+
+        Placljiv::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)*/
+
+        if(count(Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->where('sifra_studijskega_leta', $sstdleta)->where('datum', $datum)->get()) != 0) {
+            Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->where('sifra_studijskega_leta', $sstdleta)->where('datum', $datum)->update(['email_odjavitelja' => null, 'cas_odjave' => null]);
         }else{
             $izp = new Izpit();
             $izp->vpisna_stevilka = $vp;
@@ -172,11 +215,15 @@ class PrijavaNaIzpitController extends Controller {
             $izp->save();
         }
 
-        return $this->Roki();
+        if($type == 2)
+            return $this->RokiR($vp);
+        else
+            return $this->Roki();
     }
 
     public function Odjava($vse){
         date_default_timezone_set('Europe/Ljubljana');
+        $type = Auth::user()->type;
         $email = Auth::user()->email;
         $vp = explode(" ", $vse)[0];
         $spred = explode(" ", $vse)[2];
@@ -188,7 +235,167 @@ class PrijavaNaIzpitController extends Controller {
             Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('sifra_predmeta', $spred)->where('datum', $datum)->update(['email_odjavitelja' => $email, 'cas_odjave' => date('H:m:s')]);
         }
 
-        return $this->Roki();
+        if($type == 2)
+            return $this->RokiR($vp);
+        else
+            return $this->Roki();
+    }
+
+    public function RokiR($vp){
+        date_default_timezone_set('Europe/Ljubljana');
+        $vpis = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->first();
+        if(!$vpis){
+            $vpis = Vpis::where('vpisna_stevilka', $vp)->orderBy('sifra_studijskega_leta', 'desc')->first();
+            if(!$vpis)
+                return redirect('home')->with('message', 'Nimate predmetov!');
+        }
+        $vpredmeti = Vpisan_predmet::where('vpisna_stevilka', $vp)->where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->lists('sifra_predmeta');
+        $roki = Izpitni_rok::where('sifra_studijskega_leta',  substr(date('Y'), 2, 2))->where('sifra_studijskega_programa', $vpis->sifra_studijskega_programa)->
+        orderBy('datum', 'asc')->get();
+        $rok = [];
+        $predmeti = [];
+        $profesorji = [];
+        $stSkupajPrikaz = [];
+        $stleto = [];
+        $message = [];
+        $mozno = [];
+        for($i=0; $i<count($roki); $i++){
+            $mozno[$i] = 1;
+            if(in_array($roki[$i]->sifra_predmeta, $vpredmeti)){
+                $rok[$i][0] = $roki[$i];
+                if($rok[$i][0]->opombe)
+                    $message[$i] = $rok[$i][0]->opombe;
+                else
+                    $message[$i] = "";
+            }else{
+                $rok[$i][0] = [];
+            }
+
+            $iz = null;
+            if(!empty($rok[$i][0])) {
+                $iz = Izpit::where('vpisna_stevilka', $vp)->whereNull('ocena')->where('datum', $rok[$i][0]->datum)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->
+                whereNull('cas_odjave')->first();
+                $date = date( 'Y-m-d 01:00:00', strtotime($rok[$i][0]->datum));
+            }
+
+            if($iz){
+                $rok[$i][1] = 1;
+            }else{
+                $rok[$i][1] = 0;
+            }
+
+            $veke_prijaven = null;
+            if(!empty($rok[$i][0]))
+                $veke_prijaven = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $roki[$i]->sifra_predmeta)->
+                where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('datum', $rok[$i][0]->datum)->whereNull('cas_odjave')->first();
+
+            if($veke_prijaven){
+                $rok[$i][2] = 1;
+            }else{
+                $rok[$i][2] = 0;
+            }
+
+            if(!empty($rok[$i][0])){
+                $predmeti[$i] = Predmet::where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->pluck('naziv_predmeta');
+                $profesorji[$i] = Profesor::where('sifra_profesorja', $rok[$i][0]->sifra_profesorja)->pluck('priimek_profesorja').", ".
+                    Profesor::where('sifra_profesorja', $rok[$i][0]->sifra_profesorja)->pluck('ime_profesorja');
+
+                $zad = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->
+                where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->whereNull('cas_odjave')->get();
+                $iz2 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->
+                where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->get();
+
+                $pavzer = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->get();
+
+                $stOdsteti = 0;
+                $leta = Vpis::where('vpisna_stevilka', $vp)->where('sifra_vrste_vpisa', 2)->where('sifra_studijskega_programa', $rok[$i][0]->sifra_studijskega_programa)->pluck('sifra_studijskega_leta');
+                if($pom=Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('sifra_studijskega_leta', $leta-1)->get()){
+                    $stOdsteti = count($pom);
+                }
+
+                $stleto[$i] = Izpit::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $rok[$i][0]->sifra_studijskega_leta)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
+                $stskupaj[$i] = Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->where('ocena', '>', '0')->count();
+                if($stOdsteti > 0)
+                    $stSkupajPrikaz[$i] = $stskupaj[$i]." (-".$stOdsteti.")";
+                else
+                    $stSkupajPrikaz[$i] = $stskupaj[$i];
+
+                if(!$rok[$i][2]) {
+                    if ($stskupaj[$i] - $stOdsteti >= 3) {
+                        $message[$i] = 'Za opravljanje izpita je potrebno plačati 80 EUR!';
+                        if($plac=Placljiv::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $rok[$i][0]->sifra_predmeta)->first()){
+                            if(!$plac[0]->placeno){
+                                $message[$i] = 'Imate neporavnan račun.';
+                            }
+                        }
+                    }
+
+                    if (count($pavzer) == 0) {
+                        $message[$i] = 'Za opravljanje izpita je potrebno plačati 140 EUR! ';
+                    }
+
+                    if (count($iz2) > 0) {
+                        for ($k = 0; $k < count($iz2); $k++){
+                            if ($iz2[$k]->cas_odjave == null) {
+                                if ($iz2[$k]->ocena == null) {
+                                    if ($iz2[$k]->datum > date('Y-m-d')) {
+                                        $message[$i] = 'Prijava na izpit za ta predmet že obstaja! ';
+                                        $mozno[$i] = 0;
+                                    } else {
+                                        $message[$i] = 'Za prejšnji rok še ni bila zaključena ocena! ';
+                                        $mozno[$i] = 0;
+                                    }
+                                }else{
+                                    if (count($zad) > 0) {
+                                        $limit = date('Y-m-d', strtotime($zad[0]->datum.' +7 day'));
+                                        if ($limit > date('Y-m-d')) {
+                                            $message[$i] = 'Ni preteklo dovolj dni od zadnjega polaganja! ';
+                                            $mozno[$i] = 0;
+                                        }
+                                    }
+                                }
+
+                                if ($iz2[$k]->ocena > 5) {
+                                    $message[$i] = 'Opravljen izpit!';
+                                    $mozno[$i] = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    if (date('Y-m-d H:m:s') > $date) {
+                        $message[$i] = 'Rok za prijavo je potekel! ';
+                        $mozno[$i] = 0;
+                    }
+
+                    if ($stleto[$i] >= 3) {
+                        $message[$i] = 'Prekoračili ste število polaganj v tekočem študijskem letu! ';
+                        $mozno[$i] = 0;
+                    }
+
+                    if ($stskupaj[$i] - $stOdsteti >= 6) {
+                        $message[$i] = 'Prekoračili ste celotno število polaganj! ';
+                        $mozno[$i] = 0;
+                    }
+
+                }else{
+                    if($veke_prijaven->ocena != null) {
+                        $message[$i] = "Ocenjeno!";
+                        if($veke_prijaven->ocena > 5)
+                            $message[$i] = "Opravljen izpit!";
+                        $mozno[$i] = 0;
+                    }
+
+                    if($veke_prijaven->tocke_izpita != null){
+                        $message[$i] = "Vpisana ocena izpita!";
+                        $mozno[$i] = 0;
+                    }
+                }
+            }
+        }
+
+        return view('prijavanaizpit', ['rok' => $rok, 'predmeti' => $predmeti, 'profesorji' => $profesorji, 'vpisna' => $vp, 'msg' => $message, 'stleto'=>$stleto,
+            'stskupaj'=>$stSkupajPrikaz, 'mozno' => $mozno]);
     }
 
 }

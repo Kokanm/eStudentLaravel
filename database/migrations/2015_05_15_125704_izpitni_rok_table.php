@@ -12,7 +12,7 @@ class IzpitniRokTable extends Migration {
             $table->increments('id');
 
             $table->date('datum');
-            $table->time('ura')->nullable();
+            $table->text('ura')->nullable();
             $table->decimal('sifra_studijskega_programa', 7, 0);
             $table->decimal('sifra_letnika', 1, 0);
             $table->decimal('sifra_studijskega_leta', 2, 0);
