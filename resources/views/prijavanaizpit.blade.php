@@ -4,7 +4,7 @@
     <b style="color:red; font-size: large;">{{ Session::get('message') }}</b>
 @endif
 <div class="row">
-    <div class="col-md-11" style="padding-left: 9%">
+    <div class="col-md-12">
         <table class="table table-hover">
             <tr>
                 <th>Letnik</th>
@@ -32,7 +32,7 @@
                     <td>{{ $msg[$i] }}</td>
                     @if($rok[$i][1]==0)
                         {!! Form::open(array('action' => array('PrijavaNaIzpitController@Prijava', $vpisna." ".$rok[$i][0]->sifra_letnika." ".$rok[$i][0]->sifra_predmeta." ".
-                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum))) !!}
+                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum." ".$plakanje[$i]))) !!}
                             @if(!$mozno[$i])
                                 <td>{!! Form::submit('Prijavi se', ['class' => 'btn btn-success btn-xs', 'disabled']) !!}</td>
                             @else
@@ -41,7 +41,7 @@
                         {!! Form::close() !!}
                     @else
                         {!! Form::open(array('action' => array('PrijavaNaIzpitController@Odjava', $vpisna." ".$rok[$i][0]->sifra_letnika." ".$rok[$i][0]->sifra_predmeta." ".
-                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum))) !!}
+                                $rok[$i][0]->sifra_profesorja." ".$rok[$i][0]->sifra_studijskega_programa." ".$rok[$i][0]->sifra_studijskega_leta." ".$rok[$i][0]->datum." ".$plakanje[$i]))) !!}
                             @if(!$mozno[$i])
                                 <td>{!! Form::submit('Odjavi se', ['class' => 'btn btn-danger btn-xs', 'disabled']) !!}</td>
                             @else
