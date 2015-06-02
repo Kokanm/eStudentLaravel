@@ -15,7 +15,7 @@ class AddForeignKeysToVpisanPredmetTable extends Migration {
 		Schema::table('vpisan_predmet', function(Blueprint $table)
 		{
 			$table->foreign('sifra_predmeta', 'FK_Relationship_25')->references('sifra_predmeta')->on('izvedba_predmeta')->onUpdate('CASCADE')->onDelete('CASCADE');
-			$table->foreign('vpisna_stevilka', 'FK_Relationship_24')->references('vpisna_stevilka')->on('vpis')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+			$table->foreign('vpisna_stevilka', 'FK_Relationship_24')->references('vpisna_stevilka')->on('vpis')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 

@@ -4,6 +4,11 @@
     <b style="color:red; font-size: large;">{{ Session::get('message') }}</b>
 @endif
 <div class="row">
+    <h2 style="margin-left: 20px">{{ $name }}</h2>
+</div>
+<br />
+<br />
+<div class="row">
     <div class="col-md-12">
         <table class="table table-hover">
             <tr>

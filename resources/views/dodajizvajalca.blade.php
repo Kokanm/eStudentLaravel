@@ -47,12 +47,18 @@
                 <tbody>
                     {{--*/ $i = 0 /*--}}
                     @foreach($izvPredmeti as $row)
+                    {!! Form::hidden('idpredmeta'.$i, $row->id) !!}
                     <tr>
-                        <td class="col-md-offset-2 col-md-2 col-xs-3">{{ $predmeti[$row->sifra_predmeta] }}</td>
+                        @if($i != 0 && $row->sifra_predmeta == $temp)
+                            <td class="col-md-offset-2 col-md-2 col-xs-3"></td>
+                        @else
+                            <td class="col-md-offset-2 col-md-2 col-xs-3">{{ $predmeti[$row->sifra_predmeta] }}</td>
+                        @endif
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof1'.$i, $profesor, $row->sifra_profesorja, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof2'.$i, $profesor, $row->sifra_profesorja2, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1 col-xs-3">{!! Form::select('prof3'.$i, $profesor, $row->sifra_profesorja3, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1" style="padding-left: 40px">{!! Form::submit('Odstrani', ['class'=>'btn btn-success' , 'name'=>'brisip'.$i, 'style'=>'margin-left: 10px']) !!}</td>
+                        {{--*/ $temp = $row->sifra_predmeta /*--}}
                     </tr>
                     {{--*/ $i+=1 /*--}}
                     @endforeach
@@ -76,7 +82,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="col-md-offset-2 col-md-2 col-xs-3">{!! Form::select('predmet', $predmeti, 0, ['class' => 'form-control']) !!}</td>
+                        <td class="col-md-offset-2 col-md-2 col-xs-3">{!! Form::select('predmet', $predmeti2, 0, ['class' => 'form-control']) !!}</td>
                         <td class="col-md-1">{!! Form::select('profe1', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>
                         <td class="col-md-1">{!! Form::select('profe2', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>
                         <td class="col-md-1">{!! Form::select('profe3', $profesor, 0, ['class' => 'form-control', 'style'=>'margin-left: 10px']) !!}</td>

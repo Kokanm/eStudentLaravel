@@ -72,42 +72,54 @@ class KartotecniListController extends Controller {
                 $heading[$s][$i][1] = Letnik::where('sifra_letnika', $he->sifra_letnika)->pluck('stevilka_letnika');
                 $heading[$s][$i][2] = Vrsta_vpisa::where('sifra_vrste_vpisa', $he->sifra_vrste_vpisa)->pluck('opis_vrste_vpisa');
                 $heading[$s][$i][3] = Nacin_studija::where('sifra_nacina_studija', $he->sifra_nacina_studija)->pluck('opis_nacina_studija');
-                $predmeti = Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->get();
+                $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->get();
                 for ($j = 0; $j < count($predmeti); $j++) {
                     $izpiti[$s][$i][$j][0] = $predmeti[$j]->sifra_predmeta;
                     $izpiti[$s][$i][$j][1] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$j][0])->pluck('naziv_predmeta');
-                    $izpiti[$s][$i][$j][2] = Profesor::where('sifra_profesorja', $predmeti[$j]->sifra_profesorja)->pluck('priimek_profesorja') . ", " . Profesor::where('sifra_profesorja', $predmeti[$j]->sifra_profesorja)->pluck('ime_profesorja');
                     $izpiti[$s][$i][$j][3] = Letnik::where('sifra_letnika', $predmeti[$j]->sifra_letnika)->pluck('stevilka_letnika') . ". letnik";
-                    $izpiti[$s][$i][$j][4] = date('d.m.Y', strtotime($predmeti[$j]->datum));
 
-                    if (array_key_exists($izpiti[$s][$i][$j][0], $stskupaj)) {
-                        $stskupaj[$izpiti[$s][$i][$j][0]] += 1;
-                    } else {
-                        $stskupaj[$izpiti[$s][$i][$j][0]] = 1;
-                    }
+                    if(count($izi = Izpit::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta',$predmeti[$j]->sifra_predmeta)->where('ocena', '>', 0)->get())) {
+                        $izpiti[$s][$i][$j][4] = date('d.m.Y', strtotime($izi[0]->datum));
+                        $izpiti[$s][$i][$j][2] = Profesor::where('sifra_profesorja', $izi[0]->sifra_profesorja)->
+                            pluck('priimek_profesorja') . ", " . Profesor::where('sifra_profesorja', $izi[0]->sifra_profesorja)->pluck('ime_profesorja');
 
-                    if (array_key_exists($izpiti[$s][$i][$j][0], $stleto[$s][$i])) {
-                        $stleto[$s][$i][$izpiti[$s][$i][$j][0]] += 1;
-                    } else {
-                        $stleto[$s][$i][$izpiti[$s][$i][$j][0]] = 1;
-                    }
+                        if (array_key_exists($izpiti[$s][$i][$j][0], $stskupaj)) {
+                            $stskupaj[$izpiti[$s][$i][$j][0]] += 1;
+                        } else {
+                            $stskupaj[$izpiti[$s][$i][$j][0]] = 1;
+                        }
 
-                    $izpiti[$s][$i][$j][5] = $stleto[$s][$i][$izpiti[$s][$i][$j][0]];
+                        if (array_key_exists($izpiti[$s][$i][$j][0], $stleto[$s][$i])) {
+                            $stleto[$s][$i][$izpiti[$s][$i][$j][0]] += 1;
+                        } else {
+                            $stleto[$s][$i][$izpiti[$s][$i][$j][0]] = 1;
+                        }
 
-                    if ($he->sifra_vrste_vpisa == 2 && $stleto[$s][$i - 1][$izpiti[$s][$i][$j][0]] != null) {
-                        $izpiti[$s][$i][$j][6] = $stskupaj[$izpiti[$s][$i][$j][0]] . " (-" . $stleto[$s][$i - 1][$izpiti[$s][$i][$j][0]] . ")";
-                    } else {
-                        $izpiti[$s][$i][$j][6] = $stskupaj[$izpiti[$s][$i][$j][0]];
+                        $izpiti[$s][$i][$j][5] = $stleto[$s][$i][$izpiti[$s][$i][$j][0]];
+
+                        if ($he->sifra_vrste_vpisa == 2 && $stleto[$s][$i - 1][$izpiti[$s][$i][$j][0]] != null) {
+                            $izpiti[$s][$i][$j][6] = $stskupaj[$izpiti[$s][$i][$j][0]] . " (-" . $stleto[$s][$i - 1][$izpiti[$s][$i][$j][0]] . ")";
+                        } else {
+                            $izpiti[$s][$i][$j][6] = $stskupaj[$izpiti[$s][$i][$j][0]];
+                        }
+
+                        $izpiti[$s][$i][$j][8] = $izi[0]->ocena;
+                    }else{
+                        $izpiti[$s][$i][$j][2] = "";
+                        $izpiti[$s][$i][$j][4] = "";
+                        $izpiti[$s][$i][$j][5] = "";
+                        $izpiti[$s][$i][$j][6] = "";
+                        $izpiti[$s][$i][$j][8] = "";
                     }
 
                     $izpiti[$s][$i][$j][7] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$j][0])->pluck('stevilo_KT');
-                    $izpiti[$s][$i][$j][8] = $predmeti[$j]->ocena;
+
                 }
             }
         }
 
         return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi,
-                'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti])->render();
+                'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti]);
     }
 
     public function vrniZadnja(){

@@ -31,82 +31,85 @@
         </div>
         @for($j=0; $j<count($heading[$i]); $j++)
             <div class="row">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Študijsko leto</th>
-                            <th>Letnik</th>
-                            <th>Vrste vpisa</th>
-                            <th>Način študija</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $heading[$i][$j][0] }}</td>
-                            <td>{{ $heading[$i][$j][1].". letnik" }}</td>
-                            <td>{{ $heading[$i][$j][2] }}</td>
-                            <td>{{ $heading[$i][$j][3] }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="col-md-11">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Študijsko leto</th>
+                                <th>Letnik</th>
+                                <th>Vrste vpisa</th>
+                                <th>Način študija</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $heading[$i][$j][0] }}</td>
+                                <td>{{ $heading[$i][$j][1].". letnik" }}</td>
+                                <td>{{ $heading[$i][$j][2] }}</td>
+                                <td>{{ $heading[$i][$j][3] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="row">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Šifra</th>
-                            <th>Predmet</th>
-                            <th>Ocenil</th>
-                            <th>Letnik</th>
-                            <th>Datum</th>
-                            <th>#letos</th>
-                            <th>#skupaj</th>
-                            <th>KT</th>
-                            <th>Ocena</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {{--*/ $suma = 0 /*--}}
-                    {{--*/ $nare = 0 /*--}}
-                    {{--*/ $stkt = 0 /*--}}
-                        @for($k=0; $k<count($izpiti[$i][$j]); $k++)
+                <div class="col-md-11">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td>{{ ($k+1)."." }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][0] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][1] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][2] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][3] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][4] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][5] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][6] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][7] }}</td>
-                                <td>{{ $izpiti[$i][$j][$k][8] }}</td>
+                                <th style="width: 5%;"></th>
+                                <th style="width: 10%;">Šifra</th>
+                                <th style="width: 25%;">Predmet</th>
+                                <th style="width: 15%;">Ocenil</th>
+                                <th style="width: 10%;">Letnik</th>
+                                <th style="width: 13%;">Datum</th>
+                                <th colspan="2" style="width: 12%;">Št. polaganj</th>
+                                <th style="width: 5%;">KT</th>
+                                <th style="width: 5%;">Ocena</th>
                             </tr>
-                            @if($izpiti[$i][$j][$k][8] > 5)
-                                {{--*/ $suma += $izpiti[$i][$j][$k][8] /*--}}
-                                {{--*/ $nare += 1 /*--}}
-                                {{--*/ $stkt += $izpiti[$i][$j][$k][7] /*--}}
-                            @endif
-                        @endfor
-                        <tr>
-                            <td colspan="2" style="font-weight: bold; font-size: medium; padding-left: 10px">Število opravljenih izpitov: </td>
-                            <td colspan="2">{{ $nare }}</td>
-                            <td colspan="4" style="font-weight: bold; font-size: medium; padding-left: 10px">Vsota KT in povprečno oceno:</td>
-                            <td>{{ $stkt }}</td>
-                            @if($nare != 0)
-                                <td>{{ $povp += $suma/$nare}}</td>
-                            @else
-                                <td>{{ 0 }}</td>
-                            @endif
-                        </tr>
-                        {{--*/ $skpnare += $nare /*--}}
-                        {{--*/ $skupkt += $stkt /*--}}
-                    </tbody>
-                </table>
-                <br />
-                <hr />
-                <br />
+                        </thead>
+                        <tbody>
+                        {{--*/ $suma = 0 /*--}}
+                        {{--*/ $nare = 0 /*--}}
+                        {{--*/ $stkt = 0 /*--}}
+                            @for($k=0; $k<count($izpiti[$i][$j]); $k++)
+                                <tr>
+                                    <td>{{ ($k+1)."." }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][0] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][1] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][2] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][3] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][4] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][5] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][6] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][7] }}</td>
+                                    <td>{{ $izpiti[$i][$j][$k][8] }}</td>
+                                </tr>
+                                @if($izpiti[$i][$j][$k][8] > 5)
+                                    {{--*/ $suma += $izpiti[$i][$j][$k][8] /*--}}
+                                    {{--*/ $nare += 1 /*--}}
+                                    {{--*/ $stkt += $izpiti[$i][$j][$k][7] /*--}}
+                                @endif
+                            @endfor
+                            <tr>
+                                <td colspan="3" style="font-weight: bold; font-size: medium; padding-left: 10px">Število opravljenih izpitov: </td>
+                                <td>{{ $nare }}</td>
+                                <td colspan="4" style="font-weight: bold; font-size: medium; padding-left: 10px">Vsota KT in povprečno oceno:</td>
+                                <td>{{ $stkt }}</td>
+                                @if($nare != 0)
+                                    <td>{{ $povp += $suma/$nare}}</td>
+                                @else
+                                    <td>{{ 0 }}</td>
+                                @endif
+                            </tr>
+                            {{--*/ $skpnare += $nare /*--}}
+                            {{--*/ $skupkt += $stkt /*--}}
+                        </tbody>
+                    </table>
+                    <br />
+                    <hr />
+                    <br />
+                </div>
             </div>
         @endfor
     @endfor

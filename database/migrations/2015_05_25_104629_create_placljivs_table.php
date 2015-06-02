@@ -11,6 +11,7 @@ class CreatePlacljivsTable extends Migration {
 		{
             $table->decimal('vpisna_stevilka', 8, 0);
             $table->decimal('sifra_predmeta', 5, 0);
+            $table->smallInteger('tip');
             $table->boolean('placeno');
 
             $table->foreign('vpisna_stevilka')->references('vpisna_stevilka')->on('student')->onUpdate('cascade')->onDelete('cascade');
