@@ -60,3 +60,19 @@ Route::post('prijavaodjava/{vse}', ['middleware' => 'referent', 'uses' => 'Prija
 
 Route::get('kartotecniS', ['middleware' => 'student', 'uses' => 'KartotecniListController@vrniVsa']);
 Route::post('kartotecniS', ['middleware' => 'student', 'uses' => 'KartotecniListController@gumb']);
+
+
+Route::post('seznamPredmetIzvoz', ['middleware' => 'RefUci', 'uses' => 'IzvozController@studentiPredmetaPdf']);
+Route::get('seznamPredmet', ['middleware' => 'RefUci', 'uses' => 'SeznamStudentovPredmetaController@izbiraPrograma']);
+Route::post('seznamPredmet', ['middleware' => 'RefUci', 'uses' => 'SeznamStudentovPredmetaController@izbiraPredmeta']);
+Route::post('seznamPredmet2', ['middleware' => 'RefUci', 'uses' => 'SeznamStudentovPredmetaController@studentiPredmeta']);
+
+Route::get('izpitniroki', ['middleware' => 'referent', 'uses' => 'IzpitniRokiController@izberiStudijskiProgramInLetnik']);
+Route::post('izpitnirokiurejanje', ['middleware' => 'referent', 'uses' => 'IzpitniRokiController@urejanjeIzpitnihRokov']);
+
+Route::get('rezultati', ['middleware' => 'RefUci', 'uses' => 'IzpisiRezultatiController@izberi1']);
+Route::post('rezultati', ['middleware' => 'referent', 'uses' => 'IzpisiRezultatiController@izberi2']);
+Route::post('rezultati/{predmet}', ['middleware' => 'RefUci', 'uses' => 'IzpisiRezultatiController@izberi3']);
+Route::post('rezultati/{predmet}/{datum}', ['middleware' => 'RefUci', 'uses' => 'IzpisiRezultatiController@izpisi']);
+
+Route::post('rezultatip', ['middleware' => 'ucitelj', 'uses' => 'IzpisiRezultatiController@izberiProf']);

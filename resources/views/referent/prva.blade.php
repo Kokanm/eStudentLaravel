@@ -5,8 +5,9 @@
 	<li><a href="{{ url('referent/uvoz_podatkov') }}">Uvoz kandidatov</a></li>
 	<li><a href="{{ url('vpisa') }}">Zajem vpisnega lista</a></li>
 	<li><a href="{{ url('find') }}">Študenti - možnosti</a></li>
-	<li><a href="{{ url('potrdi') }}">Potrditev vpisa</a></li>
-	
+	<li><a href="{{ url('potrdi') }}">Potrditev vpisa</a>
+	<li><a href="{{ url('izpitniroki') }}">Izpitni roki</a></li>
+	<li><a href="{{ url('rezultati') }}">Izpis rezultate</a></li>
 </ul>
 @endsection
 

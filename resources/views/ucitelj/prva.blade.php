@@ -3,6 +3,7 @@
 @section('menu')
 <ul class="nav navbar-nav">
 	<li><a href="{{ url('find') }}">Iskanje študenta</a></li>
+	<li><a href="{{ url('rezultati') }}">Izpis rezultate</a></li>
 </ul>
 @endsection
 

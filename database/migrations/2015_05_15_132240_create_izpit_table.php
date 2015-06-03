@@ -9,6 +9,8 @@ class CreateIzpitTable extends Migration {
 	{
         Schema::create('izpit', function(Blueprint $table)
         {
+            $table->increments('id');
+            $table->integer('id_izpitnega_roka');
             $table->decimal('sifra_predmeta', 5, 0)->index('FK_izpit_sifra_predmeta');
             $table->decimal('sifra_studijskega_programa', 7, 0)->index('FK_izpit_sifra_studijskega_programa');
             $table->decimal('sifra_letnika', 1, 0)->index('FK_izpit_sifra_letnika');
@@ -23,8 +25,6 @@ class CreateIzpitTable extends Migration {
             $table->decimal('tocke_ustni')->nullable();
             $table->time('cas_odjave')->nullable();
             $table->string('email_odjavitelja')->nullable();
-            $table->primary(array('sifra_predmeta','sifra_studijskega_programa','sifra_studijskega_leta', 'sifra_letnika',
-                'sifra_profesorja', 'vpisna_stevilka', 'datum'), 'PK_izpit_table');
         });
 	}
 

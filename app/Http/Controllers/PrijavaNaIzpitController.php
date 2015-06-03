@@ -205,6 +205,7 @@ class PrijavaNaIzpitController extends Controller {
         $sstdleta = explode(" ", $vse)[5];
         $datum = explode(" ", $vse)[6];
         $plakanje = explode(" ", $vse)[7];
+        $id = explode(" ", $vse)[8];
 
         if($plakanje == 1) {
             $placl = new Placljivs();
@@ -223,12 +224,13 @@ class PrijavaNaIzpitController extends Controller {
                 Placljivs::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->update(['placeno' => 0]);
         }
 
-        if(count(Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->where('sifra_profesorja', $sprof)->where('sifra_studijskega_leta', $sstdleta)->where('datum', $datum)->get()) != 0) {
+        if(count(Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->where('id_izpitnega_roka', $id)->where('sifra_studijskega_leta', $sstdleta)->get()) != 0) {
             Izpit::where('vpisna_stevilka', $vp)->where('sifra_predmeta', $spred)->where('sifra_studijskega_leta', $sstdleta)->
-                where('sifra_profesorja', $sprof)->where('datum', $datum)->update(['email_odjavitelja' => null, 'cas_odjave' => null]);
+                where('id_izpitnega_roka', $id)->update(['email_odjavitelja' => null, 'cas_odjave' => null]);
         }else{
             $izp = new Izpit();
             $izp->vpisna_stevilka = $vp;
+            $izp->id_izpitnega_roka = $id;
             $izp->sifra_letnika = $slet;
             $izp->sifra_predmeta = $spred;
             $izp->sifra_profesorja = $sprof;

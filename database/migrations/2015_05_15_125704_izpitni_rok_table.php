@@ -10,6 +10,7 @@ class IzpitniRokTable extends Migration {
         Schema::create('izpitni_rok', function(Blueprint $table)
         {
             $table->increments('id');
+            $table->integer('id_izvedbe_predmeta');
 
             $table->date('datum');
             $table->text('ura')->nullable();
