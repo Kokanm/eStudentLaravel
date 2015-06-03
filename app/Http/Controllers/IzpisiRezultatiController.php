@@ -8,6 +8,7 @@
 use App\Izpit;
 use App\Izvedba_predmeta;
 use App\Profesor;
+use App\Student;
 use App\Studijsko_leto;
 use App\Predmet;
 use App\Predmet_studijskega_programa;
@@ -79,8 +80,17 @@ class IzpisiRezultatiController extends Controller
         return view('listaizpitnerok', ['rok' => $format_rok]);
     }
 
+    public function cmp($a, $b)
+    {
+        return strcmp($a->priimek_studenta, $b->priimek_studenta);
+    }
+
     public function izpisi($premet,$datum){
         $info=Input::get('row');
+        $ime_sw=0;
+       if( Input::get('ime') ){
+           $ime_sw=1;
+       }
 
         $profesorDATA=Profesor::where('sifra_profesorja', explode("-",$info)[0])->first();
         $profesor= $profesorDATA->ime_profesorja . " " . $profesorDATA->priimek_profesorja;
@@ -88,15 +98,27 @@ class IzpisiRezultatiController extends Controller
 
         $prostor=explode("-",$info)[1];
         $ura=explode("-",$info)[2];
+        $stLet=explode("-",$info)[3];
+        $studLeto=Studijsko_leto::where('sifra_studijskega_leta', $stLet)->first()->stevilka_studijskega_leta;
 
-        $rezultati=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->get();
+        $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->get();
+        $studenti=[];
+        for ($i=0; $i< count($rezultatiRAW); $i++){
+            $studenti[$i]=Student::where('vpisna_stevilka', $rezultatiRAW[$i]->vpisna_stevilka)->first();
+        }
+        usort($studenti,  array($this, "cmp"));
+        $rezultati=[];
+        for ($i=0; $i< count($studenti); $i++){
+            $rezultati[$i]=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->first();
+        }
+
         $polaganje=[];
-        for ($i=0; $i< count($rezultati); $i++)
+        for ($i=0; $i< count($studenti); $i++)
         {
-        $polaganje[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $rezultati[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->count();
+         $polaganje[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->count();
         }
         //dd($polaganje);
         //echo $rezultati;
-        return view('rezultatipisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje  ]);
+        return view('rezultatipisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto]);
     }
 }

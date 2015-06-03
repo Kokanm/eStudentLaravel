@@ -53,12 +53,12 @@ class KartotecniListController extends Controller {
         for($s=0; $s<count($studijski_program); $s++) {
             $leta = Izpit::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_programa', $studijski_program[$s])->
                 where('ocena', '>', 0)->lists('sifra_studijskega_leta');
+            dd($leta);
             $res2 = array();
             foreach ($leta as $key => $val) {
                 $res2[$val] = true;
             }
             $leta = array_keys($res2);
-
 
             $izpiti = [];
             $heading = [];

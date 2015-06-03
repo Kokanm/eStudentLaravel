@@ -21,6 +21,12 @@
                     <b>{!! $profesor !!}</b>
                 </div>
            </div>
+           <div class="col-md-2 col-xs-4">
+                           <div class="form-group-sm">
+                               <p>Studijsko leto</p>
+                               <b>{!! $stlet !!}</b>
+                           </div>
+                      </div>
            </div>
           <br />
           <div class="row">
@@ -30,6 +36,12 @@
                       <b>{{ date("d.m.Y", strtotime($datum)) }}</b>
                   </div>
               </div>
+              <div class="col-md-2 col-xs-4">
+                    <div class="form-group-sm">
+                        <p>Ura</p>
+                        <b>{{ date("H:i", strtotime($ura)) }}</b>
+                    </div>
+                </div>
               <div class="col-md-2 col-xs-4">
                   <div class="form-group-sm">
                       <p>Prostor</p>
@@ -46,6 +58,9 @@
                  <tr>
                      <th>#</th>
                      <th>Vpisna stevilka</th>
+                     @if($trig==1)
+                        <th>Priimek in Ime</th>
+                     @endif
                      <th>St.Polaganje</th>
                      <th>Tocke</th>
 
@@ -56,6 +71,9 @@
                      <tr>
                          <td>{{ $i }}</td>
                          <td>{{ $row->vpisna_stevilka }}</td>
+                          @if($trig==1)
+                          <td>{{ $student[$i-1]->priimek_studenta.", ".$student[$i-1]->ime_studenta }}</td>
+                          @endif
                          <td>{{ $polaganje[$i-1]+1 }}</td>
                          <td>{{ $row->tocke_izpita }}</td>
                      </tr>

@@ -12,7 +12,7 @@
 					<hr/><br/>
 
 					<h4>DODAJ NOV IZPITNI ROK</h4><br/>
-					{!! Form::open(array('url' => 'izpitnirokiurejanje')) !!}
+					{!! Form::open(array('url' => 'izpitnirokiurejanjeprofesor')) !!}
 
 					{!! Form::hidden('stleto', $stleto2) !!}
 					{!! Form::hidden('stprogram', $stprogram2) !!}
@@ -58,7 +58,7 @@
 				        <br/>
 						<h4>UREDI / ODSTRANI IZPITNI ROK</h4><br/>
 						@for ($i = 0; $i < count($izpitniRoki); $i++)
-							{!! Form::open(array('url' => 'izpitnirokiurejanje')) !!}
+							{!! Form::open(array('url' => 'izpitnirokiurejanjeprofesor')) !!}
 
 							{!! Form::hidden('stleto', $stleto2) !!}
 							{!! Form::hidden('stprogram', $stprogram2) !!}

@@ -69,6 +69,8 @@ Route::post('seznamPredmet2', ['middleware' => 'RefUci', 'uses' => 'SeznamStuden
 
 Route::get('izpitniroki', ['middleware' => 'referent', 'uses' => 'IzpitniRokiController@izberiStudijskiProgramInLetnik']);
 Route::post('izpitnirokiurejanje', ['middleware' => 'referent', 'uses' => 'IzpitniRokiController@urejanjeIzpitnihRokov']);
+Route::get('izpitnirokiprofesor', ['middleware' => 'ucitelj', 'uses' => 'IzpitniRokiController@izberiStudijskiProgramInLetnikProfesor']);
+Route::post('izpitnirokiurejanjeprofesor', ['middleware' => 'ucitelj', 'uses' => 'IzpitniRokiController@urejanjeIzpitnihRokovProfesor']);
 
 Route::get('rezultati', ['middleware' => 'RefUci', 'uses' => 'IzpisiRezultatiController@izberi1']);
 Route::post('rezultati', ['middleware' => 'referent', 'uses' => 'IzpisiRezultatiController@izberi2']);
