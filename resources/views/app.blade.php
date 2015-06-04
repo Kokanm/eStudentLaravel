@@ -78,6 +78,7 @@
 	<script>
 	$(function() {
 	  $( ".datepicker" ).datepicker({ dateFormat: 'dd-mm-yy', minDate:"1" }).val();
+      $( "#datepicker2" ).datepicker({ dateFormat: 'dd-mm-yy' }).val();
 	});
 	</script>
 </footer>

@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-body", style='margin-left: 15px;'>
+                <div class="panel-body" style="margin-left: 15px;">
                     <h4>VPIS KONČNE OCENE za študenta: {{ $student_ime }} {{ $student_priimek }}</h4>
                     <hr/><br/>
 
@@ -42,6 +42,8 @@
                                 <th>Predmet</th>
                                 <th>KT</th>
                                 <th>Izvajalci</th>
+                                <th>Polaganje</th>
+                                <th>(letos)</th>
                                 <th>Datum</th>
                                 <th>Ura</th>
                                 <th>Ocena</th>
@@ -56,6 +58,8 @@
                                     <td>{{ $izpiti[$i][1] }} {{ $izpiti[$i][2] }}</td>
                                     <td>{{ $izpiti[$i][3] }}</td>
                                     <td>{{ $izpiti[$i][4] }}</td>
+                                    <th>{{ $izpiti[$i][7] }}.</th>
+                                    <th>{{ $izpiti[$i][8] }}.</th>
                                     <td>{{ $izpiti[$i][5] }}</td>
                                     <td>{{ $izpiti[$i][6] }}</td>
                                     <td>{!! Form::text('ocena', '', ['class' => 'form-control input-sm', 'id'=>'ocena', 'style'=>'width: 40px; height: 22px;']) !!}</td>
