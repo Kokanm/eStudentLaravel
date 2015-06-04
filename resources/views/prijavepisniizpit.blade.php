@@ -88,7 +88,7 @@
                   <div class="row">
                   {!! Form::open( array('url' => 'export' )) !!}
                       {!! Form::hidden( 'html' , $html) !!}
-                      {!! Form::hidden( 'fname' ,  $sifra_predmeta.'-ocene-'.date("d-m-Y", strtotime($datum)) ) !!}
+                      {!! Form::hidden( 'fname' ,  $sifra_predmeta.'-prijave-'.date("d-m-Y", strtotime($datum)) ) !!}
                       <div class="col-md-offset-9 col-md-1">
                           {!! Form::submit('Export to PDF', ['name'=>'PDF','class'=>'btn btn-info']) !!}
                       </div>

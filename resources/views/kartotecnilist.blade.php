@@ -2,10 +2,11 @@
 
 @section('content')
 <div class="container">
-    {!! Form::open(array('url' => 'kartotecniS')) !!}
+
     <div class="row">
         <h2 style="padding-left: 14px">{{ $name }}</h2>
     </div>
+    {!! Form::open(array('url' => 'kartotecniS')) !!}
     <div class="row">
         <div class="col-md-1">
             {!! Form::submit('Vsa polaganja', ['class'=>'btn btn-info '.$active[0], 'name' => 'vsa']) !!}
@@ -20,6 +21,7 @@
            {!! Form::select('studiskiprogram', $studijski_programi, 0, ['class' => 'form-control']) !!}
         </div>
     </div>
+    {!! Form::close() !!}
     <hr />
     <br />
     @for($i=0; $i<count($studijski_program); $i++)
@@ -174,18 +176,23 @@
         </table>
         @endfor
     </div>
+
     <br />
-    <div class="row">
-        <div class="col-md-offset-9 col-md-1">
-            {!! Form::submit('Export to PDF', ['class'=>'btn btn-info']) !!}
-        </div>
-        <div class="col-md-1" style="padding-left: 33px">
-            {!! Form::submit('Export to CSV', ['class'=>'btn btn-info']) !!}
-        </div>
-    </div>
+      <div class="row">
+      {!! Form::open( array( 'url' => 'export' )) !!}
+          {!! Form::hidden( 'html' , $html) !!}
+          {!! Form::hidden( 'fname' , "kartotecni" ) !!}
+          <div class="col-md-offset-9 col-md-1">
+              {!! Form::submit('Export to PDF', ['name'=>'PDF','class'=>'btn btn-info']) !!}
+          </div>
+          <div class="col-md-1" style="padding-left: 33px">
+              {!! Form::submit('Export to CSV', ['name'=>'CSV','class'=>'btn btn-info']) !!}
+          </div>
+      {!! Form::close() !!}
+      </div>
     <br />
     <br />
     <br />
-    {!! Form::close() !!}
+
 </div>
 @endsection

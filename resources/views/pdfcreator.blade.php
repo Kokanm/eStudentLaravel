@@ -16,16 +16,8 @@
         border: 1px solid black;
     }
     form{
-    display: none;
+        display: none;
     }
-    .col-md-2{
-        display: block;
-        padding-right: 30px;
-    }
-    .row
-    {
-        display: inline;
-     }
 	</style>
 
 </head>
