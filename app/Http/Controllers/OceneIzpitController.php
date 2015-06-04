@@ -9,6 +9,7 @@ use App\Studijsko_leto;
 use App\Predmet;
 use App\Predmet_studijskega_programa;
 use App\Izpitni_rok;
+use App\Vpisan_predmet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
@@ -110,13 +111,18 @@ class OceneIzpitController extends Controller {
         }
 
         $polaganje=[];
+        $polaganjeLetos=[];
+        $stLetVpis=[];
         for ($i=0; $i< count($studenti); $i++)
         {
             $polaganje[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->count();
+            $polaganjeLetos[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->where('sifra_studijskega_leta', $stLet)->count();
+            $tmpLetVpis=Vpisan_predmet::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->orderBy('sifra_studijskega_leta')->first();
+            $stLetVpis[$i]=Studijsko_leto::where('sifra_studijskega_leta', $tmpLetVpis->sifra_studijskega_leta)->first()->stevilka_studijskega_leta;
         }
         //dd($polaganje);
         //echo $rezultati;
-        return view('oceneizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto]);
+        return view('oceneizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto, 'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis ]);
     }
 
 }

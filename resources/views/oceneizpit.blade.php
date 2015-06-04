@@ -61,7 +61,8 @@
                      @if($trig==1)
                         <th>Priimek in Ime</th>
                      @endif
-                     <th>St.Polaganje</th>
+                     <th>Studijsko leto</th>
+                     <th colspan="2" style="width: 12%;">Št. polaganj</th>
                      <th>Tocke</th>
                      <th>Ocena</th>
 
@@ -75,7 +76,10 @@
                           @if($trig==1)
                           <td>{{ $student[$i-1]->priimek_studenta.", ".$student[$i-1]->ime_studenta }}</td>
                           @endif
-                         <td>{{ $polaganje[$i-1]+1 }}</td>
+                            <td>{{ $stLetVpis[$i-1] }}</td>
+                            <td>{{ $polaganjeLetos[$i-1]+1 }}</td>
+                            <td>{{ $polaganje[$i-1]+1 }}</td>
+
                          <td>{{ $row->tocke_izpita }}</td>
                          <td>{{ $row->ocena }}</td>
                      </tr>
