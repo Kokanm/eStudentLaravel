@@ -78,3 +78,21 @@ Route::post('rezultati/{predmet}', ['middleware' => 'RefUci', 'uses' => 'IzpisiR
 Route::post('rezultati/{predmet}/{datum}', ['middleware' => 'RefUci', 'uses' => 'IzpisiRezultatiController@izpisi']);
 
 Route::post('rezultatip', ['middleware' => 'ucitelj', 'uses' => 'IzpisiRezultatiController@izberiProf']);
+
+Route::get('prijave', ['middleware' => 'RefUci', 'uses' => 'PrijavljeniIzpitController@izberi1']);
+Route::post('prijave', ['middleware' => 'referent', 'uses' => 'PrijavljeniIzpitController@izberi2']);
+Route::post('prijave/{predmet}', ['middleware' => 'RefUci', 'uses' => 'PrijavljeniIzpitController@izberi3']);
+Route::post('prijave/{predmet}/{datum}', ['middleware' => 'RefUci', 'uses' => 'PrijavljeniIzpitController@izpisi']);
+
+Route::post('prijavep', ['middleware' => 'ucitelj', 'uses' => 'PrijavljeniIzpitController@izberiProf']);
+
+Route::get('ocene', ['middleware' => 'RefUci', 'uses' => 'OceneIzpitController@izberi1']);
+Route::post('ocene', ['middleware' => 'referent', 'uses' => 'OceneIzpitController@izberi2']);
+Route::post('ocene/{predmet}', ['middleware' => 'RefUci', 'uses' => 'OceneIzpitController@izberi3']);
+Route::post('ocene/{predmet}/{datum}', ['middleware' => 'RefUci', 'uses' => 'OceneIzpitController@izpisi']);
+
+Route::post('ocenep', ['middleware' => 'ucitelj', 'uses' => 'OceneIzpitController@izberiProf']);
+
+
+Route::post('individualnivnoskoncneocene/{vpisna}', ['middleware' => 'referent', 'uses' => 'IndividualniVnosKoncneOceneController@vnesi']);
+Route::post('individualnivnoskoncneocenepoljuben/{vpisna}', ['middleware' => 'referent', 'uses' => 'IndividualniVnosKoncneOceneController@vnesi']);

@@ -3,9 +3,15 @@
 @section('menu')
 <ul class="nav navbar-nav">
 	<li><a href="{{ url('find') }}">Iskanje študenta</a></li>
-	<li><a href="{{ url('rezultati') }}">Izpis rezultate</a></li>
     <li><a href="{{ url('izpitnirokiprofesor') }}">Izpitni roki</a></li>
-
+    <li>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Izpisi <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{{ url('prijave') }}">Izpis prijavljenih</a></li>
+            <li><a href="{{ url('rezultati') }}">Izpis rezultatov</a></li>
+            <li><a href="{{ url('ocene') }}">Izpis ocene</a></li>
+        </ul>
+    </li>
 </ul>
 @endsection
 

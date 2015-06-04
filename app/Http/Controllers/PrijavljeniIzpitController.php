@@ -1,10 +1,6 @@
 <?php namespace App\Http\Controllers;
-/**
- * Created by PhpStorm.
- * User: Bojan
- * Date: 25/05/2015
- * Time: 22:22
- */
+
+use App\Http\Requests;
 use App\Izpit;
 use App\Izvedba_predmeta;
 use App\Profesor;
@@ -16,11 +12,15 @@ use App\Izpitni_rok;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
-class IzpisiRezultatiController extends Controller
-{
+class PrijavljeniIzpitController extends Controller {
 
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
     public function izberi1(){
-        $url="rezultati";
+        $url="prijave";
         $leto=Studijsko_leto::lists('stevilka_studijskega_leta');
         return view('izpisrezultati', ['let' => $leto, 'tip' => Auth::user()->type, 'url' => $url]);
     }
@@ -40,7 +40,7 @@ class IzpisiRezultatiController extends Controller
             $predmeti[$i] = Predmet::where('sifra_predmeta',$predmetDATA[$i]->sifra_predmeta)->first();
         }
         //d($predmeti);
-        return view('listapredmeti', ['predmeti' => $predmeti , 'id_leto' => $id_leto,  'url' => "IzpisiRezultatiController"]);
+        return view('listapredmeti', ['predmeti' => $predmeti , 'id_leto' => $id_leto, 'url' => "PrijavljeniIzpitController" ]);
 
     }
 
@@ -54,7 +54,7 @@ class IzpisiRezultatiController extends Controller
             $predmeti =Predmet::where('naziv_predmeta', 'LIKE', $keyword . '%')->orWhere('sifra_predmeta', 'LIKE', $keyword . '%')->get();
         }
         //dd($predmeti);
-        return view('listapredmeti', ['predmeti' => $predmeti , 'id_leto' => $id_leto,  'url' => "IzpisiRezultatiController"]);
+        return view('listapredmeti', ['predmeti' => $predmeti , 'id_leto' => $id_leto,  'url' => "PrijavljeniIzpitController"]);
     }
 
     public function izberi3($predmet){
@@ -78,7 +78,7 @@ class IzpisiRezultatiController extends Controller
         }
         //dd($format_rok);
 
-        return view('listaizpitnerok', ['rok' => $format_rok, 'url' => "IzpisiRezultatiController"]);
+        return view('listaizpitnerok', ['rok' => $format_rok, 'url' => "PrijavljeniIzpitController"]);
     }
 
     public function cmp($a, $b)
@@ -88,10 +88,7 @@ class IzpisiRezultatiController extends Controller
 
     public function izpisi($premet,$datum){
         $info=Input::get('row');
-        $ime_sw=0;
-       if( Input::get('ime') ){
-           $ime_sw=1;
-       }
+
 
         $profesorDATA=Profesor::where('sifra_profesorja', explode("-",$info)[0])->first();
         $profesor= $profesorDATA->ime_profesorja . " " . $profesorDATA->priimek_profesorja;
@@ -102,7 +99,7 @@ class IzpisiRezultatiController extends Controller
         $stLet=explode("-",$info)[3];
         $studLeto=Studijsko_leto::where('sifra_studijskega_leta', $stLet)->first()->stevilka_studijskega_leta;
 
-        $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->whereNotNull('tocke_izpita')->get();
+        $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->get();
         $studenti=[];
         for ($i=0; $i< count($rezultatiRAW); $i++){
             $studenti[$i]=Student::where('vpisna_stevilka', $rezultatiRAW[$i]->vpisna_stevilka)->first();
@@ -116,10 +113,10 @@ class IzpisiRezultatiController extends Controller
         $polaganje=[];
         for ($i=0; $i< count($studenti); $i++)
         {
-         $polaganje[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->count();
+            $polaganje[$i]=Izpit::where('sifra_predmeta',$premet)->where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('ocena','>',0)->where('datum','<',$datum)->count();
         }
         //dd($polaganje);
         //echo $rezultati;
-        return view('rezultatipisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto]);
+        return view('prijavepisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'student' => $studenti ,'stlet' => $studLeto]);
     }
 }

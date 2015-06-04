@@ -62,7 +62,6 @@ class IzvozController extends Controller {
         $leto = Input::get( 'leto' );
         $naslov = Input::get( 'naslov' );
 		
-		
 		$studenti = Vpisan_predmet::where('Vpisan_predmet.sifra_predmeta', $predmet)
 						->where('Vpisan_predmet.sifra_studijskega_programa', $program)
 						->where('Vpisan_predmet.sifra_letnika', $letnik)

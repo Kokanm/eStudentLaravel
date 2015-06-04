@@ -43,5 +43,13 @@
     </div>
 </div>
 
+<hr />
 
+<div class="row">
+    <div class="col-md-offset-2 col-md-1">
+        {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneController@vnesi', $vp))) !!}
+            {!! Form::submit('Vpis ocene', ['class'=>'btn btn-default']) !!}
+        {!! Form::close() !!}
+    </div>
+</div>
 @endsection

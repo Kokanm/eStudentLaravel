@@ -17,7 +17,7 @@ class IzpitniRokTable extends Migration {
             $table->decimal('sifra_studijskega_programa', 7, 0);
             $table->decimal('sifra_letnika', 1, 0);
             $table->decimal('sifra_studijskega_leta', 2, 0);
-            $table->decimal('sifra_profesorja', 5, 0);
+            $table->decimal('sifra_profesorja', 5, 0)->nullable();
             $table->decimal('sifra_predmeta', 5, 0);
             $table->text('opombe')->nullable();
             $table->text('predavalnica')->nullable();

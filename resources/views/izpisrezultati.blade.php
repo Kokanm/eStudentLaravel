@@ -3,9 +3,9 @@
 @section('content')
 <div class="container">
      @if($tip==2)
-    {!! Form::open(array('url'=>'rezultati')) !!}
+    {!! Form::open(array('url'=> $url)) !!}
     @else
-    {!! Form::open(array('url'=>'rezultatip')) !!}
+    {!! Form::open(array('url'=> $url.'p')) !!}
     @endif
         {!! Form::label('st_let','Leto izvajanja') !!}
         {!! Form::select('st_let', $let, null, ['class' => 'form-control']) !!}

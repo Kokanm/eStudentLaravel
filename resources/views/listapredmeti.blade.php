@@ -14,7 +14,7 @@
                      <tr>
                          <td>{{ $row->naziv_predmeta }}</td>
                          <td>{{ $row->sifra_predmeta }}</td>
-                         {!! Form::open(array('action' => array('IzpisiRezultatiController@izberi3', $row->sifra_predmeta))) !!}
+                         {!! Form::open(array('action' => array( $url.'@izberi3', $row->sifra_predmeta))) !!}
                             {!! Form::hidden ('id_leto', $id_leto)!!}
                              <td>{!! Form::submit('Izberi', ['class' => 'btn btn-success btn-xs']) !!}</td>
                          {!! Form::close() !!}

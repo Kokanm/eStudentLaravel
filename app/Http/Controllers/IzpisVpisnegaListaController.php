@@ -26,10 +26,10 @@ class IzpisVpisnegaListaController extends Controller {
 	public function vpisnilist($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
         $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
-        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
-            pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
+        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->pluck('sifra_studijskega_programa')." ".
+            Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->
             pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
-        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->lists('sifra_predmeta');
+        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->lists('sifra_predmeta');
         $predmet = [];
         $sum = 0;
         for($i=0; $i<count($predmeti); $i++){
@@ -140,10 +140,9 @@ class IzpisVpisnegaListaController extends Controller {
     public function pregled($vs){
         $student = Student::where('vpisna_stevilka', $vs)->get();
         $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
-        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
-        pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
-        pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
-        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->lists('sifra_predmeta');
+        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->pluck('sifra_studijskega_programa')." ".
+            Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
+        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->lists('sifra_predmeta');
         $predmet = [];
         $sum = 0;
         for($i=0; $i<count($predmeti); $i++){
@@ -256,10 +255,10 @@ class IzpisVpisnegaListaController extends Controller {
         $vs = Student::where('email_studenta', $email)->pluck('vpisna_stevilka');
         $student = Student::where('vpisna_stevilka', $vs)->get();
         $vpis = Vpis::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->get();
-        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->
-            pluck('sifra_studijskega_programa')." ".Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->
+        $program =  Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->pluck('sifra_studijskega_programa')." ".
+            Studijski_program::where('sifra_studijskega_programa', Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->
             pluck('sifra_studijskega_programa'))->pluck('naziv_studijskega_programa');
-        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->lists('sifra_predmeta');
+        $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vs)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->lists('sifra_predmeta');
         $predmet = [];
         $sum = 0;
         for($i=0; $i<count($predmeti); $i++){
