@@ -279,6 +279,48 @@ class IndividualniVnosKoncneOceneController extends Controller {
                 $nekaj2->save();
         	}
 
+            // se enkrat
+            // PREBERI IZPITE (IZPITNE ROKE, NA KATERE JE ŠTUDENT PRIJAVLJEN), KI SO ŠE BREZ OCENE
+            $izpiti2 = Izpit::where('vpisna_stevilka', $vp)->get();
+            $izpiti = [];
+            $j=0;
+            for ($i = 0; $i < count($izpiti2); $i++) {
+                if($izpiti2[$i]->ocena == null) {
+                    $izpiti[$j][0] = $izpiti2[$i]->id;
+                    $izpiti[$j][1] = $izpiti2[$i]->sifra_predmeta;
+                    $temp1 = Predmet::where('sifra_predmeta', $izpiti[$j][1])->first();
+                    $izpiti[$j][2] = $temp1->naziv_predmeta;
+                    $izpiti[$j][3] = $temp1->stevilo_KT;
+                    $temp1 = Izpitni_rok::where('id', $izpiti2[$i]->id_izpitnega_roka)->first();
+                    $temp2 = Izvedba_predmeta::where('id', $temp1->id_izvedbe_predmeta)->first();
+                    $izpiti[$j][4] = '';
+                    $temp3 = Profesor::where('sifra_profesorja', $temp2->sifra_profesorja)->first();
+                    if ($temp3 != null) {
+                        $prof1 = $temp3->priimek_profesorja;
+                        $izpiti[$j][4] = $izpiti[$j][4] . $prof1;
+                    }
+                    $temp3 = Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->first();
+                    if ($temp3 != null) {
+                        $prof2 = $temp3->priimek_profesorja;
+                        $izpiti[$j][4] = $izpiti[$j][4] . ', ' . $prof2;
+                    }
+                    $temp3 = Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->first();
+                    if ($temp3 != null) {
+                        $prof3 = $temp3->priimek_profesorja;
+                        $izpiti[$j][4] = $izpiti[$j][4] . ', ' . $prof3;
+                    }
+                    $temp2 = $izpiti2[$i]->datum;
+                    $temp3 = substr($temp2, 8) . '-';
+                    $temp3 = $temp3 . substr($temp2, 5, -3) . '-';
+                    $temp3 = $temp3 . substr($temp2, 0, -6);
+                    $izpiti[$j][5] = $temp3;
+                    $izpiti[$j][6] = $temp1->ura;
+                    $j++;
+                }
+
+            }
+
+
         	return view('individualnivnoskoncneocene', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2,]);
         }
         
