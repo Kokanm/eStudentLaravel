@@ -98,6 +98,7 @@ class OceneIzpitController extends Controller {
         $studLeto=Studijsko_leto::where('sifra_studijskega_leta', $stLet)->first()->stevilka_studijskega_leta;
 
         $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->whereNotNull('ocena')->get();
+        //KOKAN PEDER
         $studenti=[];
         for ($i=0; $i< count($rezultatiRAW); $i++){
             $studenti[$i]=Student::where('vpisna_stevilka', $rezultatiRAW[$i]->vpisna_stevilka)->first();
