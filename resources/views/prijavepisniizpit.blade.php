@@ -83,5 +83,18 @@
              </table>
          </div>
      </div>
+         <br />
+
+             <div class="row">
+             {!! Form::open(array('url' => '#')) !!}
+                 <div class="col-md-offset-9 col-md-1">
+                     {!! Form::submit('Export to PDF', ['class'=>'btn btn-info']) !!}
+                 </div>
+                 <div class="col-md-1" style="padding-left: 33px">
+                     {!! Form::submit('Export to CSV', ['class'=>'btn btn-info']) !!}
+                 </div>
+             {!! Form::close() !!}
+             </div>
+
  </div>
  @endsection

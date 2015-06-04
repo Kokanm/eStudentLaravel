@@ -12,7 +12,7 @@ use App\Izpitni_rok;
 use App\Vpisan_predmet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-
+use Illuminate\Support\Facades\Response;
 class OceneIzpitController extends Controller {
 
     public function izberi1(){
@@ -122,7 +122,10 @@ class OceneIzpitController extends Controller {
         }
         //dd($polaganje);
         //echo $rezultati;
-        return view('oceneizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto, 'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis ]);
+        //$view="";
+        $view = view('oceneizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto, 'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis, 'html' => "" ])->renderSections()['content'];
+        //dd($view);
+        return view('oceneizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'trig' => $ime_sw, 'student' => $studenti ,'stlet' => $studLeto, 'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis , 'html' => $view]);
     }
 
 }

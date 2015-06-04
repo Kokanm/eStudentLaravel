@@ -92,6 +92,7 @@ Route::post('ocene/{predmet}', ['middleware' => 'RefUci', 'uses' => 'OceneIzpitC
 Route::post('ocene/{predmet}/{datum}', ['middleware' => 'RefUci', 'uses' => 'OceneIzpitController@izpisi']);
 
 Route::post('ocenep', ['middleware' => 'ucitelj', 'uses' => 'OceneIzpitController@izberiProf']);
+Route::post('export', ['middleware' => 'RefUci', 'uses' => 'ExportController@input']);
 
 
 Route::post('individualnivnoskoncneocene/{vpisna}', ['middleware' => 'referent', 'uses' => 'IndividualniVnosKoncneOceneController@vnesi']);
