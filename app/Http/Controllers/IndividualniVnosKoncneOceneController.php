@@ -274,7 +274,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
         	if($nekaj != null) {
         		Izpit::where('vpisna_stevilka', $vp)->where('id_izpitnega_roka', $izbran_termin_id_izpitni_rok)->update(['ocena' => Input::get( 'ocena' )]);
         	} else {
-        		$nekaj2 = Izpit::create(['vpisna_stevilka' => $vp, 'id_izpitnega_roka' => $izbran_termin_id_izpitni_rok, 'sifra_predmeta' => $izbran_termin->sifra_predmeta, 'sifra_studijskega_programa' => $izbran_termin->sifra_studijskega_programa, 'sifra_letnika' => $izbran_termin->sifra_letnika, 'sifra_studijskega_leta' => $izbran_termin->sifra_studijskega_leta, 'sifra_profesorja' => $izbran_termin->sifra_profesorja, 'datum' => $izbran_termin->datum]);
+        		$nekaj2 = Izpit::create(['vpisna_stevilka' => $vp, 'id_izpitnega_roka' => $izbran_termin_id_izpitni_rok, 'sifra_predmeta' => $izbran_termin->sifra_predmeta, 'sifra_studijskega_programa' => $izbran_termin->sifra_studijskega_programa, 'sifra_letnika' => $izbran_termin->sifra_letnika, 'sifra_studijskega_leta' => $izbran_termin->sifra_studijskega_leta, 'sifra_profesorja' => $izbran_termin->sifra_profesorja, 'datum' => $izbran_termin->datum, 'ocena' => Input::get( 'ocena' )]);
         		//echo $nekaj2;
                 $nekaj2->save();
         	}

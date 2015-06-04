@@ -206,15 +206,14 @@ class KartotecniListController extends Controller {
 
                 for ($j = 0; $j < count($predmets); $j++) {
                     $necinit = 1;
-                    $predmet = Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta', $predmets[$j])->
+                    $predmet = Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta', $predmets[$j]->sifra_predmeta)->
                     orderBy('datum', 'desc')->first();
-                    echo $predmet;
                     if($predmet == null) {
                         $predmet = $predmets[$j];
                         $necinit = 0;
                     }
                     $kaunt = count(Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->
-                    where('sifra_predmeta', $predmets[$j])->get());
+                    where('sifra_predmeta', $predmets[$j]->sifra_predmeta)->get());
                     $izpiti[$s][$i][$j][0] = $predmet->sifra_predmeta;
                     $izpiti[$s][$i][$j][7] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$j][0])->pluck('stevilo_KT');
                     $izpiti[$s][$i][$j][1] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$j][0])->pluck('naziv_predmeta');
@@ -266,7 +265,6 @@ class KartotecniListController extends Controller {
                     $povp[$s][$i] = 0;
             }
         }
-        dd($izpiti);
 
         return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'stpredmetov'=>$sh,
             'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare]);
