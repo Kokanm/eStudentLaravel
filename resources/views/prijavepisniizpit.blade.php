@@ -83,18 +83,20 @@
              </table>
          </div>
      </div>
-         <br />
+ <br />
 
-             <div class="row">
-             {!! Form::open(array('url' => '#')) !!}
-                 <div class="col-md-offset-9 col-md-1">
-                     {!! Form::submit('Export to PDF', ['class'=>'btn btn-info']) !!}
-                 </div>
-                 <div class="col-md-1" style="padding-left: 33px">
-                     {!! Form::submit('Export to CSV', ['class'=>'btn btn-info']) !!}
-                 </div>
-             {!! Form::close() !!}
-             </div>
+                  <div class="row">
+                  {!! Form::open( array('url' => 'export' )) !!}
+                      {!! Form::hidden( 'html' , $html) !!}
+                      {!! Form::hidden( 'fname' ,  $sifra_predmeta.'-ocene-'.date("d-m-Y", strtotime($datum)) ) !!}
+                      <div class="col-md-offset-9 col-md-1">
+                          {!! Form::submit('Export to PDF', ['name'=>'PDF','class'=>'btn btn-info']) !!}
+                      </div>
+                      <div class="col-md-1" style="padding-left: 33px">
+                          {!! Form::submit('Export to CSV', ['name'=>'CSV','class'=>'btn btn-info']) !!}
+                      </div>
+                  {!! Form::close() !!}
+                  </div>
 
  </div>
  @endsection

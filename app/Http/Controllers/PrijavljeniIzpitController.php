@@ -123,6 +123,7 @@ class PrijavljeniIzpitController extends Controller {
         }
         //dd($polaganje);
         //echo $rezultati;
-        return view('prijavepisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'student' => $studenti ,'stlet' => $studLeto,'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis]);
+        $view=view('prijavepisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'student' => $studenti ,'stlet' => $studLeto,'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis , 'html' => ""])->renderSections()['content'];
+        return view('prijavepisniizpit', ['rez' => $rezultati, 'sifra_predmeta' => $premet, 'ime_predmet' => $ime_predmet , 'datum' => $datum, 'ura' => $ura, 'prostor' => $prostor, 'profesor' => $profesor, 'polaganje' => $polaganje, 'student' => $studenti ,'stlet' => $studLeto,'polaganjeLetos' => $polaganjeLetos, 'stLetVpis' => $stLetVpis, 'html' => $view]);
     }
 }

@@ -1,5 +1,5 @@
 @extends('app')
- @section('content')
+@section('content')
  <div class="containter">
            <div class="col-md-offset-1">
            <div class="row ">

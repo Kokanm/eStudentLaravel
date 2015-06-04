@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
+use PDF;
 
 include "simple_html_dom.php";
 
@@ -14,8 +15,12 @@ class ExportController extends Controller {
     function input(){
         $in=Input::get('html');
         $fname=Input::get('fname');
+
         if( Input::get('PDF') ){
-            $this->exportPDF($in,$fname);
+            $html=view( 'pdfcreator', ['data'=>$in] )->renderSections()['content'];
+            //echo($html);
+            $pdf=PDF::loadHTML($html);
+            return $pdf->stream($fname.'.pdf');
         }
         if( Input::get('CSV') ){
             //echo "EXPORTING CSV";
@@ -52,13 +57,6 @@ class ExportController extends Controller {
 
 
         fclose($fp);
-    }
-
-    function exportPDF($in,$fname){
-
-        $pdf=App::make('dompdf');
-        $pdf->loadHTML($in);
-        return $pdf->stream();
     }
 
 
