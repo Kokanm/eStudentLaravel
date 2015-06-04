@@ -177,6 +177,7 @@ class KartotecniListController extends Controller {
         $skupkt = [];
         $izpiti = [];
         $heading = [];
+        $sh = [];
 
         for($s=0; $s<count($studijski_program); $s++) {
             $leta = Vpisan_predmet::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_programa', $studijski_program[$s])->lists('sifra_studijskega_leta');
@@ -189,7 +190,9 @@ class KartotecniListController extends Controller {
             $stleto = [];
             $stskupaj = [];
 
+
             for ($i = 0; $i < count($leta); $i++) {
+                $sh[$s][$i] = 0;
                 $povp[$s][$i] = 0;
                 $skupkt[$s][$i] = 0;
                 $st = 0;
@@ -205,6 +208,7 @@ class KartotecniListController extends Controller {
                     $necinit = 1;
                     $predmet = Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta', $predmets[$j])->
                     orderBy('datum', 'desc')->first();
+                    echo $predmet;
                     if($predmet == null) {
                         $predmet = $predmets[$j];
                         $necinit = 0;
@@ -245,7 +249,9 @@ class KartotecniListController extends Controller {
                             $povp[$s][$i] += $predmet->ocena;
                             $st++;
                         }
+                        $sh[$s][$i]++;
                     }else{
+                        $sh[$s][$i]++;
                         $izpiti[$s][$i][$j][2] = "";
                         $izpiti[$s][$i][$j][4] = "";
                         $izpiti[$s][$i][$j][5] = "";
@@ -260,8 +266,9 @@ class KartotecniListController extends Controller {
                     $povp[$s][$i] = 0;
             }
         }
+        dd($izpiti);
 
-        return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt,
+        return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'stpredmetov'=>$sh,
             'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare]);
     }
 }
