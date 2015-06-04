@@ -11,7 +11,7 @@
                     <hr/><br/>
 
                     <h4>VNESI OCENO ZA POLJUBEN IZPITNI ROK</h4><br/>
-                        {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneController@vnesi', $vp))) !!}
+                        {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneProfesorController@vnesi', $vp))) !!}
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-2">
@@ -54,7 +54,7 @@
                         <tbody>
                         
                         @for ($i = 0; $i < count($izpiti); $i++)
-                            {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneController@vnesi', $vp))) !!}
+                            {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneProfesorController@vnesi', $vp))) !!}
                                 {!! Form::hidden('id', $izpiti[$i][0]) !!}
                                 <tr>
                                     <td>{{ $izpiti[$i][1] }} {{ $izpiti[$i][2] }}</td>

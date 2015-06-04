@@ -22,9 +22,12 @@
                     {!! Form::close() !!}
                     @endif
                     @if($tip==3)
-                    {!! Form::open(array('action' => array('PodatkiOStudentController@izpisStudent', $row->vpisna_stevilka))) !!}
-                        <td>{!! Form::submit('Izpis', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                    <td>{!! Form::open(array('action' => array('PodatkiOStudentController@izpisStudent', $row->vpisna_stevilka))) !!}
+                        {!! Form::submit('Izpis', ['class' => 'btn btn-success btn-xs']) !!}
                     {!! Form::close() !!}
+                    {!! Form::open(array('action' => array('IndividualniVnosKoncneOceneProfesorController@vnesi', $row->vpisna_stevilka))) !!}
+                        {!! Form::submit('Vpis ocene', ['class'=>'btn btn-success btn-xs', 'style'=>'margin-top: -40px; margin-left: 50px;']) !!}</td>
+                    {!! Form::close() !!}</td>
                     @endif
                 </tr>
             @endforeach

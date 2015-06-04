@@ -68,7 +68,8 @@
                                 <th style="width: 15%;">Ocenil</th>
                                 <th style="width: 10%;">Letnik</th>
                                 <th style="width: 13%;">Datum</th>
-                                <th colspan="2" style="width: 12%;">Št. polaganj</th>
+                                <th style="width: 6%;">Št. letos</th>
+                                <th style="width: 6%;">Št. skupaj</th>
                                 <th style="width: 5%;">KT</th>
                                 <th style="width: 5%;">Ocena</th>
                             </tr>

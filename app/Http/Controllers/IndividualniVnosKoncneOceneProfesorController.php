@@ -18,8 +18,12 @@ use App\Vpis;
 
 use Illuminate\Support\Facades\Input;
 
-class IndividualniVnosKoncneOceneController extends Controller {
+class IndividualniVnosKoncneOceneProfesorController extends Controller {
 	public function vnesi($vp) {
+		$email = \Auth::user()->email;
+        $vpisanprofesor = Profesor::where('email_profesorja', $email)->first();
+        $vpisanprofesor_sifra_profesorja = $vpisanprofesor->sifra_profesorja;
+
 		$student = Student::where('vpisna_stevilka', $vp)->first();
 		$student_ime = $student->ime_studenta;
 		$student_priimek = $student->priimek_studenta;
@@ -51,7 +55,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	    $trenutno_studijsko_leto_sifra = $vpis->sifra_studijskega_leta;
 	    //echo $trenutno_studijsko_leto_sifra;*/
 
-		$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->get();
+		$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_profesorja', $vpisanprofesor_sifra_profesorja)->get();
 		$izpiti = [];
 		$j=0;
         for ($i = 0; $i < count($izpiti2); $i++) {
@@ -145,7 +149,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        $predmeti = [];
 	        $j = 0;
 	        for ($i = 0; $i < count($predmeti2); $i++) {
-	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram) {
+	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram && $predmeti2[$i]->sifra_profesorja==$vpisanprofesor_sifra_profesorja) {
 		            //$predmeti[$j][0] = $predmeti2[$i]->id;	// id izvedba predmeta
 		            $predmeti[$j] = $predmeti2[$i]->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja)->pluck('priimek_profesorja');
 		            if (Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
@@ -161,7 +165,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        sort($predmeti);
 	        $predmeti = array_unique($predmeti);
 
-        	return view('individualnivnoskoncneocenepoljuben', ['vp' => $vp, 'program' => $stprogram, 'letnik' => $stletnik, 'leto' => $stleto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'predmeti' => $predmeti]);
+        	return view('individualnivnoskoncneocenepoljubenprofesor', ['vp' => $vp, 'program' => $stprogram, 'letnik' => $stletnik, 'leto' => $stleto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'predmeti' => $predmeti]);
         }
 
         // IZBERI PREDMET
@@ -187,7 +191,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        $predmeti = [];
 	        $j = 0;
 	        for ($i = 0; $i < count($predmeti2); $i++) {
-	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram) {
+	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram && $predmeti2[$i]->sifra_profesorja==$vpisanprofesor_sifra_profesorja) {
 		            //$predmeti[$j][0] = $predmeti2[$i]->id;	// id izvedba predmeta
 		            $predmeti[$j] = $predmeti2[$i]->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja)->pluck('priimek_profesorja');
 		            if (Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
@@ -223,7 +227,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
         			$termini[$i] = $termini[$i] . ' ob ' . date('H:i', strtotime($temp3[$i]->ura));
         		}
         	}
-        	return view('individualnivnoskoncneocenepoljuben2', ['vp' => $vp, 'program' => $stprogram, 'letnik' => $stletnik, 'leto' => $stleto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'termini' => $termini, 'pred' => $temp1]);
+        	return view('individualnivnoskoncneocenepoljubenprofesor2', ['vp' => $vp, 'program' => $stprogram, 'letnik' => $stletnik, 'leto' => $stleto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'termini' => $termini, 'pred' => $temp1]);
         }
 
         // IZBRALI SMO TERMIN IN VNESLI OCENO
@@ -249,7 +253,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        $predmeti = [];
 	        $j = 0;
 	        for ($i = 0; $i < count($predmeti2); $i++) {
-	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram) {
+	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram && $predmeti2[$i]->sifra_profesorja==$vpisanprofesor_sifra_profesorja) {
 		            //$predmeti[$j][0] = $predmeti2[$i]->id;	// id izvedba predmeta
 		            $predmeti[$j] = $predmeti2[$i]->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja)->pluck('priimek_profesorja');
 		            if (Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
@@ -314,7 +318,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 		    $trenutno_studijsko_leto_sifra = $vpis->sifra_studijskega_leta;
 		    //echo $trenutno_studijsko_leto_sifra;*/
 
-			$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->get();
+			$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_profesorja', $vpisanprofesor_sifra_profesorja)->get();
 			$izpiti = [];
 			$j=0;
 	        for ($i = 0; $i < count($izpiti2); $i++) {
@@ -360,7 +364,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        	}
 	        }
 
-        	return view('individualnivnoskoncneocene', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'napaka' => $napaka]);
+        	return view('individualnivnoskoncneoceneprofesor', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'napaka' => $napaka]);
         }
         
 
@@ -387,7 +391,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        $predmeti = [];
 	        $j = 0;
 	        for ($i = 0; $i < count($predmeti2); $i++) {
-	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram) {
+	        	if ($predmeti2[$i]->sifra_studijskega_leta==$stleto && $predmeti2[$i]->sifra_letnika==$stletnik && $predmeti2[$i]->sifra_studijskega_programa==$stprogram && $predmeti2[$i]->sifra_profesorja==$vpisanprofesor_sifra_profesorja) {
 		            //$predmeti[$j][0] = $predmeti2[$i]->id;	// id izvedba predmeta
 		            $predmeti[$j] = $predmeti2[$i]->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $predmeti2[$i]->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja)->pluck('priimek_profesorja');
 		            if (Profesor::where('sifra_profesorja', $predmeti2[$i]->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
@@ -437,7 +441,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 		    $trenutno_studijsko_leto_sifra = $vpis->sifra_studijskega_leta;
 		    //echo $trenutno_studijsko_leto_sifra;*/
 
-			$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->get();
+			$izpiti2 = Izpit::where('vpisna_stevilka', $vp)->where('sifra_profesorja', $vpisanprofesor_sifra_profesorja)->get();
 			$izpiti = [];
 			$j=0;
 	        for ($i = 0; $i < count($izpiti2); $i++) {
@@ -484,9 +488,9 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	        }
 
 
-        	return view('individualnivnoskoncneocene', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'napaka' => $napaka]);
+        	return view('individualnivnoskoncneoceneprofesor', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'stprogram2' => $stprogram2, 'stletnik2' => $stletnik2, 'stleto2' => $stleto2, 'napaka' => $napaka]);
         }
 
-        return view('individualnivnoskoncneocene', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'napaka' => $napaka]);
+        return view('individualnivnoskoncneoceneprofesor', ['vp' => $vp, 'student_ime' => $student_ime, 'student_priimek' => $student_priimek, 'izpiti' => $izpiti, 'program' => $studijski_programi, 'letnik' => $letnik, 'leto' => $leto, 'napaka' => $napaka]);
 	}
 }
