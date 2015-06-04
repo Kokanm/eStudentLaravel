@@ -59,7 +59,8 @@
                      <th>#</th>
                      <th>Vpisna stevilka</th>
                      <th>Priimek in Ime</th>
-                     <th>St.Polaganje</th>
+                     <th>Studijsko leto</th>
+                     <th colspan="2" style="width: 12%;">Št. polaganj</th>
 
 
                  </tr>
@@ -72,6 +73,8 @@
 
                           <td>{{ $student[$i-1]->priimek_studenta.", ".$student[$i-1]->ime_studenta }}</td>
 
+                         <td>{{ $stLetVpis[$i-1] }}</td>
+                         <td>{{ $polaganjeLetos[$i-1]+1 }}</td>
                          <td>{{ $polaganje[$i-1]+1 }}</td>
                      </tr>
                   {{--*/ $i++ /*--}}
