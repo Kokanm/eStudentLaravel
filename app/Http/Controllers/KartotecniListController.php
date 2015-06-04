@@ -142,7 +142,16 @@ class KartotecniListController extends Controller {
             }
         }
 
-        return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt,
+        $glupost = 0;
+        if(count($studijski_program) == 1){
+            for($g=0; $g<count($studijski_programi); $g++){
+                if (substr($studijski_programi[$g], 0,7) == $studijski_program[0]) {
+                    $glupost = $g;
+                }
+            }
+        }
+
+        return view('kartotecnilist',['name'=> $name, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'glupost'=>$glupost,
                 'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'stpredmetov'=>$sh]);
     }
 

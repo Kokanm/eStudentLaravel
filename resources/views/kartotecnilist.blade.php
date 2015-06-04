@@ -24,7 +24,13 @@
     <br />
     @for($i=0; $i<count($studijski_program); $i++)
         <div class="row">
-            <h3>{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h3>
+            <div class="col-md-offset-3">
+                @if(count($studijski_program) == 1)
+                    <h2 style="margin-bottom: 50px">{{ "1. ".substr($studijski_programi[$glupost], 7) }}</h2>
+                @else
+                    <h2 style="margin-bottom: 50px">{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h2>
+                @endif
+            </div>
         </div>
         @for($j=0; $j<count($heading[$i]); $j++)
             <div class="row">
@@ -117,14 +123,17 @@
         @endfor
     @endfor
     <br />
-    <hr />
     <br />
     <div class="row">
         <h3>Skupno povprečno oceno in število kreditnih točk</h3>
         <br />
         @for($i=0; $i<count($studijski_program); $i++)
         <div class="row">
-            <h4>{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h4>
+            @if(count($studijski_program) == 1)
+                <h4>{{ "1. ".substr($studijski_programi[$glupost], 7) }}</h4>
+            @else
+                <h4>{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h4>
+            @endif
         </div>
         <table class="table">
             <thead>
