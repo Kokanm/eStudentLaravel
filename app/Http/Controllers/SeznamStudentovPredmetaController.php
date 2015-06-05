@@ -1,150 +1,88 @@
 <?php namespace App\Http\Controllers;
 
+use App\Http\Requests;
+use App\Izpit;
 use App\Izvedba_predmeta;
+use App\Profesor;
 use App\Student;
+use App\Studijsko_leto;
+use App\Predmet;
+use App\Predmet_studijskega_programa;
+use App\Izpitni_rok;
 use App\Vpis;
 use App\Vpisan_predmet;
-use App\Studijsko_leto;
-use App\Letnik;
-use App\Studijski_program;
-use App\Predmet;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use App\Vrsta_vpisa;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class SeznamStudentovPredmetaController extends Controller {
 
-	public function studentiPredmeta(){
-        $stleto = Input::get( 'stleto' );
-        $stletnik = Input::get( 'stletnik' );
-        $stprogram = Input::get( 'stprogram' );
-
-        for($i=0; $i<count($izvPredmeti); $i++){
-            if(Input::get('brisip'.$i)){
-                Izvedba_predmeta::where('id', $vs['idpredmeta'.$i])->update(['sifra_profesorja'=>null, 'sifra_profesorja2'=>null, 'sifra_profesorja3'=>null]);
-            }
-        }
-
-        $subjects = Predmet::get();		
-        $predmet = $stpredmet;
-		$naslov[0] = Predmet::where('sifra_predmeta', $stpredmet)->naziv_predmeta;
-		
-        $studleto = Studijsko_leto::get();		
-        $leto = $studleto[$stleto-1]->sifra_studijskega_leta;
-		$naslov[1] = $studleto[$stleto-1]->stevilka_studijskega_leta;
-
-        $let = Letnik::get();
-        $letnik = $let[$stletnik-1]->sifra_letnika;
-		$naslov[2] = $let[$stletnik-1]->stevilka_letnika;
-		
-        $studijski_programi = Studijski_program::get();
-        $program = $studijski_programi[$stprogram-1]->sifra_studijskega_programa;
-		$naslov[3] = $studijski_programi[$stprogram-1]->naziv_studijskega_programa;
-
-        /*
-		$studenti = Vpisan_predmet::where('vpisan_predmet.sifra_predmeta', $predmet)
-						->where('vpisan_predmet.sifra_studijskega_programa', $program)
-						->where('vpisan_predmet.sifra_letnika', $letnik)
-						->where('vpisan_predmet.sifra_studijskega_leta_izvedbe_predmeta', $leto)
-						->join('student', 'vpisan_predmet.vpisna_stevilka', '=', 'student.vpisna_stevilka')
-						->join('vpis', function($join)
-							{
-								$join->on('vpisan_predmet.vpisna_stevilka', '=', 'vpis.vpisna_stevilka')->on('vpisan_predmet.sifra_studijskega_leta', '=', 'vpis.sifra_studijskega_leta');
-							})
-						->join('vrsta_vpisa', 'vpis.sifra_vrste_vpisa', '=', 'vrsta_vpisa.sifra_vrste_vpisa')
-						->select('student.vpisna_stevilka AS vpisna', 'student.priimek_studenta AS priimek', 'student.ime_studenta AS ime', 'vrsta_vpisa.opis_vrste_vpisa AS vrsta_vpisa')
-						->orderByRaw('priimek COLLATE utf8_slovenian_ci')
-						->get();
-        */
-
-        $predmeti = Vpisan_predmet::where('sifra_predmeta', $predmet)->where('sifra_studijskega_programa', $program)->where('sifra_letnika', $letnik)->
-            where('sifra_studijskega_leta', $leto)->get();
-
-        $studenti = [];
-        for($i=0; $i<count($predmeti); $i++){
-            $vp = $predmeti[$i]->vpisna_stevilka;
-            $studenti[$i][0] = $vp;
-            $studenti[$i][1] = Student::where('vpisna_stevilka', $vp)->pluck('ime_studenta')." ".Student::where('vpisna_stevilka', $vp)->pluck('priimek_studenta');
-            $studenti[$i][2] = Vrsta_vpisa::where('sifra_vrste_vpisa', Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $leto)->
-                where('sifra_studijskega_programa', $program)->pluck('sifra_vrste_vpisa'))->pluck('opis_vrste_vpisa');
-        }
-		
-		$stHidden[0] = $predmet;
-		$stHidden[1] = $program;
-		$stHidden[2] = $letnik;
-		$stHidden[3] = $leto;
-		// popravi na cel $naslov, new samo [0]
-        return view('studentipredmeta', ['students' => $studenti, 'naslov' => $naslov[0], 'stHidden' => $stHidden]);
-	}
-	
-	public function izbiraPrograma(){
-        $studleto = Studijsko_leto::get();
-        $leto = [];
-        for ($i = 0; $i < count($studleto); $i++) {
-            $leto[$i] = $studleto[$i]->stevilka_studijskega_leta;
-        }
-        array_unshift($leto, "");
-
-        $let = Letnik::get();
-        $letnik = [];
-        for ($i = 0; $i < count($let); $i++) {
-            $letnik[$i] = $let[$i]->stevilka_letnika;
-            if($letnik[$i] == 0)
-                $letnik[$i] = "dodatno leto";
-        }
-        array_unshift($letnik, "");
-
-        $programi = Studijski_program::get();
-        $studijski_programi = [];
-        for ($i = 0; $i < count($programi); $i++) {
-            $studijski_programi[$i] = $programi[$i]->sifra_studijskega_programa . " " . $programi[$i]->naziv_studijskega_programa;
-        }
-        array_unshift($studijski_programi, "");
-
-        return view('izberipredmet', ['leto' => $leto, 'letnik' => $letnik, 'program' => $studijski_programi]);
-	}
-
-    public function izbiraPredmeta(){
-        $studleto = Studijsko_leto::get();
-        $leto = [];
-        for ($i = 0; $i < count($studleto); $i++) {
-            $leto[$i] = $studleto[$i]->stevilka_studijskega_leta;
-        }
-        array_unshift($leto, "");
-
-        $let = Letnik::get();
-        $letnik = [];
-        for ($i = 0; $i < count($let); $i++) {
-            $letnik[$i] = $let[$i]->stevilka_letnika;
-            if($letnik[$i] == 0)
-                $letnik[$i] = "dodatno leto";
-        }
-        array_unshift($letnik, "");
-
-        $programi = Studijski_program::get();
-        $studijski_programi = [];
-        $pomos = [];
-        for ($i = 0; $i < count($programi); $i++) {
-            $studijski_programi[$i] = $programi[$i]->sifra_studijskega_programa . " " . $programi[$i]->naziv_studijskega_programa;
-            $pomos[$i] = $programi[$i]->sifra_studijskega_programa;
-        }
-        array_unshift($studijski_programi, "");
-
-        $stleto = substr($leto[Input::get( 'stleto' )], 2,2);
-        $stletnik = $letnik[Input::get( 'stletnik' )];
-        $stprogram = $pomos[Input::get( 'stprogram' )-1];
-
-        $subject = Izvedba_predmeta::where('sifra_studijskega_leta', 15)->where('sifra_studijskega_programa', $stprogram)->where('sifra_letnika', $stletnik)->lists('sifra_predmeta');
-        $predmet = [];
-        for ($i = 0; $i < count($subject); $i++) {
-            $predmet[$i] = $subject[$i]. " " . Predmet::where('sifra_predmeta', $subject[$i])->pluck('naziv_predmeta');
-        }
-
-        return view('izberipredmet2', ['predmet'=> $predmet ,'leto' => $leto, 'letnik' => $letnik, 'program' => $studijski_programi]);
+    public function izberi1(){
+        $url="predmet";
+        $leto=Studijsko_leto::lists('stevilka_studijskega_leta');
+        return view('izpisrezultati', ['let' => $leto, 'tip' => Auth::user()->type, 'url' => $url]);
     }
 
+    public function izberiProf(){
+        $user_email=Auth::user()->email;
+
+        $chose_id_let = Input::get('st_let');
+        $id_leto = Studijsko_leto::all()->get($chose_id_let)->sifra_studijskega_leta;
+
+        $id_profesor=Profesor::where('email_profesorja',$user_email)->first()->sifra_profesorja;
+        $predmetDATA=Izvedba_predmeta::where('sifra_profesorja',$id_profesor)->where('sifra_studijskega_leta',$id_leto)->get();
+        $predmeti=[];
+        for ( $i=0; $i < count($predmetDATA); $i++ )
+        {
+            $predmeti[$i] = Predmet::where('sifra_predmeta',$predmetDATA[$i]->sifra_predmeta)->first();
+        }
+
+        return view('izberipredmet', ['predmeti' => $predmeti , 'id_leto' => $id_leto, 'url' => "SeznamStudentovPredmetaController" ]);
+
+    }
+
+    public function izberi2(){
+        $keyword = Input::get('keyword');
+        $chose_id_let = Input::get('st_let');
+        $id_leto = Studijsko_leto::all()->get($chose_id_let)->sifra_studijskega_leta;
+        if (count(explode(" ", $keyword)) > 1) {
+            $predmeti = Predmet::where('naziv_predmeta', 'LIKE', explode(" ", $keyword)[1] . '%')->orWhere('sifra_predmeta', 'LIKE', explode(" ", $keyword)[1] . '%')->get();
+        } else {
+            $predmeti =Predmet::where('naziv_predmeta', 'LIKE', $keyword . '%')->orWhere('sifra_predmeta', 'LIKE', $keyword . '%')->get();
+        }
+
+        return view('izberipredmet', ['predmeti' => $predmeti , 'id_leto' => $id_leto,  'url' => "SeznamStudentovPredmetaController"]);
+    }
+
+    public function cmp($a, $b)
+    {
+        return strcmp($a->priimek_studenta, $b->priimek_studenta);
+    }
+
+    public function izpisi($premet){
+        $id_leto = Input::get('id_leto');
+        $info = Vpisan_predmet::where('sifra_predmeta', $premet)->where('sifra_studijskega_leta', $id_leto)->lists('vpisna_stevilka');
+        $leto = Studijsko_leto::where('sifra_studijskega_leta', $id_leto)->pluck('stevilka_studijskega_leta');
+
+        $profesorDATA= Profesor::where('sifra_profesorja', Izvedba_predmeta::where('sifra_predmeta', $premet)->where('sifra_studijskega_leta', $id_leto)->pluck('sifra_profesorja'))->get()[0];
+        $profesor= $profesorDATA->ime_profesorja . " " . $profesorDATA->priimek_profesorja;
+        $ime_predmet=Predmet::where('sifra_predmeta', $premet)->pluck('naziv_predmeta');
+
+        $studenti=[];
+        for ($i=0; $i< count($info); $i++){
+            $studenti[$i]=Student::where('vpisna_stevilka', $info[$i])->first();
+        }
+        usort($studenti,  array($this, "cmp"));
+
+        $vrsta = [];
+        $vpisni = [];
+        for($i=0; $i<count($studenti); $i++){
+            $vrsta[$i] = Vrsta_vpisa::where('sifra_vrste_vpisa', Vpis::where('vpisna_stevilka', $studenti[$i]->vpisna_stevilka)->where('sifra_studijskega_leta', $id_leto)->
+            pluck('sifra_vrste_vpisa'))->pluck('opis_vrste_vpisa');
+            $vpisni[$i] = $studenti[$i]->vpisna_stevilka;
+        }
+
+        $view=view('seznamstudentovnapredmet', ['sifra_predmeta' => $premet, 'vrsta'=>$vrsta, 'vpisni'=>$vpisni, 'stlet'=>$leto, 'ime_predmet' => $ime_predmet ,  'profesor' => $profesor,  'student' => $studenti ,'html' => ""])->renderSections()['content'];
+        return view('seznamstudentovnapredmet', ['sifra_predmeta' => $premet, 'vrsta'=>$vrsta, 'vpisni'=>$vpisni,'stlet'=>$leto, 'ime_predmet' => $ime_predmet ,   'profesor' => $profesor,  'student' => $studenti , 'html' => $view]);
+    }
 }

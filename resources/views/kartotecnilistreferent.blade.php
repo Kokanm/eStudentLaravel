@@ -6,7 +6,7 @@
     <div class="row">
         <h2 style="padding-left: 14px">{{ $name }}</h2>
     </div>
-    {!! Form::open(array('url' => 'kartotecniS')) !!}
+    {!! Form::open(array('action' => array('KartotecniListReferentController@gumb', $vpisna))) !!}
     <div class="row">
         <div class="col-md-1">
             {!! Form::submit('Vsa polaganja', ['class'=>'btn btn-info '.$active[0], 'name' => 'vsa']) !!}
@@ -112,58 +112,57 @@
             </div>
         @endfor
     @endfor
-
     <br />
     <br />
     <div class="row">
-            <h3>Skupno povprečno oceno in število kreditnih točk</h3>
-            <br />
-            @for($i=0; $i<count($studijski_program); $i++)
-            <div class="row">
-                @if(count($studijski_program) == 1)
-                    <h4>{{ "1. ".substr($studijski_programi[$glupost], 7) }}</h4>
-                @else
-                    <h4>{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h4>
-                @endif
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Študijsko leto</th>
-                        <th>Število opravljenih izpitov</th>
-                        <th>Kreditne točke</th>
-                        <th>Skupno povprečje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for($j=0; $j<count($heading[$i]); $j++)
-                        <tr>
-                            <td>{{ $heading[$i][$j][0]}}</td>
-                            <td>{{ $skupnare[$i][$j] }}</td>
-                            <td>{{ $skupkt[$i][$j] }}</td>
-                            <td>{{ $povp[$i][$j] }}</td>
-                        </tr>
-                    @endfor
-                    <tr>
-                        <td><b>Skupaj: </b></td>
-                        <td>{{ $povse[$i][0] }}</td>
-                        <td>{{ $povse[$i][1] }}</td>
-                        <td>{{ $povse[$i][2] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            @endfor
+        <h3>Skupno povprečno oceno in število kreditnih točk</h3>
+        <br />
+        @for($i=0; $i<count($studijski_program); $i++)
+        <div class="row">
+            @if(count($studijski_program) == 1)
+                <h4>{{ "1. ".substr($studijski_programi[$glupost], 7) }}</h4>
+            @else
+                <h4>{{ ($i+1).". ".substr($studijski_programi[$i+1], 7) }}</h4>
+            @endif
         </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Študijsko leto</th>
+                    <th>Število opravljenih izpitov</th>
+                    <th>Kreditne točke</th>
+                    <th>Skupno povprečje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for($j=0; $j<count($heading[$i]); $j++)
+                    <tr>
+                        <td>{{ $heading[$i][$j][0]}}</td>
+                        <td>{{ $skupnare[$i][$j] }}</td>
+                        <td>{{ $skupkt[$i][$j] }}</td>
+                        <td>{{ $povp[$i][$j] }}</td>
+                    </tr>
+                @endfor
+                <tr>
+                    <td><b>Skupaj: </b></td>
+                    <td>{{ $povse[$i][0] }}</td>
+                    <td>{{ $povse[$i][1] }}</td>
+                    <td>{{ $povse[$i][2] }}</td>
+                </tr>
+            </tbody>
+        </table>
+        @endfor
+    </div>
 
     <br />
       <div class="row">
       {!! Form::open( array( 'url' => 'export' )) !!}
           {!! Form::hidden( 'html' , $html) !!}
           {!! Form::hidden( 'fname' , "kartotecni" ) !!}
-          <div class="col-md-offset-9 col-md-1">
+          <div class="col-md-offset-9 col-xs-offset-1 col-md-1 col-xs-2">
               {!! Form::submit('Export to PDF', ['name'=>'PDF','class'=>'btn btn-info']) !!}
           </div>
-          <div class="col-md-1" style="padding-left: 33px">
+          <div class="col-md-1 col-xs-1 col-xs-2" style="padding-left: 33px">
               {!! Form::submit('Export to CSV', ['name'=>'CSV','class'=>'btn btn-info']) !!}
           </div>
       {!! Form::close() !!}

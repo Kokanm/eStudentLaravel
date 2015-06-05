@@ -1,27 +1,27 @@
 @extends('app')
 @section('content')
-<div class="row">
-    <div class="col-md-10 col-md-offset-1">
-        {!! Form::open(array('url'=>'seznamPredmet')) !!}
-            <div class="form-group">
-                <div class="col-md-3">
-                    {!! Form::label('stleto','Studijsko leto', ['style' => 'font-weight: bold']) !!}
-                    {!! Form::select('stleto', $leto, 0, ['class' => 'form-control']) !!}
-                </div>
-                <div class="col-md-2">
-                    {!! Form::label('stletnik','Letnik', ['style' => 'font-weight: bold']) !!}
-                    {!! Form::select('stletnik', $letnik, 0, ['class' => 'form-control', 'id'=>'letnik']) !!}
-                </div>
-                <div class="col-md-3">
-                    {!! Form::label('stprogram','Študijski program', ['style' => 'font-weight: bold']) !!}
-                    {!! Form::select('stprogram', $program, 0, ['class' => 'form-control', 'id'=>'program']) !!}
-                </div>
+<div class="containter">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <table class="table">
+                <tr>
+                    <th>Ime predmet</th>
+                    <th>Sifra predmeta</th>
+                    <th>Opcije</th>
+                </tr>
+                @foreach($predmeti as $row)
+                    <tr>
+                        <td>{{ $row->naziv_predmeta }}</td>
+                        <td>{{ $row->sifra_predmeta }}</td>
+                        {!! Form::open(array('action' => array( $url.'@izpisi', $row->sifra_predmeta))) !!}
+                            {!! Form::hidden ('id_leto', $id_leto)!!}
+                            <td>{!! Form::submit('Izberi', ['class' => 'btn btn-success btn-xs']) !!}</td>
+                        {!! Form::close() !!}
 
-                <div class="col-md-1">
-                    {!! Form::submit('Naprej', ['class'=>'btn btn-success', 'style' => 'margin-top: 24px']) !!}
-                </div>
-            </div>
-        {!! Form::close() !!}
+                    </tr>
+                @endforeach
+            </table>
+        </div>
     </div>
 </div>
 @endsection

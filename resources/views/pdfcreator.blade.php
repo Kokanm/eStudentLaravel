@@ -18,6 +18,11 @@
     form{
         display: none;
     }
+
+    body {
+        font-family: DejaVu Sans, sans-serif;
+        font-size: small;
+    }
 	</style>
 
 </head>

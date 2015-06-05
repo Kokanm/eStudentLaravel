@@ -10,6 +10,7 @@
             <li><a href="{{ url('prijave') }}">Izpis prijavljenih</a></li>
             <li><a href="{{ url('rezultati') }}">Izpis rezultatov</a></li>
             <li><a href="{{ url('ocene') }}">Izpis ocene</a></li>
+            <li><a href="{{ url('predmet') }}">Izpis vpisanih v predmet</a></li>
         </ul>
     </li>
 </ul>
