@@ -60,6 +60,7 @@ Route::post('prijavaodjava/{vse}', ['middleware' => 'referent', 'uses' => 'Prija
 
 Route::get('kartotecniS', ['middleware' => 'student', 'uses' => 'KartotecniListController@vrniVsa']);
 Route::post('kartotecniS', ['middleware' => 'student', 'uses' => 'KartotecniListController@gumb']);
+
 Route::post('kartotecniR/{vpisna}', ['middleware' => 'referent', 'uses' => 'KartotecniListReferentController@vrniVsa']);
 Route::post('kartotecniR2/{vpisna}', ['middleware' => 'referent', 'uses' => 'KartotecniListReferentController@gumb']);
 
