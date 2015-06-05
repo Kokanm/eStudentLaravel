@@ -181,11 +181,11 @@ class KartotecniListController extends Controller {
                 $povse[$s][2] = 0;
         }
 
-       # $view=view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'glupost'=>$glupost,
-          #  'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'stpredmetov'=>$sh, 'html' => ""])->renderSections()['content'];
+        $view=view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'glupost'=>$glupost,
+            'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'stpredmetov'=>$sh, 'html' => ""])->renderSections()['content'];
 
         return view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'glupost'=>$glupost,
-                'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'stpredmetov'=>$sh, 'html' => ""]);
+                'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'stpredmetov'=>$sh, 'html' => $view]);
     }
 
     public function vrniZadnja(){
@@ -347,10 +347,10 @@ class KartotecniListController extends Controller {
                 $povse[$s][2] = 0;
         }
 
-        #$view=view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'stpredmetov'=>$sh, 'glupost'=>$glupost,
-         #   'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare,'html'=>""])->renderSections()['content'];
+        $view=view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'stpredmetov'=>$sh, 'glupost'=>$glupost,
+            'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare,'html'=>""])->renderSections()['content'];
 
         return view('kartotecnilist',['name'=> $name, 'povse'=>$povse, 'active'=>$active, 'studijski_programi'=>$studijski_programi, 'skupkt'=>$skupkt, 'stpredmetov'=>$sh, 'glupost'=>$glupost,
-            'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'html'=>""]);
+            'studijski_program'=>$studijski_program, 'heading'=>$heading, 'izpiti'=>$izpiti, 'povp'=>$povp,'skupnare'=>$skupnare, 'html'=>$view ]);
     }
 }
