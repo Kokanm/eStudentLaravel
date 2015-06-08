@@ -110,3 +110,4 @@ Route::post('individualnivnoskoncneoceneprofesor/{vpisna}', ['middleware' => 'uc
 Route::post('individualnivnoskoncneocenepoljubenprofesor/{vpisna}', ['middleware' => 'ucitelj', 'uses' => 'IndividualniVnosKoncneOceneProfesorController@vnesi']);
 
 Route::post('izbirni/{vpisna}', ['middleware' => 'referent', 'uses' => 'SpremeniIzbirniPredmetiController@izbirni']);
+Route::post('izbirni2/{vpisna}', ['middleware' => 'referent', 'uses' => 'SpremeniIzbirniPredmetiController@izberi']);

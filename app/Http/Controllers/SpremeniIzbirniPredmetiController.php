@@ -3,11 +3,18 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Izvedba_predmeta;
+use App\Predmet;
 use App\Predmet_studijskega_programa;
+use App\Profesor;
+use App\Sestavni_del_predmetnika;
+use App\Student;
+use App\Studijski_program;
 use App\Vpis;
 use App\Vpisan_predmet;
 use App\Zeton;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
 class SpremeniIzbirniPredmetiController extends Controller {
@@ -17,6 +24,7 @@ class SpremeniIzbirniPredmetiController extends Controller {
         $vpis = Vpis::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $stdleto)->first();
         $stdpro = $vpis->sifra_studijskega_programa;
         $letnik = $vpis->sifra_letnika;
+        $ime = Student::where('vpisna_stevilka', $vpisna)->pluck('priimek_studenta').", ".Student::where('vpisna_stevilka', $vpisna)->pluck('ime_studenta');
 
         if($vpis){
             $strokovno_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $stdpro)->
@@ -79,92 +87,58 @@ class SpremeniIzbirniPredmetiController extends Controller {
 
                 if($letnik == 2) {
                     if ($psp == 6 && $str == 0) {
-                        $str = array_search($vpisan[$i], $strokovni);
+                        $str = array_search($vpisan[$i], $strokovno_izbirni);
                     }else {
                         if (($psp == 7 || $psp == 6) && $pr1 == 0) {
-                            $pr1 = array_search($vpisan[$i], $prosti);
+                            $pr1 = array_search($vpisan[$i], $prosto_izbirni);
                         }
 
                         if (($psp == 7 || $psp == 6) && $pr2 == 0) {
-                            $pr2 = array_search($vpisan[$i], $prosti);
+                            $pr2 = array_search($vpisan[$i], $prosto_izbirni);
                         }
                     }
                 }elseif($letnik == 3){
                     if($psp != null && ($psp < 6 || $psp > 7)){
-                        if($mod1 != 0){
-                            $mod1 = array_search($vpisan[$i], $modularni);
-                        }elseif($mod2 != 0){
-                            $mod2 = array_search($vpisan[$i], $modularni);
-                        }elseif($mod3 != 0){
-                            $mod3 = array_search($vpisan[$i], $modularni);
-                        }elseif($mod4 != 0){
-                            $mod4 = array_search($vpisan[$i], $modularni);
-                        }elseif($mod5 != 0){
-                            $mod5 = array_search($vpisan[$i], $modularni);
-                        }elseif($mod6 != 0){
-                            $mod6 = array_search($vpisan[$i], $modularni);
+                        if($mod1 == 0){
+                            $mod1 = array_search($vpisan[$i], $modpredmeti);
+                        }elseif($mod2 == 0){
+                            $mod2 = array_search($vpisan[$i], $modpredmeti);
+                        }elseif($mod3 == 0){
+                            $mod3 = array_search($vpisan[$i], $modpredmeti);
+                        }elseif($mod4 == 0){
+                            $mod4 = array_search($vpisan[$i], $modpredmeti);
+                        }elseif($mod5 == 0){
+                            $mod5 = array_search($vpisan[$i], $modpredmeti);
+                        }elseif($mod6 == 0){
+                            $mod6 = array_search($vpisan[$i], $modpredmeti);
                         }
                     }
 
                     if ($psp != null && $pr1 == 0) {
-                        $pr1 = array_search($vpisan[$i], $prosti);
+                        $pr1 = array_search($vpisan[$i], $prosto_izbirni);
                     }
 
                     if (($psp == 7 || $psp == 6) && $pr2 == 0) {
-                        $pr2 = array_search($vpisan[$i], $prosti);
+                        $pr2 = array_search($vpisan[$i], $prosto_izbirni);
                     }
                 }
             }
             return view('spremeniizbirni', ['modularni'=>$modularni, 'strokovni'=>$strokovni, 'prosti'=>$prosti, 'mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,
-                'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'strokovni' => $strokovni]);
+                'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str, 'vp'=>$vpisna, 'ime'=>$ime]);
         }else{
-            echo 'asd';
+            return view('home');
         }
     }
 
     public function izberi($vp){
-
+        $stdleto = substr(date('Y'), 2, 2);
         $list = Input::all();
-        $vpisna['vpisna'] = substr($vp, 0,8);
-        $vpisna['sifra_studijskega_leta'] = substr($vp, 8,2);
-        $vpisna['sifra_studijskega_programa'] = substr($vp, 10,7);
-        $vpisna['sifra_letnika'] = substr($vp, 17,1);
-        $vpisna['zeton'] = substr($vp, 18,1);
-
-        Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->delete();
-
-        $obvezni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', NULL)->lists('sifra_predmeta');
-        $obvezni_predmeti = [];
-        $sum = 0;
-        if(!Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->count()) {
-            for($i=0; $i<count($obvezni); $i++){
-                $obvezni_predmeti[$i] = [Profesor::where('sifra_profesorja', Izvedba_predmeta::where('sifra_predmeta', $obvezni[$i])->
-                pluck('sifra_profesorja'))->pluck('priimek_profesorja'), Profesor::where('sifra_profesorja', Izvedba_predmeta::where('sifra_predmeta',$obvezni[$i])->
-                pluck('sifra_profesorja'))->pluck('ime_profesorja'), Predmet::where('sifra_predmeta', $obvezni[$i])->
-                pluck('naziv_predmeta'), Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT')];
-                $vpisi = new Vpisan_predmet();
-                $vpisi->vpisna_stevilka = $vpisna['vpisna'];
-                $vpisi->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $vpisi->sifra_predmeta = $obvezni[$i];
-                $vpisi->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $vpisi->sifra_letnika = $vpisna['sifra_letnika'];
-                $vpisi->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $vpisi->save();
-
-                $sum += Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT');
-            }
-        }else{
-            for($i=0; $i<count($obvezni); $i++){
-                $obvezni_predmeti[$i] = [Profesor::where('sifra_profesorja', Izvedba_predmeta::where('sifra_predmeta', $obvezni[$i])->
-                pluck('sifra_profesorja'))->pluck('priimek_profesorja'), Profesor::where('sifra_profesorja', Izvedba_predmeta::where('sifra_predmeta',$obvezni[$i])->
-                pluck('sifra_profesorja'))->pluck('ime_profesorja'), Predmet::where('sifra_predmeta', $obvezni[$i])->
-                pluck('naziv_predmeta'), Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT')];
-                $sum += Predmet::where('sifra_predmeta', $obvezni[$i])->pluck('stevilo_KT');
-            }
-        }
+        $vpis = Vpis::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $stdleto)->first();
+        $ime = Student::where('vpisna_stevilka', $vp)->pluck('priimek_studenta').", ".Student::where('vpisna_stevilka', $vp)->pluck('ime_studenta');
+        $vpisna['vpisna'] = $vp;
+        $vpisna['sifra_studijskega_leta'] = $stdleto;
+        $vpisna['sifra_studijskega_programa'] = $vpis->sifra_studijskega_programa;
+        $vpisna['sifra_letnika'] = $vpis->sifra_letnika;
 
         $strokovno_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
         where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', '6')->lists('sifra_predmeta');
@@ -216,23 +190,83 @@ class SpremeniIzbirniPredmetiController extends Controller {
                 array_unshift($prosti, "");
         }
 
-        $stp = Studijski_program::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->pluck('naziv_studijskega_programa');
+        $vpisan = Vpisan_predmet::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $stdleto)->lists('sifra_predmeta');
+        $str = 0;
+        $pr1 = 0;
+        $pr2 = 0;
+        $mod1 = 0;
+        $mod2 = 0;
+        $mod3 = 0;
+        $mod4 = 0;
+        $mod5 = 0;
+        $mod6 = 0;
+        $strz = 0;
+        $prz1 = 0;
+        $prz2 = 0;
+        $modz = array_fill(1, 6, 0);
+        dd($modz);
+        for($i=0; $i<count($vpisan); $i++){
+            $psp = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
+            where('sifra_predmeta', $vpisan[$i])->pluck('sifra_sestavnega_dela');
 
-        if(array_key_exists('modul', $list) && array_key_exists('modul2', $list))
-            if($list['modul2'] == $list['modul'])
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti'=>$obvezni_predmeti, 'sum' => $sum,
-                    'prosti'=>$prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => [], 'tips'=>0])->withErrors("Izberite različne module!");
-            elseif($list['modul2'] == 0 || $list['modul'] == 0)
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti'=>$obvezni_predmeti, 'sum' => $sum,
-                    'prosti'=>$prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => [], 'tips'=>0])->withErrors("Izberite modul!");
+            if($vpisna['sifra_letnika'] == 2) {
+                if ($psp == 6 && $str == 0) {
+                    $str = array_search($vpisan[$i], $strokovno_izbirni);
+                    $strz = $vpisan[$i];
+                }else {
+                    if (($psp == 7 || $psp == 6) && $pr1 == 0) {
+                        $pr1 = array_search($vpisan[$i], $prosto_izbirni);
+                        $prz1 = $vpisan[$i];
+                    }
+
+                    if (($psp == 7 || $psp == 6) && $pr2 == 0) {
+                        $pr2 = array_search($vpisan[$i], $prosto_izbirni);
+                        $prz2 = $vpisan[$i];
+                    }
+                }
+            }elseif($vpisna['sifra_letnika'] == 3){
+                if($psp != null && ($psp < 6 || $psp > 7)){
+                    if($mod1 == 0){
+                        $mod1 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[1] = $vpisan[$i];
+                    }elseif($mod2 == 0){
+                        $mod2 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[2] = $vpisan[$i];
+                    }elseif($mod3 == 0){
+                        $mod3 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[3] = $vpisan[$i];
+                    }elseif($mod4 == 0){
+                        $mod4 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[4] = $vpisan[$i];
+                    }elseif($mod5 == 0){
+                        $mod5 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[5] = $vpisan[$i];
+                    }elseif($mod6 == 0){
+                        $mod6 = array_search($vpisan[$i], $modpredmeti);
+                        $modz[6] = $vpisan[$i];
+                    }
+                }
+
+                if ($psp != null && $pr1 == 0) {
+                    $pr1 = array_search($vpisan[$i], $prosto_izbirni);
+                    $prz1 = $vpisan[$i];
+                }
+
+                if (($psp == 7 || $psp == 6) && $pr2 == 0) {
+                    $pr2 = array_search($vpisan[$i], $prosto_izbirni);
+                    $prz2 = $vpisan[$i];
+                }
+            }
+        }
+
+        $stp = Studijski_program::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->pluck('naziv_studijskega_programa');
 
         if(array_key_exists('prosti', $list) && array_key_exists('prosti2', $list)) {
             if ($list['prosti'] == $list['prosti2'] && $list['prosti'] != 0) {
                 if ($vpisna['sifra_letnika'] == 3 && $vpisna['zeton'] == 1) {
-                    return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                        'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->withErrors("Izberite različne prosto izbirne predmete!");
+                    return view('spremeniizbirni', ['ime' => $ime,'studijski_program' => $stp,  'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->withErrors("Izberite različne prosto izbirne predmete!");
                 } else {
-                    return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                    return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                         'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => [], 'tips' => 0])->withErrors("Izberite različne prosto izbirne predmete!");
                 }
             }
@@ -240,59 +274,21 @@ class SpremeniIzbirniPredmetiController extends Controller {
 
         if(array_key_exists('strokovni', $list)) {
             if ($list['prosti'] == $list['strokovni'] && $list['prosti'] != 0) {
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                     'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => [], 'tips' => 0])->withErrors("Izberite različne prosto izbirne predmete!");
             }
 
             if ($list['prosti2'] == $list['strokovni'] && $list['prosti2'] != 0) {
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                     'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => [], 'tips' => 0])->withErrors("Izberite različne prosto izbirne predmete!");
             }
-        }elseif($vpisna['sifra_letnika'] == 3 && $vpisna['zeton'] == 1){
+        }else{
             for($i=1; $i<=6; $i++){
                 if ($modularni[$list['modularni' . $i]] == $prosti[$list['prosti']] && $list['modularni' . $i] != 0) {
-                    return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                    return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                         'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>$modularni, 'tips'=>0])->
                     withErrors("Izberite različne modularne predmete! ");
                 }
-            }
-        }else{
-            $module1 = $list['modul'];
-            $module2 = $list['modul2'];
-            if($list['modul'] == 6 || $list['modul']==7){
-                $module1 = $list['modul']+2;
-            }
-            if($list['modul2'] == 6 || $list['modul2']==7){
-                $module2 = $list['modul2']+2;
-            }
-
-            $mod1 = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-            where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', $module1)->lists('sifra_predmeta');
-            $mod2 = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-            where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_sestavnega_dela', $module2)->lists('sifra_predmeta');
-
-            if(in_array(Predmet::where('naziv_predmeta',explode(" - ", $prosti[$list['prosti']])[0])->pluck('sifra_predmeta'), $mod1)){
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>0])->
-                withErrors("Izberite različne modularne predmete! ");
-            }
-
-            if(in_array(Predmet::where('naziv_predmeta',explode(" - ", $prosti[$list['prosti']])[0])->pluck('sifra_predmeta'), $mod2)){
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>0])->
-                withErrors("Izberite različne modularne predmete! ");
-            }
-
-            if(in_array(Predmet::where('naziv_predmeta',explode(" - ", $prosti[$list['prosti2']])[0])->pluck('sifra_predmeta'), $mod1)){
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>0])->
-                withErrors("Izberite različne modularne predmete! ");
-            }
-
-            if(in_array(Predmet::where('naziv_predmeta',explode(" - ", $prosti[$list['prosti2']])[0])->pluck('sifra_predmeta'), $mod2)){
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>0])->
-                withErrors("Izberite različne modularne predmete! ");
             }
         }
 
@@ -301,113 +297,51 @@ class SpremeniIzbirniPredmetiController extends Controller {
                 for($j=$i+1; $j<=6; $j++) {
                     if($list['modularni' . $i] == 0) {
                         if ($list['modularni' . $i] == $list['modularni' . $j]) {
-                            return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
+                            return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                                 'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->
                             withErrors("Izberite različne modularne predmete! ");
                         }
                     }else{
-                        return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                            'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->
+                        return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
+                            'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vp' => $vp, 'modularni' => $modularni, 'tips' => 0])->
                         withErrors("Izberite modularne predmete! ");
                     }
                 }
             }
             for($i=1; $i<=6; $i++) {
                 if ($list['modularni' . $i] != 0) {
-                    $pre = new Vpisan_predmet();
-                    $pre->vpisna_stevilka = $vpisna['vpisna'];
-                    $pre->sifra_predmeta = $modpredmeti[$list['modularni'.$i]-1];
-                    $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                    $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                    $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                    $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                    $pre->save();
+                    Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_leta',  $vpisna['sifra_studijskega_leta'])->
+                        where('sifra_predmeta', $modz[$i])->update(['sifra_predmeta'=>$modpredmeti[$list['modularni'.$i]-1]]);
                 }
             }
         }
 
         if(array_key_exists('prosti', $list)){
             if($list['prosti'] != 0) {
-                $pre = new Vpisan_predmet();
-                $pre->vpisna_stevilka = $vpisna['vpisna'];
-                $pre->sifra_predmeta = $prosto_izbirni[$list['prosti'] - 1];
-                $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $pre->save();
+                Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_leta',  $vpisna['sifra_studijskega_leta'])->
+                    where('sifra_predmeta', $prz1)->update(['sifra_predmeta'=>$prosto_izbirni[$list['prosti']-1]]);
             }
         }
 
         if(array_key_exists('prosti2', $list)){
             if($list['prosti2'] != 0) {
-                $pre = new Vpisan_predmet();
-                $pre->vpisna_stevilka = $vpisna['vpisna'];
-                $pre->sifra_predmeta = $prosto_izbirni[$list['prosti2'] - 1];
-                $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $pre->save();
+                Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_leta',  $vpisna['sifra_studijskega_leta'])->
+                    where('sifra_predmeta', $prz2)->update(['sifra_predmeta'=>$prosto_izbirni[$list['prosti2']-1]]);
             }
         }
 
         if(array_key_exists('strokovni', $list)){
             if($list['strokovni'] != 0) {
-                $pre = new Vpisan_predmet();
-                $pre->vpisna_stevilka = $vpisna['vpisna'];
-                $pre->sifra_predmeta = $strokovno_izbirni[$list['strokovni'] - 1];
-                $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $pre->save();
+                Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_leta',  $vpisna['sifra_studijskega_leta'])->
+                    where('sifra_predmeta', $strz)->update(['sifra_predmeta'=>$strokovno_izbirni[$list['strokovni']-1]]);
             }else{
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti'=>$obvezni_predmeti, 'sum' => $sum,
-                    'prosti'=>$prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>1])->withErrors("Izberite en strokovni predmet!");
-            }
-        }
-
-        if(array_key_exists('modul', $list)){
-            if($list['modul']==6 || $list['modul']==7){
-                $list['modul'] = $list['modul']+2;
-            }
-
-            $modul = Predmet_studijskega_programa::where('sifra_sestavnega_dela', $list['modul'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-            where('sifra_letnika', $vpisna['sifra_letnika'])->lists('sifra_predmeta');
-
-            for($i=0; $i<count($modul); $i++) {
-                $pre = new Vpisan_predmet();
-                $pre->vpisna_stevilka = $vpisna['vpisna'];
-                $pre->sifra_predmeta = $modul[$i];
-                $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $pre->save();
-            }
-        }
-
-        if(array_key_exists('modul2', $list)){
-            if($list['modul2']==5 || $list['modul']==6){
-                $list['modul2']+2;
-            }
-
-            $modul = Predmet_studijskega_programa::where('sifra_sestavnega_dela', $list['modul2'] + 1)->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->where('sifra_letnika', $vpisna['sifra_letnika'])->lists('sifra_predmeta');
-            for($i=0; $i<count($modul); $i++) {
-                $pre = new Vpisan_predmet();
-                $pre->vpisna_stevilka = $vpisna['vpisna'];
-                $pre->sifra_predmeta = $modul[$i];
-                $pre->sifra_studijskega_leta = $vpisna['sifra_studijskega_leta'];
-                $pre->sifra_studijskega_programa = $vpisna['sifra_studijskega_programa'];
-                $pre->sifra_letnika = $vpisna['sifra_letnika'];
-                $pre->sifra_studijskega_leta_izvedbe_predmeta = $vpisna['sifra_studijskega_leta'];
-                $pre->save();
+                return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,  'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,
+                    'ime' => $ime,'studijski_program' => $stp, 'prosti'=>$prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vp' => $vp, 'modularni'=>[], 'tips'=>1])->withErrors("Izberite en strokovni predmet!");
             }
         }
 
         $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
-        where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->lists('sifra_predmeta');
+            where('sifra_letnika', $vpisna['sifra_letnika'])->where('sifra_studijskega_leta', $vpisna['sifra_studijskega_leta'])->lists('sifra_predmeta');
         $suma = 0;
         for($i=0; $i<count($predmeti); $i++){
             $suma += Predmet::where('sifra_predmeta', $predmeti[$i])->pluck('stevilo_KT');
@@ -415,14 +349,14 @@ class SpremeniIzbirniPredmetiController extends Controller {
 
         if($suma < 60) {
             if($vpisna['sifra_letnika']==3 && $vpisna['zeton'] == 1) {
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>$modularni, 'tips'=>1])->withErrors("Nimate dovolj KT!");
+                return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,  'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp,
+                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vp' => $vp, 'modularni'=>$modularni, 'tips'=>1])->withErrors("Nimate dovolj KT!");
             }else{
-                return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
-                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni'=>[], 'tips'=>1])->withErrors("Nimate dovolj KT!");
+                return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3, 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp,
+                    'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vp' => $vp, 'modularni'=>[], 'tips'=>1])->withErrors("Nimate dovolj KT!");
             }
         }
 
-        return redirect('home')->with('message', 'Vpisni list je oddan!');
+        return redirect('home')->with('message', 'Predmeti so bili spremenjeni!');
     }
 }

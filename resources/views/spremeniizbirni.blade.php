@@ -1,9 +1,17 @@
 @extends('app')
 @section('content')
+<div class="container">
+    @if($errors->any())
+        <ul class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
     @if(!empty($prosti))
-        {!! Form::open() !!}
-        <h4>{{ "Malenko, Kokan (63100363)" }}</h4>
-        @if(empty($moduli))
+        {!! Form::open(array('action' => array('SpremeniIzbirniPredmetiController@izberi', $vp))) !!}
+        <h4>{{ $ime." (".$vp.")"  }}</h4>
+        @if(!empty($strokovni))
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-inline">
@@ -109,7 +117,9 @@
                 </div>
             </div>
             <br />
+        @endif
         {!! Form::close() !!}
+
     @else
         <div class="col-md-offset-10 col-md-2">
             <a href="{{ url('/') }}">{!! Form::button('Spremeni', ['class'=>'btn btn-default']) !!}</a>
@@ -117,4 +127,5 @@
     @endif
     <br />
     <hr />
+</div>
 @endsection
