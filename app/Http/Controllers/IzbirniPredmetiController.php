@@ -272,7 +272,6 @@ class IzbirniPredmetiController extends Controller {
 
             $modul = Predmet_studijskega_programa::where('sifra_sestavnega_dela', $list['modul'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
                 where('sifra_letnika', $vpisna['sifra_letnika'])->lists('sifra_predmeta');
-
             for($i=0; $i<count($modul); $i++) {
                 $pre = new Vpisan_predmet();
                 $pre->vpisna_stevilka = $vpisna['vpisna'];
@@ -286,11 +285,11 @@ class IzbirniPredmetiController extends Controller {
         }
 
         if(array_key_exists('modul2', $list)){
-            if($list['modul2']==5 || $list['modul']==6){
-                $list['modul2']+2;
+            if($list['modul2']==6 || $list['modul2']==7){
+                $list['modul2'] = $list['modul2']+2;
             }
 
-            $modul = Predmet_studijskega_programa::where('sifra_sestavnega_dela', $list['modul2'] + 1)->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->where('sifra_letnika', $vpisna['sifra_letnika'])->lists('sifra_predmeta');
+            $modul = Predmet_studijskega_programa::where('sifra_sestavnega_dela', $list['modul2'])->where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->where('sifra_letnika', $vpisna['sifra_letnika'])->lists('sifra_predmeta');
             for($i=0; $i<count($modul); $i++) {
                 $pre = new Vpisan_predmet();
                 $pre->vpisna_stevilka = $vpisna['vpisna'];

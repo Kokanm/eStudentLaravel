@@ -62,4 +62,14 @@
         {!! Form::close() !!}
     </div>
 </div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-1">
+        {!! Form::open(array('action' => array('SpremeniIzbirniPredmetiController@izbirni', $vp))) !!}
+            {!! Form::submit('Izbirni predmeti', ['class'=>'btn btn-default']) !!}
+        {!! Form::close() !!}
+    </div>
+</div>
 @endsection

@@ -103,10 +103,10 @@ Route::post('ocenep', ['middleware' => 'ucitelj', 'uses' => 'OceneIzpitControlle
 
 Route::post('export', [ 'uses' => 'ExportController@input']);
 
-
 Route::post('individualnivnoskoncneocene/{vpisna}', ['middleware' => 'referent', 'uses' => 'IndividualniVnosKoncneOceneController@vnesi']);
 Route::post('individualnivnoskoncneocenepoljuben/{vpisna}', ['middleware' => 'referent', 'uses' => 'IndividualniVnosKoncneOceneController@vnesi']);
 
-
 Route::post('individualnivnoskoncneoceneprofesor/{vpisna}', ['middleware' => 'ucitelj', 'uses' => 'IndividualniVnosKoncneOceneProfesorController@vnesi']);
 Route::post('individualnivnoskoncneocenepoljubenprofesor/{vpisna}', ['middleware' => 'ucitelj', 'uses' => 'IndividualniVnosKoncneOceneProfesorController@vnesi']);
+
+Route::post('izbirni/{vpisna}', ['middleware' => 'referent', 'uses' => 'SpremeniIzbirniPredmetiController@izbirni']);
