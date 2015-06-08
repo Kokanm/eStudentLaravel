@@ -190,7 +190,7 @@ class SpremeniIzbirniPredmetiController extends Controller {
                 array_unshift($prosti, "");
         }
 
-        $vpisan = Vpisan_predmet::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $stdleto)->lists('sifra_predmeta');
+        $vpisan = Vpisan_predmet::where('vpisna_stevilka', $vp)->where('sifra_studijskega_leta', $stdleto)->lists('sifra_predmeta');
         $str = 0;
         $pr1 = 0;
         $pr2 = 0;
@@ -204,7 +204,6 @@ class SpremeniIzbirniPredmetiController extends Controller {
         $prz1 = 0;
         $prz2 = 0;
         $modz = array_fill(1, 6, 0);
-        dd($modz);
         for($i=0; $i<count($vpisan); $i++){
             $psp = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vpisna['sifra_studijskega_programa'])->
             where('sifra_predmeta', $vpisan[$i])->pluck('sifra_sestavnega_dela');
@@ -228,6 +227,7 @@ class SpremeniIzbirniPredmetiController extends Controller {
                 if($psp != null && ($psp < 6 || $psp > 7)){
                     if($mod1 == 0){
                         $mod1 = array_search($vpisan[$i], $modpredmeti);
+                        dd($mod1);
                         $modz[1] = $vpisan[$i];
                     }elseif($mod2 == 0){
                         $mod2 = array_search($vpisan[$i], $modpredmeti);
@@ -295,7 +295,7 @@ class SpremeniIzbirniPredmetiController extends Controller {
         if(array_key_exists('modularni' . 1, $list)){
             for($i=1; $i<=5; $i++){
                 for($j=$i+1; $j<=6; $j++) {
-                    if($list['modularni' . $i] == 0) {
+                    if($list['modularni' . $i] != 0) {
                         if ($list['modularni' . $i] == $list['modularni' . $j]) {
                             return view('spremeniizbirni', ['mod1'=>$mod1, 'mod2'=>$mod2, 'mod3'=>$mod3,                 'mod4'=>$mod4, 'mod5'=>$mod5, 'mod6'=>$mod6, 'pr1'=>$pr1, 'pr2'=>$pr2, 'str' => $str,'ime' => $ime,'studijski_program' => $stp, 
                                 'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->
@@ -310,11 +310,13 @@ class SpremeniIzbirniPredmetiController extends Controller {
             }
             for($i=1; $i<=6; $i++) {
                 if ($list['modularni' . $i] != 0) {
+                    echo $modpredmeti[$list['modularni'.$i]-1]."==".$modz[$i]." ";
                     Vpisan_predmet::where('vpisna_stevilka', $vpisna['vpisna'])->where('sifra_studijskega_leta',  $vpisna['sifra_studijskega_leta'])->
                         where('sifra_predmeta', $modz[$i])->update(['sifra_predmeta'=>$modpredmeti[$list['modularni'.$i]-1]]);
                 }
             }
         }
+        asd;
 
         if(array_key_exists('prosti', $list)){
             if($list['prosti'] != 0) {

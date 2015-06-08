@@ -512,10 +512,10 @@ class VpisniListController extends Controller {
                 elseif($vp->sifra_vrste_vpisa == 2 &&  $vp->sifra_letnika != $let)
                     return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
                 elseif($vp->sifra_vrste_vpisa == 3 &&  $vp->sifra_letnika != $let)
-                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");*/
+                    return Redirect::back()->withInput()->withErrors("Napačna kombinacija vrsta vpisa + letnik");
 
                 if($vp->sifra_vrste_vpisa == 2)
-                    Vpisan_predmet::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_letnika', $vp->sifra_letnika)->delete();
+                    Vpisan_predmet::where('vpisna_stevilka', $list['vstevilka'])->where('sifra_letnika', $vp->sifra_letnika)->delete();*/
 
                 $vp->save();
 

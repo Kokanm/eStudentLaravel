@@ -196,7 +196,7 @@ class IzbirniPredmetiController extends Controller {
         if(array_key_exists('modularni' . 1, $list)){
             for($i=1; $i<=5; $i++){
                 for($j=$i+1; $j<=6; $j++) {
-                    if($list['modularni' . $i] == 0) {
+                    if($list['modularni' . $i] != 0) {
                         if ($list['modularni' . $i] == $list['modularni' . $j]) {
                             return view('predmeti', ['studijski_program' => $stp, 'predmeti' => $obvezni_predmeti, 'sum' => $sum,
                                 'prosti' => $prosti, 'strokovni' => $strokovni, 'moduli' => $moduli, 'vpisna' => $vp, 'modularni' => $modularni, 'tips' => 0])->
