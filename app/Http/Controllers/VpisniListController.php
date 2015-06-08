@@ -648,9 +648,14 @@ class VpisniListController extends Controller {
                     'oblik' => $oblik, 'nacin' => $nacin, 'kand' => $kandidat[0], 'vp' => $vp, 'tip'=>0, 'poste'=>$poste, 'stdpro'=>$stdpro]);
             } elseif ($user->type == 1){
                 $student = Student::where('email_studenta', $user->email)->get();
+                $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->get();
                 $vpis = Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->get()[0];
 
-                $zet = Zeton::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2,2))->get();
+                $programi = [];
+                $lemnik = [];
+                $vpisa = [];
+                $oblike = [];
+                $nacine = [];
 
                 $porabljen = 1;
                 if(!empty($zet[0])) {
@@ -658,6 +663,11 @@ class VpisniListController extends Controller {
                         if($zet[$i]->zeton_porabljen == 0){
                             $porabljen=0;
                             $zet[0] = $zet[$i];
+                            $programi[$i] = $zet[$i]->sifra_studijskega_programa;
+                            $lemnik[$i] = $zet[$i]->sifra_letnika;
+                            $vpisa[$i] = $zet[$i]->sifra_vrste_vpisa;
+                            $oblike[$i] = $zet[$i]->sifra_oblike_studija;
+                            $nacine[$i] = $zet[$i]->sifra_nacina_studija;
                         }
                     }
                     if($porabljen)
@@ -668,10 +678,9 @@ class VpisniListController extends Controller {
 
                 Vpis::where('vpisna_stevilka', $student[0]->vpisna_stevilka)->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->update(['vpis_potrjen'=>0]);
 
-                $programi = Studijski_program::get();
                 $studijski_programi = [];
                 for ($i = 0; $i < count($programi); $i++) {
-                    $studijski_programi[$i] = $programi[$i]->sifra_studijskega_programa . " " . $programi[$i]->naziv_studijskega_programa;
+                    $studijski_programi[$i] = $programi[$i]. " " . Studijski_program::where('sifra_studijskega_programa', $programi[$i])->pluck('naziv_studijskega_programa');
                 }
                 array_unshift($studijski_programi, "");
 
@@ -683,13 +692,11 @@ class VpisniListController extends Controller {
                 array_unshift($obcine, "");
                 asort($obcine);
 
-                $letnik = array_slice(Letnik::lists('stevilka_letnika'), $vpis->sifra_letnika-1 ,2);
+                $letnik = [];
+                for ($i = 0; $i < count($lemnik); $i++) {
+                    $letnik[$i] = Letnik::where('sifra_letnika', $lemnik[$i])->pluck('stevilka_letnika');
+                }
                 array_unshift($letnik, "");
-
-                if($letnik[1] == $zet[0]->sifra_letnika)
-                    $let = 1;
-                else
-                    $let = 2;
 
                 $posti = Posta::get();
                 $poste = [];
@@ -700,13 +707,22 @@ class VpisniListController extends Controller {
                 asort($poste);
 
 
-                $vrste_vpisa = Vrsta_vpisa::lists('opis_vrste_vpisa');
-                array_pop($vrste_vpisa);
+                $vrste_vpisa = [];
+                for ($i = 0; $i < count($vpisa); $i++) {
+                    $vrste_vpisa[$i] = Vrsta_vpisa::where('sifra_vrste_vpisa', $vpisa[$i])->pluck('opis_vrste_vpisa');
+                }
                 array_unshift($vrste_vpisa, "");
 
-                $oblik = Oblika_studija::lists('opis_oblike_studija');
+                $oblik = [];
+                for ($i = 0; $i < count($oblike); $i++) {
+                    $oblik[$i] = Oblika_studija::where('sifra_oblike_studija', $oblike[$i])->pluck('opis_oblike_studija');
+                }
                 array_unshift($oblik, "");
-                $nacin = Nacin_studija::lists('opis_nacina_studija');
+
+                $nacin = [];
+                for ($i = 0; $i < count($nacine); $i++) {
+                    $nacin[$i] = Nacin_studija::where('sifra_nacina_studija', $nacine[$i])->pluck('opis_nacina_studija');
+                }
                 array_unshift($nacin, "");
 
                 $studija = Vrsta_studija::get();
@@ -740,9 +756,11 @@ class VpisniListController extends Controller {
                         $vpis->sifra_vrste_studija)->pluck('opis_vrste_studija'), $vrste_studija);
                 $stdnac = array_search(Nacin_studija::where('sifra_nacina_studija', $zet[0]->sifra_nacina_studija)->pluck('opis_nacina_studija'), $nacin);
                 $stdobl = array_search(Oblika_studija::where('sifra_oblike_studija', $zet[0]->sifra_oblike_studija)->pluck('opis_oblike_studija'), $oblik);
+                $let = array_search(Letnik::where('sifra_letnika', $zet[0]->sifra_letnika)->pluck('stevilka_letnika'), $letnik);
                 $leto = Studijsko_leto::where('sifra_studijskega_leta', $vpis->sifra_studijskega_leta)->pluck('stevilka_studijskega_leta');
                 $zavod = $vpis->zavod;
                 $kraj = $vpis->kraj_izvajanja;
+                echo $vpvrs;
 
                 if($student[0]->naslov_vrocanja == $student[0]->naslov_stalno)
                     $v = true;
@@ -754,7 +772,7 @@ class VpisniListController extends Controller {
                     'oblik' => $oblik, 'nacin' => $nacin, 'stud'=>$student[0], 'drz' => $drz, 'obc' => $obc, 'drz2'=>$drz2,
                     'drzs'=>$drzs, 'obcs'=>$obcs,'drzz'=>$drzz, 'obcz'=>$obcz, 'stdpro'=>$stdpro, 'vpvrs'=>$vpvrs,
                     'stdvrs'=> $stdvrs, 'stdnac'=>$stdnac, 'stdobl'=>$stdobl, 'leto'=>$leto, 'zavod'=>$zavod,
-                    'nass'=>$nass, 'nasz'=>$nasz, 'kraj'=>$kraj, 'tip'=>1, 'poste'=>$poste, 'let'=>$let,'v'=>$v]);
+                    'nass'=>$nass, 'nasz'=>$nasz, 'kraj'=>$kraj, 'tip'=>1, 'poste'=>$poste, 'let'=>$let, 'v'=>$v]);
             }
 
         }else {
