@@ -65,6 +65,7 @@ class PodatkiOStudentController extends Controller {
                 ->where('vpisna_stevilka',$vs)
                 ->where('sifra_studijskega_programa', $vpisan_predmet[$i]->sifra_studijskega_programa)
                 ->where('sifra_studijskega_leta',$vpisan_predmet[$i]->sifra_studijskega_leta)
+                ->whereNull('cas_odjave')
                 ->get();
 
 
