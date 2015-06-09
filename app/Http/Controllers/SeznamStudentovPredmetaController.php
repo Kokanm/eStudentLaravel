@@ -70,7 +70,8 @@ class SeznamStudentovPredmetaController extends Controller {
 
         $studenti=[];
         for ($i=0; $i< count($info); $i++){
-            $studenti[$i]=Student::where('vpisna_stevilka', $info[$i])->first();
+            if(Vpis::where('vpisna_stevilka', $info[$i])->where('sifra_studijskega_leta', $leto)->where('vpis_potrjen', 1)->first())
+                $studenti[$i]=Student::where('vpisna_stevilka', $info[$i])->first();
         }
         usort($studenti,  array($this, "cmp"));
 

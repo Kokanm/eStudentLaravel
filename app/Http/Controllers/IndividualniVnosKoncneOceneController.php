@@ -80,8 +80,8 @@ class IndividualniVnosKoncneOceneController extends Controller {
 	            	$izpiti[$j][4] = $izpiti[$j][4] . ', ' . $prof3;
 	            }
 	            $temp2 = $izpiti2[$i]->datum;
-	            $temp3 = substr($temp2, 8) . '-';
-            	$temp3 = $temp3 . substr($temp2, 5, -3) . '-';
+	            $temp3 = substr($temp2, 8) . '.';
+            	$temp3 = $temp3 . substr($temp2, 5, -3) . '.';
             	$temp3 = $temp3 . substr($temp2, 0, -6);
 	            $izpiti[$j][5] = $temp3;
 	            $izpiti[$j][6] = $temp1->ura;
@@ -343,8 +343,8 @@ class IndividualniVnosKoncneOceneController extends Controller {
 		            	$izpiti[$j][4] = $izpiti[$j][4] . ', ' . $prof3;
 		            }
 		            $temp2 = $izpiti2[$i]->datum;
-		            $temp3 = substr($temp2, 8) . '-';
-	            	$temp3 = $temp3 . substr($temp2, 5, -3) . '-';
+		            $temp3 = substr($temp2, 8) . '.';
+	            	$temp3 = $temp3 . substr($temp2, 5, -3) . '.';
 	            	$temp3 = $temp3 . substr($temp2, 0, -6);
 		            $izpiti[$j][5] = $temp3;
 		            $izpiti[$j][6] = $temp1->ura;
@@ -466,8 +466,8 @@ class IndividualniVnosKoncneOceneController extends Controller {
 		            	$izpiti[$j][4] = $izpiti[$j][4] . ', ' . $prof3;
 		            }
 		            $temp2 = $izpiti2[$i]->datum;
-		            $temp3 = substr($temp2, 8) . '-';
-	            	$temp3 = $temp3 . substr($temp2, 5, -3) . '-';
+		            $temp3 = substr($temp2, 8) . '.';
+	            	$temp3 = $temp3 . substr($temp2, 5, -3) . '.';
 	            	$temp3 = $temp3 . substr($temp2, 0, -6);
 		            $izpiti[$j][5] = $temp3;
 		            $izpiti[$j][6] = $temp1->ura;
