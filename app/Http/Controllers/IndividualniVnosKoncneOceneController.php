@@ -55,7 +55,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 		$izpiti = [];
 		$j=0;
         for ($i = 0; $i < count($izpiti2); $i++) {
-        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0) {
+        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0 && $izpiti2[$i]->cas_odjave == null) {
 	            $izpiti[$j][0] = $izpiti2[$i]->id;
 	            $izpiti[$j][1] = $izpiti2[$i]->sifra_predmeta;
 	            $temp1 = Predmet::where('sifra_predmeta', $izpiti[$j][1])->first();
@@ -318,7 +318,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 			$izpiti = [];
 			$j=0;
 	        for ($i = 0; $i < count($izpiti2); $i++) {
-	        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0) {
+	        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0 && $izpiti2[$i]->cas_odjave == null) {
 		            $izpiti[$j][0] = $izpiti2[$i]->id;
 		            $izpiti[$j][1] = $izpiti2[$i]->sifra_predmeta;
 		            $temp1 = Predmet::where('sifra_predmeta', $izpiti[$j][1])->first();
@@ -441,7 +441,7 @@ class IndividualniVnosKoncneOceneController extends Controller {
 			$izpiti = [];
 			$j=0;
 	        for ($i = 0; $i < count($izpiti2); $i++) {
-	        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0) {
+	        	if($izpiti2[$i]->ocena == null && $izpiti2[$i]->ocena !== 0 && $izpiti2[$i]->cas_odjave == null) {
 		            $izpiti[$j][0] = $izpiti2[$i]->id;
 		            $izpiti[$j][1] = $izpiti2[$i]->sifra_predmeta;
 		            $temp1 = Predmet::where('sifra_predmeta', $izpiti[$j][1])->first();

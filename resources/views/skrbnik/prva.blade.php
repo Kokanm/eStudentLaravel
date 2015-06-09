@@ -2,6 +2,7 @@
 
 @section('menu')
 <ul class="nav navbar-nav">
+	<li><a href="{{ url('referent/uvoz_podatkov') }}">Uvoz kandidatov</a></li>
 	<li><a href="{{ url('najdiprofesor') }}">Dodaj izvajalca</a></li>
 	<li><a href="{{ url('find') }}">Iskanje študenta</a></li>
 	

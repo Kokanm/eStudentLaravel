@@ -15,8 +15,8 @@ Route::controllers([
     'auth' => 'Auth\AuthController',
     'password' => 'Auth\PasswordController',
 ]);
-Route::get('referent/uvoz_podatkov', ['middleware' => 'referent', 'uses' => 'ReferentController@izberi']);
-Route::post('referent/uvoz_podatkov', ['middleware' => 'referent', 'uses' => 'ReferentController@uvozi']);
+Route::get('referent/uvoz_podatkov', ['middleware' => 'ReferentSkrbnik', 'uses' => 'ReferentController@izberi']);
+Route::post('referent/uvoz_podatkov', ['middleware' => 'ReferentSkrbnik', 'uses' => 'ReferentController@uvozi']);
 
 Route::get('find', function(){
     return View::make('findstudent');

@@ -98,7 +98,7 @@ class OceneIzpitController extends Controller {
         $stLet=explode("-",$info)[3];
         $studLeto=Studijsko_leto::where('sifra_studijskega_leta', $stLet)->first()->stevilka_studijskega_leta;
 
-        $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->whereNotNull('ocena')->get();
+        $rezultatiRAW=Izpit::where('sifra_predmeta',$premet)->where('datum',$datum)->whereNotNull('ocena')->where('ocena','>',0)->get();
         //KOKAN PEDER
         $studenti=[];
         for ($i=0; $i< count($rezultatiRAW); $i++){

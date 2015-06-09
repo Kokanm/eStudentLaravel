@@ -164,7 +164,12 @@ class IzpitniRokiController extends Controller {
             $temp1 = $izpitniRoki2[$i]->id_izvedbe_predmeta;
             $temp2 = Izvedba_predmeta::where('id', $temp1)->first();
             $izpitniRoki[$i][5] = $temp2->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja)->pluck('priimek_profesorja');
-            
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja');
+            }
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja');
+            }
             $temp1 = $izpitniRoki2[$i]->id;
             $izpitniRoki[$i][6] = Izpit::where('id_izpitnega_roka', $temp1)->count();
         }
@@ -219,7 +224,12 @@ class IzpitniRokiController extends Controller {
             $temp1 = $izpitniRoki2[$i]->id_izvedbe_predmeta;
             $temp2 = Izvedba_predmeta::where('id', $temp1)->first();
             $izpitniRoki[$i][5] = $temp2->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja)->pluck('priimek_profesorja');
-            
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja');
+            }
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja');
+            }
             $temp1 = $izpitniRoki2[$i]->id;
             $izpitniRoki[$i][6] = Izpit::where('id_izpitnega_roka', $temp1)->count();
         }
@@ -392,7 +402,12 @@ class IzpitniRokiController extends Controller {
             $temp1 = $izpitniRoki2[$i]->id_izvedbe_predmeta;
             $temp2 = Izvedba_predmeta::where('id', $temp1)->first();
             $izpitniRoki[$i][5] = $temp2->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja)->pluck('priimek_profesorja');
-            
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja');
+            }
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja');
+            }
             $temp1 = $izpitniRoki2[$i]->id;
             $izpitniRoki[$i][6] = Izpit::where('id_izpitnega_roka', $temp1)->count();
         }
@@ -446,7 +461,12 @@ class IzpitniRokiController extends Controller {
             $temp1 = $izpitniRoki2[$i]->id_izvedbe_predmeta;
             $temp2 = Izvedba_predmeta::where('id', $temp1)->first();
             $izpitniRoki[$i][5] = $temp2->sifra_predmeta . " " . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('naziv_predmeta') . " (" . Predmet::where('sifra_predmeta', $temp2->sifra_predmeta)->pluck('stevilo_KT') . "KT) - " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja)->pluck('priimek_profesorja');
-            
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja2)->pluck('priimek_profesorja');
+            }
+            if (Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja') != null) {
+                $izpitniRoki[$i][5] = $izpitniRoki[$i][5] . ", " . Profesor::where('sifra_profesorja', $temp2->sifra_profesorja3)->pluck('priimek_profesorja');
+            }
             $temp1 = $izpitniRoki2[$i]->id;
             $izpitniRoki[$i][6] = Izpit::where('id_izpitnega_roka', $temp1)->count();
         }
