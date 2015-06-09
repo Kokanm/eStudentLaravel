@@ -39,6 +39,7 @@ class ReferentController extends Controller {
         $myfile = fopen($datoteka, "r") or die("Unable to open file!");
         try {
             if ($myfile) {
+                fread($myfile, 3);
                 while (($line = fgets($myfile)) !== false) {
                     $newline = explode(',', preg_replace('/\s+/', ',', trim($line)));
                     $kandidat = new Kandidat;
@@ -47,12 +48,12 @@ class ReferentController extends Controller {
                     $kandidat->sifra_studijskega_programa = substr($newline[2], 0, 7);
                     $kandidat->email_kandidata = substr($newline[2], 7);
                     $kandidat->save();
-
+                    
                     $user = new User;
                     $user->name = $kandidat->ime_kandidata;
                     $user->email = $kandidat->email_kandidata;
-//                    $user->password = bcrypt($kandidat->ime_kandidata);
-                    $user->password = bcrypt("geslo1");
+                    //$user->password = bcrypt($kandidat->ime_kandidata);
+                    $user->password = bcrypt('geslo1');
                     $user->type = 0;
                     $user->save();
                     $uvozeno .= $kandidat->ime_kandidata . ' ' . $kandidat->priimek_kandidata . '<br/>';
