@@ -75,18 +75,18 @@ class KartotecniListReferentController extends Controller {
                 $st = 0;
                 $stleto[$s][$i] = [];
                 $he = Vpis::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->get()[0];
-                $heading[$s][$i][0] = Studijsko_leto::where('sifra_studijskega_leta', $leta[$i])->pluck('stevilka_studijskega_leta');
-                $heading[$s][$i][1] = Letnik::where('sifra_letnika', $he->sifra_letnika)->pluck('stevilka_letnika');
+                $heading[$s][$i][0] = "20".$leta[$i]."/20".($leta[$i]+1);
+                $heading[$s][$i][1] = $he->sifra_letnika;
                 $heading[$s][$i][2] = Vrsta_vpisa::where('sifra_vrste_vpisa', $he->sifra_vrste_vpisa)->pluck('opis_vrste_vpisa');
                 $heading[$s][$i][3] = Nacin_studija::where('sifra_nacina_studija', $he->sifra_nacina_studija)->pluck('opis_nacina_studija');
                 $predmeti = Vpisan_predmet::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->get();
                 for ($j = 0; $j < count($predmeti); $j++) {
 
-                    if(count($izi = Izpit::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta',$predmeti[$j]->sifra_predmeta)->where('ocena', '>', 0)->get())) {
-                        for($z=0; $z<count($izi); $z++) {
+                    if (count($izi = Izpit::where('vpisna_stevilka', $vpisna)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta', $predmeti[$j]->sifra_predmeta)->where('ocena', '>', 0)->get())) {
+                        for ($z = 0; $z < count($izi); $z++) {
                             $izpiti[$s][$i][$sh[$s][$i]][0] = $predmeti[$j]->sifra_predmeta;
                             $izpiti[$s][$i][$sh[$s][$i]][1] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$sh[$s][$i]][0])->pluck('naziv_predmeta');
-                            $izpiti[$s][$i][$sh[$s][$i]][3] = Letnik::where('sifra_letnika', $predmeti[$j]->sifra_letnika)->pluck('stevilka_letnika') . ". letnik";
+                            $izpiti[$s][$i][$sh[$s][$i]][3] = $predmeti[$j]->sifra_letnika. ". letnik";
                             $izpiti[$s][$i][$sh[$s][$i]][7] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$sh[$s][$i]][0])->pluck('stevilo_KT');
                             $izpiti[$s][$i][$sh[$s][$i]][4] = date('d.m.Y', strtotime($izi[$z]->datum));
                             $izpiti[$s][$i][$sh[$s][$i]][2] = Profesor::where('sifra_profesorja', $izi[$z]->sifra_profesorja)->
@@ -114,15 +114,15 @@ class KartotecniListReferentController extends Controller {
                             $izpiti[$s][$i][$sh[$s][$i]][8] = $izi[$z]->ocena;
                             $sh[$s][$i]++;
                         }
-                        if ($izi[$z-1]->ocena > 5) {
-                            $skupkt[$s][$i] += $izpiti[$s][$i][$sh[$s][$i]-1][7];
-                            $povp[$s][$i] += $izi[$z-1]->ocena;
+                        if ($izi[$z - 1]->ocena > 5) {
+                            $skupkt[$s][$i] += $izpiti[$s][$i][$sh[$s][$i] - 1][7];
+                            $povp[$s][$i] += $izi[$z - 1]->ocena;
                             $st++;
                         }
-                    }else{
+                    } else {
                         $izpiti[$s][$i][$sh[$s][$i]][0] = $predmeti[$j]->sifra_predmeta;
                         $izpiti[$s][$i][$sh[$s][$i]][1] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$sh[$s][$i]][0])->pluck('naziv_predmeta');
-                        $izpiti[$s][$i][$sh[$s][$i]][3] = Letnik::where('sifra_letnika', $predmeti[$j]->sifra_letnika)->pluck('stevilka_letnika') . ". letnik";
+                        $izpiti[$s][$i][$sh[$s][$i]][3] = $predmeti[$j]->sifra_letnika. ". letnik";
                         $izpiti[$s][$i][$sh[$s][$i]][7] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$sh[$s][$i]][0])->pluck('stevilo_KT');
                         $izpiti[$s][$i][$sh[$s][$i]][2] = "";
                         $izpiti[$s][$i][$sh[$s][$i]][4] = "";
@@ -133,8 +133,8 @@ class KartotecniListReferentController extends Controller {
                     }
                 }
                 $skupnare[$s][$i] = $st;
-                if($st != 0)
-                    $povp[$s][$i] = round($povp[$s][$i]/$st, 3);
+                if ($st != 0)
+                    $povp[$s][$i] = round($povp[$s][$i] / $st, 3);
                 else
                     $povp[$s][$i] = 0;
             }
@@ -246,7 +246,7 @@ class KartotecniListReferentController extends Controller {
                     $necinit = 1;
                     $predmet = Izpit::where('vpisna_stevilka', $vpisna)->where('ocena', '>', 0)->where('sifra_studijskega_leta', $leta[$i])->where('sifra_predmeta', $predmets[$j]->sifra_predmeta)->
                     orderBy('datum', 'desc')->first();
-                    if($predmet == null) {
+                    if ($predmet == null) {
                         $predmet = $predmets[$j];
                         $necinit = 0;
                     }
@@ -257,7 +257,7 @@ class KartotecniListReferentController extends Controller {
                     $izpiti[$s][$i][$j][1] = Predmet::where('sifra_predmeta', $izpiti[$s][$i][$j][0])->pluck('naziv_predmeta');
                     $izpiti[$s][$i][$j][3] = Letnik::where('sifra_letnika', $predmet->sifra_letnika)->pluck('stevilka_letnika') . ". letnik";
 
-                    if($necinit) {
+                    if ($necinit) {
                         $izpiti[$s][$i][$j][2] = Profesor::where('sifra_profesorja', $predmet->sifra_profesorja)->pluck('priimek_profesorja') . ", " . Profesor::where('sifra_profesorja', $predmet->sifra_profesorja)->pluck('ime_profesorja');
                         $izpiti[$s][$i][$j][4] = date('d.m.Y', strtotime($predmet->datum));
                         if (array_key_exists($izpiti[$s][$i][$j][0], $stskupaj)) {
@@ -287,7 +287,7 @@ class KartotecniListReferentController extends Controller {
                             $st++;
                         }
                         $sh[$s][$i]++;
-                    }else{
+                    } else {
                         $sh[$s][$i]++;
                         $izpiti[$s][$i][$j][2] = "";
                         $izpiti[$s][$i][$j][4] = "";
@@ -297,10 +297,11 @@ class KartotecniListReferentController extends Controller {
                     }
                 }
                 $skupnare[$s][$i] = $st;
-                if($st != 0)
-                    $povp[$s][$i] = round($povp[$s][$i]/$st, 3);
+                if ($st != 0)
+                    $povp[$s][$i] = round($povp[$s][$i] / $st, 3);
                 else
                     $povp[$s][$i] = 0;
+
             }
         }
 

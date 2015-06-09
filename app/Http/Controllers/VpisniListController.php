@@ -301,6 +301,7 @@ class VpisniListController extends Controller {
                 }
 
                 Vpis::where('vpisna_stevilka', $list["vstevilka"])->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->update(['vpis_potrjen'=>0]);
+                Vpis::where('vpisna_stevilka', $list["vstevilka"])->where('sifra_studijskega_leta', substr(date('Y'), 2, 2))->delete();
 
                 $studijski_programi = [];
                 for ($i = 0; $i < count($programi); $i++) {
@@ -394,7 +395,7 @@ class VpisniListController extends Controller {
                 $emso = $list["emso"];
                 $datum = $list["datumrojstva"];
 
-                //Vpisan_predmet::where('vpisna_stevilka', $list["vstevilka"])->delete();
+                Vpisan_predmet::where('vpisna_stevilka', $list["vstevilka"])->where('sifra_studijskega_leta', substr(date('Y'),2,2))->delete();
                 $std = Student::where('vpisna_stevilka', $list["vstevilka"])->get()[0];
                 $std->ime_studenta = ucfirst(explode(" ", $list["imepriimek"])[0]);
                 $std->priimek_studenta = ucfirst(explode(" ", $list["imepriimek"])[1]);
@@ -576,7 +577,7 @@ class VpisniListController extends Controller {
                     }
                 }else{
                     $prosto_izbirni = Predmet_studijskega_programa::where('sifra_studijskega_programa', $vp->sifra_studijskega_programa)->
-                        where('sifra_letnika', $vp->sifra_letnika)->lists('sifra_predmeta');
+                        where('sifra_letnika', $vp->sifra_letnika)->whereNotNull('sifra_sestavnega_dela')->lists('sifra_predmeta');
                     $prosti = [];
                     for ($i = 0; $i < count($prosto_izbirni); $i++) {
                         $prosti[$i] = Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->pluck('naziv_predmeta') . " - " . Predmet::where('sifra_predmeta', $prosto_izbirni[$i])->
